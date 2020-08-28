@@ -3,10 +3,11 @@ Vagrant.configure("2") do |config|
     config.vm.box_version = ">= 0.3, < 0.4"
     config.vm.provider "virtualbox" do |vb|
         vb.linked_clone = true
-        vb.memory = 2048
+        vb.cpus = 3
+        vb.memory = 8192
     end
-        config.vm.provision "ansible_local" do |ansible|
-            ansible.provisioning_path = "/vagrant/dev/ansible"
-            ansible.playbook = "playbook.yml" # Note this playbook is, in this context, /ansible/playbook.yml
-        end
+    config.vm.provision "ansible_local" do |ansible|
+        ansible.provisioning_path = "/vagrant/dev/ansible"
+        ansible.playbook = "playbook.yml" # Note this playbook is, in this context, /ansible/playbook.yml
+    end
 end

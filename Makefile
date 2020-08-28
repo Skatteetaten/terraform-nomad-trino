@@ -33,8 +33,12 @@ else
 endif
 
 # clean commands
-destroy-box:
+# clean commands
+destroy:
 	vagrant destroy -f
+	rm terraform.tfstate || true
+	rm terraform.tfstate.backup || true
+	rm example/terraform.tfstate || true
 
 remove-tmp:
 	rm -rf ./tmp
@@ -45,3 +49,15 @@ clean: destroy-box remove-tmp
 update-box:
 	@SSL_CERT_FILE=${SSL_CERT_FILE} CURL_CA_BUNDLE=${CURL_CA_BUNDLE} vagrant box update || (echo '\n\nIf you get an SSL error you might be behind a transparent proxy. \nMore info https://github.com/fredrikhgrelland/vagrant-hashistack/blob/master/README.md#if-you-are-behind-a-transparent-proxy\n\n' && exit 2)
 
+# to-hivemetastore
+proxy-h:
+	consul connect proxy -service hivemetastore-local -upstream hive-metastore:9083 -log-level debug
+# to-minio
+proxy-m:
+	consul connect proxy -service minio-local -upstream minio:9000 -log-level debug
+# to-postgres
+proxy-p:
+	consul connect proxy -service postgres-local -upstream postgres:5432 -log-level debug
+# to-presto
+proxy-p:
+	consul connect proxy -service postgres-local -upstream presto:8080 -log-level debug
