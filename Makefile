@@ -33,8 +33,12 @@ else
 endif
 
 # clean commands
-destroy-box:
+# clean commands
+destroy:
 	vagrant destroy -f
+	rm terraform.tfstate || true
+	rm terraform.tfstate.backup || true
+	rm example/terraform.tfstate || true
 
 remove-tmp:
 	rm -rf ./tmp
