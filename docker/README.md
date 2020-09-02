@@ -2,6 +2,11 @@
 
 Put your Dockerfile and other files relating to a docker-build here.
 
+## [Presto-cli image](./Dockerfile.presto-cli)
+Presto-cli image is required for run the example of terraform-nomad-presto module. Main usage is to create tables for uploaded data to Minio.
+- Ansible builds local image in [dev/ansible/01_build_presto_cli_image.yml](../dev/ansible/01_build_presto_cli_image.yml)
+- Ansible create tables in [dev/ansible/05_presto_create_tables.yml](../dev/ansible/05_presto_create_tables.yml)
+
 ## Building docker image locally
 
 If you have docker installed on your machine, you may `cd docker; docker build -t my_image:local .`  and build the image.

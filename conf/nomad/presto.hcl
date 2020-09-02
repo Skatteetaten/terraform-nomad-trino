@@ -38,15 +38,15 @@ job "${nomad_job_name}" {
           }
         }
       }
-//      check {
-//        task     = "server"
-//        name     = "presto-hive-availability"
-//        type     = "script"
-//        command  = "presto"
-//        args     = ["--execute", "SHOW TABLES IN hive.default"]
-//        interval = "30s"
-//        timeout  = "15s"
-//      }
+      check {
+        task     = "server"
+        name     = "presto-hive-availability"
+        type     = "script"
+        command  = "presto"
+        args     = ["--execute", "SHOW TABLES IN hive.default"]
+        interval = "30s"
+        timeout  = "15s"
+      }
       check {
         expose   = true
         name     = "presto-info"
