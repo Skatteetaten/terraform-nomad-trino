@@ -1,0 +1,26 @@
+# avro
+prereq:
+ifeq (, $(shell which avro-tools))
+	$(error "No avro-tools in $(PATH), install http://avro.apache.org/releases.html#Download ")
+endif
+ifeq (, $(shell which protoc))
+	$(error "No protoc in $(PATH), install https://github.com/protocolbuffers/protobuf/releases ")
+endif
+
+encode-json-2-avro: prereq
+	avro-tools fromjson --codec snappy --schema-file ./avro/twitter_scheme.avsc ./avro/tweet1.json > ../data/avro-tweet/tweet1.snappy.avro
+	avro-tools fromjson --codec snappy --schema-file ./avro/twitter_scheme.avsc ./avro/tweet2.json > ../data/avro-tweet/tweet2.snappy.avro
+
+# protofub
+encode-text-2-proto: prereq
+	mkdir cpp | true
+	protoc --cpp_out=cpp ./proto/info.proto | true
+	protoc --encode=Info ./proto/info.proto < ./proto/info1.text  > ../data/proto-message/info1.data
+	protoc --encode=Info ./proto/info.proto < ./proto/info2.text  > ../data/proto-message/info2.data
+	rm -rf cpp
+hex: prereq
+	hexdump -C ../data/proto-message/info1.data
+	hexdump -C ../data/proto-message/info2.data
+decode-bin-2-text: prereq
+	protoc --decode Info ./proto/info.proto < ../data/proto-message/info1.data
+	protoc --decode Info ./proto/info.proto < ../data/proto-message/info2.data

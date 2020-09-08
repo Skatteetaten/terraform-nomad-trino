@@ -35,7 +35,7 @@ module "presto" {
 }
 
 module "minio" {
-  source = "github.com/fredrikhgrelland/terraform-nomad-minio.git?ref=0.0.2"
+  source = "github.com/fredrikhgrelland/terraform-nomad-minio.git?ref=0.0.3"
 
   # nomad
   nomad_datacenters = local.nomad_datacenters
@@ -75,7 +75,7 @@ module "postgres" {
 }
 
 module "hive" {
-  source = "github.com/fredrikhgrelland/terraform-nomad-hive.git?ref=0.0.1"
+  source = "github.com/fredrikhgrelland/terraform-nomad-hive.git?ref=0.0.2"
 
   # nomad
   nomad_datacenters = local.nomad_datacenters
@@ -86,7 +86,12 @@ module "hive" {
   # hive
   hive_service_name                    = "hive-metastore"
   hive_container_port                  = 9083
-  hive_container_environment_variables = ["SOME_EXAMPLE=example-value"]
+
+  // support CSV -> https://towardsdatascience.com/load-and-query-csv-file-in-s3-with-presto-b0d50bc773c9
+  // metastore.storage.schema.reader.impl=org.apache.hadoop.hive.metastore.SerDeStorageSchemaReader
+  hive_container_environment_variables = [
+    "HIVE_SITE_CONF_metastore_storage_schema_reader_impl=org.apache.hadoop.hive.metastore.SerDeStorageSchemaReader"
+  ]
 
   # hive - minio
   hive_bucket = {
