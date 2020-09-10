@@ -1,8 +1,0 @@
-- name: Build docker image
-  docker_image:
-    name: fredrikhgrelland/presto-cli
-    build:
-      dockerfile: Dockerfile.presto-cli
-      path: /vagrant/docker
-      pull: false
-    source: build

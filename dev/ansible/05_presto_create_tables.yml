@@ -1,6 +1,6 @@
 - name: Presto healthchecks pass
   uri:
-    url: http://localhost:8500/v1/health/checks/presto?filter={{ '(Status=="passing")' | urlencode }}
+    url: http://localhost:8500/v1/health/checks/presto
     method: GET
     return_content: yes
     status_code: 200
@@ -8,18 +8,18 @@
   register: result_presto
   retries: 15
   delay: 15
-  until: result_presto.json | length == 3
+  until: '"critical" not in result_presto | string'
   tags: example-upload
 
 - name: Start local proxy on port 8888 to presto service
-  shell: nohup consul connect proxy -service presto-local -upstream presto:8888 -log-level debug </dev/null >/dev/null 2>&1 &
+  shell: nohup consul connect proxy -service presto-local -upstream presto:8888 -log-level debug </dev/null >/tmp/presto-proxy.log 2>&1 &
   register: test_output
   tags: example-upload
 
 # To quickly verify that proxy available (without any credentials)
 - name: Presto curl example. Verify that proxy to presto available
   uri:
-    url: http://localhost:8888/ui/login.html
+    url: http://127.0.0.1:8888/v1/status
     status_code: 200
   register: curl_output
   until: curl_output.status == 200
@@ -32,43 +32,51 @@
     msg: "{{curl_output}}"
   tags: example-upload
 
-### Create tables using docker image with presto-cli
-
 - name: Create CSV table
-  shell: docker run --network host -v "/vagrant/example/resources/query/csv_create_table.sql:/csv_create_table.sql" fredrikhgrelland/presto-cli ./presto --server localhost:8888 --catalog hive --schema default --user presto --file /csv_create_table.sql
+  shell: docker run --network host -v "/vagrant/example/resources/query/csv_create_table.sql:/csv_create_table.sql" prestosql/presto:341 presto --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user presto --file /csv_create_table.sql
   register: docker_output_cmd_csv
   retries: 5
   delay: 1
   until: docker_output_cmd_csv.rc == 0
   tags: example-upload
+  retries: 10
+  delay: 2
+  until: docker_output_cmd_csv.stderr.find("CREATE TABLE") != -1
+  # TODO: This error must be tracked down: Error running command: java.io.IOException: unexpected end of stream on Connection{127.0.0.1:8888, proxy=HTTP @ 127.0.0.1:8888 hostAddress=/127.0.0.1:8888 cipherSuite=none protocol=http/1.1}
 
 - name: Create JSON table
-  shell: docker run --network host -v "/vagrant/example/resources/query/json_create_table.sql:/json_create_table.sql" fredrikhgrelland/presto-cli ./presto --server localhost:8888 --catalog hive --schema default --user presto --file /json_create_table.sql
+  shell: docker run --network host -v "/vagrant/example/resources/query/json_create_table.sql:/json_create_table.sql" prestosql/presto:341 presto --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user presto --file /json_create_table.sql
   register: docker_output_cmd_json
   retries: 5
   delay: 1
   until: docker_output_cmd_json.rc == 0
   tags: example-upload
+  retries: 10
+  delay: 2
+  until: docker_output_cmd_json.stderr.find("CREATE TABLE") != -1
 
 - name: Create AVRO table
-  shell: docker run --network host -v "/vagrant/example/resources/query/avro_tweets_create_table.sql:/avro_tweets_create_table.sql" fredrikhgrelland/presto-cli ./presto --server localhost:8888 --catalog hive --schema default --user presto --file /avro_tweets_create_table.sql
+  shell: docker run --network host -v "/vagrant/example/resources/query/avro_tweets_create_table.sql:/avro_tweets_create_table.sql" prestosql/presto:341 presto --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user presto --file /avro_tweets_create_table.sql
   register: docker_output_cmd_avro
   retries: 5
   delay: 1
   until: docker_output_cmd_avro.rc == 0
   tags: example-upload
+  retries: 10
+  delay: 2
+  until: docker_output_cmd_avro.stderr.find("CREATE TABLE") != -1
 
 - name: Verify CSV table - available 150 records
-  shell: docker run --network host fredrikhgrelland/presto-cli ./presto --server localhost:8888 --catalog hive --schema default --user presto --execute "SELECT COUNT(*) FROM iris;"
+  shell: docker run --network host prestosql/presto:341 presto --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user presto --execute "SELECT COUNT(*) FROM iris;"
   register: query_csv_result
   until: query_csv_result.stdout == "\"150\""
 
 - name: Verify JSON table - available 2 records
-  shell: docker run --network host fredrikhgrelland/presto-cli ./presto --server localhost:8888 --catalog hive --schema default --user presto --execute "SELECT COUNT(*) FROM somejson;"
+  shell: docker run --network host prestosql/presto:341 presto --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user presto --execute "SELECT COUNT(*) FROM somejson;"
   register: query_json_result
   until: query_json_result.stdout == "\"2\""
 
 - name: Verify AVRO table - available 2 records
-  shell: docker run --network host fredrikhgrelland/presto-cli ./presto --server localhost:8888 --catalog hive --schema default --user presto --execute "SELECT COUNT(*) FROM tweets;"
+  shell: docker run --network host prestosql/presto:341 presto --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user presto --execute "SELECT COUNT(*) FROM tweets;"
   register: query_avro_result
   until: query_avro_result.stdout == "\"2\""
