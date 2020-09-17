@@ -205,7 +205,7 @@ job "${nomad_job_name}" {
       artifact {
         # Download custom certificate authenticator plugin
         # TODO: add variable for this and make it optional
-        source = "https://oss.sonatype.org/service/local/repositories/releases/content/io/github/gugalnikov/presto-consul-connect/2.1.0/presto-consul-connect-2.1.0-jar-with-dependencies.jar"
+        source = "https://oss.sonatype.org/service/local/repositories/releases/content/io/github/gugalnikov/presto-consul-connect/${consul_connect_plugin_version}/presto-consul-connect-${consul_connect_plugin_version}-jar-with-dependencies.jar"
         mode = "file"
         destination = "local/presto/plugin/presto-consul-connect.jar"
       }

@@ -87,6 +87,12 @@ variable "docker_image" {
   default     = "prestosql/presto:341"
 }
 
+variable "consul_connect_plugin_version" {
+  type = string
+  description = "Version of the consul connect plugin for presto (on maven central) src here: https://github.com/gugalnikov/presto-consul-connect"
+  default = "2.2.0"
+}
+
 variable "container_environment_variables" {
   type        = list(string)
   description = "Presto environment variables"

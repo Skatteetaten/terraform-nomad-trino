@@ -32,6 +32,9 @@ data "template_file" "template-nomad-job-presto" {
     memory                = var.memory
     consul_http_addr      = var.consul_http_addr
 
+    #Custom plugin for consul connect integration
+    consul_connect_plugin_version = var.consul_connect_plugin_version
+
     #hivemetastore
     hivemetastore_service_name = var.hivemetastore.service_name
     hivemetastore_port         = var.hivemetastore.port
