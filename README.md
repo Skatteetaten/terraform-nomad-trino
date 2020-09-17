@@ -110,7 +110,7 @@ module "presto" {
 
   service_name = "presto"
   port         = 8080
-  docker_image = "prestosql/presto:333"
+  docker_image = "prestosql/presto:341"
 
   #hivemetastore
   hivemetastore = {
@@ -187,7 +187,7 @@ make proxy-presto
 
 * in another terminal run `presto-cli` session
 ```text
-presto --server localhost:8080 --catalog hive --schema default --user presto
+make presto-cli
 ```
 
 * Query tables (3 tables should be available)

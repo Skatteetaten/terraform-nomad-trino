@@ -1,6 +1,23 @@
 locals {
   nomad_namespace   = "default"
   nomad_datacenters = ["dc1"]
+
+  presto = {
+    cluster_shared_secret = "asdasdsadafdsa"
+    service_name          = "presto"
+  }
+
+  hivemetastore = {
+    service_name = module.hive.service_name
+    port         = 9083 # todo: add output var
+  }
+
+  minio = {
+    service_name = module.minio.minio_service_name
+    port         = 9000 # todo: add output var
+    access_key   = module.minio.minio_access_key
+    secret_key   = module.minio.minio_secret_key
+  }
 }
 
 module "presto" {
@@ -11,27 +28,18 @@ module "presto" {
 
   source = "../."
 
-  nomad_job_name    = "presto"
+  nomad_job_name    = local.presto.service_name
   nomad_datacenters = local.nomad_datacenters
   nomad_namespace   = local.nomad_namespace
 
-  service_name = "presto"
-  port         = 8080
-  docker_image = "prestosql/presto:333"
+  service_name          = local.presto.service_name
+  mode                  = "cluster"
+  workers               = 2
+  cluster_shared_secret = local.presto.cluster_shared_secret
+  consul_http_addr = "http://10.0.3.10:8500"
 
-  #hivemetastore
-  hivemetastore = {
-    service_name = module.hive.service_name
-    port         = 9083 # todo: add output var
-  }
-
-  # minio
-  minio = {
-    service_name = module.minio.minio_service_name
-    port         = 9000 # todo: add output var
-    access_key   = module.minio.minio_access_key
-    secret_key   = module.minio.minio_secret_key
-  }
+  minio         = local.minio
+  hivemetastore = local.hivemetastore
 }
 
 module "minio" {
@@ -84,8 +92,8 @@ module "hive" {
   nomad_job_switch_local = false
 
   # hive
-  hive_service_name                    = "hive-metastore"
-  hive_container_port                  = 9083
+  hive_service_name   = "hive-metastore"
+  hive_container_port = 9083
 
   // support CSV -> https://towardsdatascience.com/load-and-query-csv-file-in-s3-with-presto-b0d50bc773c9
   // metastore.storage.schema.reader.impl=org.apache.hadoop.hive.metastore.SerDeStorageSchemaReader

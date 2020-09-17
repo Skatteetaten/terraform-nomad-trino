@@ -2,9 +2,8 @@ include dev/.env
 export
 export PATH := $(shell pwd)/tmp:$(PATH)
 
-# Presto cli version
-PRESTO_VERSION = 340
-presto := ./presto_${PRESTO_VERSION}
+# Presto version
+PRESTO_VERSION = 341
 
 .ONESHELL .PHONY: up update-box destroy-box remove-tmp clean example
 .DEFAULT_GOAL := up
@@ -63,21 +62,13 @@ proxy-h:
 	consul connect proxy -service hivemetastore-local -upstream hive-metastore:9083 -log-level debug
 # to-minio
 proxy-m:
-	consul connect proxy -service minio-local -upstream minio:9000 -log-level debug
+	consul connect proxy -service minio-local -upstream minio:9090 -log-level debug
 # to-postgres
 proxy-pg:
 	consul connect proxy -service postgres-local -upstream postgres:5432 -log-level debug
-
 # to-presto
 proxy-presto:
 	consul connect proxy -service presto-local -upstream presto:8080 -log-level debug
 
-download-presto-cli:
-	curl https://repo1.maven.org/maven2/io/prestosql/presto-cli/${PRESTO_VERSION}/presto-cli-${PRESTO_VERSION}-executable.jar -o ./${presto}
-	chmod +x ./${presto}
-
 presto-cli:
-ifeq (,$(wildcard ./${presto}))
-	$(MAKE) download-presto-cli
-endif
-	${presto} --server localhost:8080 --catalog hive --schema default --user presto
+	docker run --rm -it --network host prestosql/presto:${PRESTO_VERSION} presto --server localhost:8080 --http-proxy localhost:8080 --catalog hive --schema default --user presto --debug
