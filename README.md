@@ -60,11 +60,8 @@ Example contains [csv, json, avro, protobuf](./example/resources/data) file type
 #### Required software
 See [template README's prerequisites](template_README.md#install-prerequisites).
 
-Local only.
-For verification and debugging:
-- [consul](https://releases.hashicorp.com/consul/) binary available on `PATH` on the local machine
-- java11
-- [presto.jar](https://prestosql.io/docs/current/installation/cli.html) in root is version 340
+All software is provided and run with docker.
+See the [Makefile](Makefile) for inspiration.
 
 ### Providers
 This module uses the [Nomad](https://registry.terraform.io/providers/hashicorp/nomad/latest/docs) provider.
@@ -180,12 +177,7 @@ SELECT * FROM hive.default.iris;
 #### Option 3 [local presto-cli]
 `NB!` Check [required software section](#required-software) first.
 
-* create local proxy to presto instance with `consul` binary.
-```text
-make proxy-presto
-```
-
-* in another terminal run `presto-cli` session
+* in a terminal run a proxy and `presto-cli` session
 ```text
 make presto-cli
 ```
