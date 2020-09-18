@@ -242,6 +242,21 @@ EOF
         perms = 666
         change_mode = "noop"
       }
+
+      template {
+      data = <<EOF
+          {{- with caLeaf "%{ if node_type == "coordinator" }${service_name}%{ else }${service_name}-worker%{ endif }" }}
+          {{- .PrivateKeyPEM }}
+          {{- .CertPEM }}{{ end }}
+        EOF
+        destination = "local/presto.pem"
+      }
+
+      template {
+        data = "{{- range caRoots }}{{ .RootCertPEM }}{{ end }}"
+        destination = "local/roots.pem"
+      }
+
       template {
         data = <<EOF
 #!/bin/bash
@@ -322,14 +337,14 @@ http-server.authentication.allow-insecure-over-http=true
 http-server.process-forwarded=true
 http-server.https.enabled=true
 http-server.https.port={{ env "NOMAD_PORT_connect" }}
-http-server.https.keystore.path=/alloc/presto.jks
-http-server.https.keystore.key=changeit
+http-server.https.keystore.path=/local/presto.pem
+http-server.https.truststore.path=/local/roots.pem
 
 # This is the same jks, but it will not do the consul connect authorization in intra cluster communication
 internal-communication.https.required=true
 internal-communication.shared-secret=${cluster_shared_secret}
-internal-communication.https.keystore.path=/alloc/presto.jks
-internal-communication.https.keystore.key=changeit
+internal-communication.https.keystore.path=/local/presto.pem
+internal-communication.https.truststore.path=/local/roots.pem
 
 query.client.timeout=5m
 query.min-expire-age=30m
