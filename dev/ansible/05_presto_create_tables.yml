@@ -35,9 +35,6 @@
 - name: Create CSV table
   shell: docker run --network host -v "/vagrant/example/resources/query/csv_create_table.sql:/csv_create_table.sql" prestosql/presto:341 presto --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user presto --file /csv_create_table.sql
   register: docker_output_cmd_csv
-  retries: 5
-  delay: 1
-  until: docker_output_cmd_csv.rc == 0
   tags: example-upload
   retries: 10
   delay: 2
@@ -47,9 +44,6 @@
 - name: Create JSON table
   shell: docker run --network host -v "/vagrant/example/resources/query/json_create_table.sql:/json_create_table.sql" prestosql/presto:341 presto --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user presto --file /json_create_table.sql
   register: docker_output_cmd_json
-  retries: 5
-  delay: 1
-  until: docker_output_cmd_json.rc == 0
   tags: example-upload
   retries: 10
   delay: 2
@@ -58,9 +52,6 @@
 - name: Create AVRO table
   shell: docker run --network host -v "/vagrant/example/resources/query/avro_tweets_create_table.sql:/avro_tweets_create_table.sql" prestosql/presto:341 presto --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user presto --file /avro_tweets_create_table.sql
   register: docker_output_cmd_avro
-  retries: 5
-  delay: 1
-  until: docker_output_cmd_avro.rc == 0
   tags: example-upload
   retries: 10
   delay: 2
