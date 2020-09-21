@@ -77,40 +77,6 @@ job "${nomad_job_name}" {
       }
     }
 
-    task "certificate-handler" {
-      lifecycle {
-        hook    = "prestart"
-        sidecar = true
-      }
-      driver = "docker"
-      config {
-        image = "fredrikhgrelland/alpine-jdk11-openssl:0.1.0"
-        entrypoint = ["/bin/sh"]
-          # This task is built to get certificate, ca and key from consul via. nomad template stanza and build a java keystore.
-          # The container will run a shell and execute the following commands before waiting forever ´tail -f /dev/null´
-          # 1. Create a pkcs12 ´local/presto.p12´ in openssl based on leaf key and certificate provided by the template stanza.
-          # 2. Import ´local/presto.p12´ using keytool and output ´local/presto.jks´
-          # 3. Import ´local/presto.jks´ using keytool, add root as CA and output ´alloc/presto.jks´
-          # 4. Keep running the container `tail -f /dev/null`
-          # Now we can use this ´/alloc/presto.jks´ from any task in the group(alloc)
-        args = [
-          "-c", "openssl pkcs12 -export -password pass:changeit -in /local/leaf.pem -inkey /local/leaf.key -certfile /local/leaf.pem -out /local/presto.p12; keytool -noprompt -importkeystore -srckeystore /local/presto.p12 -srcstoretype pkcs12 -destkeystore /local/presto.jks -deststoretype JKS -deststorepass changeit -srcstorepass changeit; keytool -noprompt -import -trustcacerts -keystore /local/presto.jks -storepass changeit -alias Root -file /local/roots.pem; keytool -noprompt -importkeystore -srckeystore /local/presto.jks -destkeystore /alloc/presto.jks -deststoretype pkcs12 -deststorepass changeit -srcstorepass changeit; tail -f /dev/null"
-        ]
-      }
-      template {
-        data = "{{with caLeaf \"%{ if node_type == "coordinator" }${service_name}%{ else }${service_name}-worker%{ endif }\" }}{{ .CertPEM }}{{ end }}"
-        destination = "local/leaf.pem"
-      }
-      template {
-        data = "{{with caLeaf \"%{ if node_type == "coordinator" }${service_name}%{ else }${service_name}-worker%{ endif }\" }}{{ .PrivateKeyPEM }}{{ end }}"
-        destination = "local/leaf.key"
-      }
-      template {
-        data = "{{ range caRoots }}{{ .RootCertPEM }}{{ end }}"
-        destination = "local/roots.pem"
-      }
-    }
-
     task "waitfor-hive-metastore" {
       restart {
         attempts = 100
@@ -244,17 +210,19 @@ EOF
       }
 
       template {
-      data = <<EOF
+        data = <<EOF
           {{- with caLeaf "%{ if node_type == "coordinator" }${service_name}%{ else }${service_name}-worker%{ endif }" }}
           {{- .PrivateKeyPEM }}
           {{- .CertPEM }}{{ end }}
-        EOF
+          EOF
         destination = "local/presto.pem"
+        change_mode = "noop" # Presto will automatically reload certs every 1 minute.
       }
 
       template {
         data = "{{- range caRoots }}{{ .RootCertPEM }}{{ end }}"
         destination = "local/roots.pem"
+        change_mode = "noop" # Presto will automatically reload certs every 1 minute.
       }
 
       template {
