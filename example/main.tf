@@ -34,7 +34,7 @@ module "presto" {
 
   service_name          = local.presto.service_name
   mode                  = "cluster"
-  workers               = 2
+  workers               = 1
   cluster_shared_secret = local.presto.cluster_shared_secret
   consul_http_addr = "http://10.0.3.10:8500"
 
