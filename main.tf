@@ -32,6 +32,13 @@ data "template_file" "template-nomad-job-presto" {
     memory                = var.memory
     consul_http_addr      = var.consul_http_addr
 
+    # Memory allocations for presto is automatically tuned based on memory sizing set at the task driver level in nomad.
+    # Based on web-resources and presto community slack, we choose to allocate 75% (up to 80% should work) to the JVM
+    # Resources: https://prestosql.io/blog/2020/08/27/training-performance.html
+    #            https://prestosql.io/docs/current/admin/properties-memory-management.html
+    presto_xmx_memory     = floor( var.memory * 0.75 )
+    presto_query_max_memory = floor( ( floor( var.memory * 0.75 ) * 0.1 ) * var.workers )
+
     #Custom plugin for consul connect integration
     consul_connect_plugin_version = var.consul_connect_plugin_version
 

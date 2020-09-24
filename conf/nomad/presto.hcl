@@ -316,14 +316,14 @@ internal-communication.https.truststore.path=/local/roots.pem
 
 query.client.timeout=5m
 query.min-expire-age=30m
+query.max-memory=${presto_query_max_memory}MB
 EOF
         destination   = "local/presto/config.properties"
       }
-        # Total memory allocation is subtracted by 256MB to keep something for the OS.
       template {
         data = <<EOF
 -server
--Xmx{{ env "NOMAD_MEMORY_LIMIT" | parseInt | subtract 256 }}M
+-Xmx${presto_xmx_memory}M
 -XX:-UseBiasedLocking
 -XX:+UseG1GC
 -XX:G1HeapRegionSize=32M

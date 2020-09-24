@@ -37,6 +37,7 @@ module "presto" {
   workers               = 1
   cluster_shared_secret = local.presto.cluster_shared_secret
   consul_http_addr = "http://10.0.3.10:8500"
+  debug = true
 
   minio         = local.minio
   hivemetastore = local.hivemetastore
