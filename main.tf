@@ -8,7 +8,7 @@ locals {
 
   template_standalone = file("${path.module}/conf/nomad/presto_standalone.hcl")
   template_cluster    = file("${path.module}/conf/nomad/presto.hcl")
-
+  consul_connect_plugin_uri = "${var.consul_connect_plugin_artifact_source}/${var.consul_connect_plugin_version}/presto-consul-connect-${var.consul_connect_plugin_version}-jar-with-dependencies.jar"
   node_types = var.coordinator ? ["coordinator", "worker"] : ["worker"]
 }
 
@@ -31,7 +31,6 @@ data "template_file" "template_nomad_job_presto" {
     debug                 = var.debug
     memory                = var.memory
     consul_http_addr      = var.consul_http_addr
-
     # Memory allocations for presto is automatically tuned based on memory sizing set at the task driver level in nomad.
     # Based on web-resources and presto community slack, we choose to allocate 75% (up to 80% should work) to the JVM
     # Resources: https://prestosql.io/blog/2020/08/27/training-performance.html
@@ -41,6 +40,7 @@ data "template_file" "template_nomad_job_presto" {
 
     #Custom plugin for consul connect integration
     consul_connect_plugin_version = var.consul_connect_plugin_version
+    consul_connect_plugin_uri = local.consul_connect_plugin_uri
 
     #hivemetastore
     hivemetastore_service_name = var.hivemetastore.service_name
