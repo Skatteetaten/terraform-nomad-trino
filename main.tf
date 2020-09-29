@@ -39,7 +39,7 @@ data "template_file" "template_nomad_job_presto" {
     presto_query_max_memory = floor( ( floor( var.memory * 0.75 ) * 0.1 ) * var.workers )
 
     #Custom plugin for consul connect integration
-    consul_connect_plugin_version = var.consul_connect_plugin_version
+    consul_connect_plugin = var.consul_connect_plugin
     consul_connect_plugin_uri = local.consul_connect_plugin_uri
 
     #hivemetastore
