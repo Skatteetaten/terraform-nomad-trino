@@ -54,7 +54,7 @@ data "template_file" "template_nomad_job_presto" {
   }
 }
 
-resource "nomad_job" "nomad-job-presto" {
+resource "nomad_job" "nomad_job_presto" {
   jobspec = data.template_file.template_nomad_job_presto.rendered
   detach  = false
 }
