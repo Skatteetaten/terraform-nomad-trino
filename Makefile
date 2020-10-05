@@ -65,7 +65,6 @@ destroy-box:
 	vagrant destroy -f
 
 remove-tmp:
-remove-tmp:
 	rm -rf ./tmp
 	rm -rf ./.vagrant
 	rm -rf ./.minio.sys
