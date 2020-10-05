@@ -15,10 +15,25 @@ install:
 linter:
 	docker run -e RUN_LOCAL=true -v "${PWD}:/tmp/lint/" github/super-linter
 
+check_for_consul_binary:
+ifeq (, $(shell which consul))
+	$(error "No consul binary in $(PATH), download the consul binary from here :\n https://www.consul.io/downloads\n\n' && exit 2")
+endif
+
+check_for_terraform_binary:
+ifeq (, $(shell which terraform))
+	$(error "No terraform binary in $(PATH), download the terraform binary from here :\n https://www.terraform.io/downloads.html\n\n' && exit 2")
+endif
+
+check_for_docker_binary:
+ifeq (, $(shell which docker))
+	$(error "No docker binary in $(PATH), install docker from here :\n https://docs.docker.com/get-docker/\n\n' && exit 2")
+endif
+
 #### Development ####
 # start commands
-dev: update-box
-	SSL_CERT_FILE=${SSL_CERT_FILE} CURL_CA_BUNDLE=${CURL_CA_BUNDLE} ANSIBLE_ARGS='--skip-tags "test"' vagrant up --provision
+dev: update-box custom_ca
+	SSL_CERT_FILE=${SSL_CERT_FILE} CURL_CA_BUNDLE=${CURL_CA_BUNDLE} CUSTOM_CA=${CUSTOM_CA} ANSIBLE_ARGS='--skip-tags "test"' vagrant up --provision
 
 custom_ca:
 ifdef CUSTOM_CA
@@ -34,7 +49,7 @@ endif
 
 test: clean up
 
-template-example: custom_ca
+template_example: custom_ca
 ifdef CI # CI is set in Github Actions
 	cd template_example; SSL_CERT_FILE=${SSL_CERT_FILE} CURL_CA_BUNDLE=${CURL_CA_BUNDLE} vagrant up --provision
 else
@@ -42,12 +57,21 @@ else
 	cd template_example; SSL_CERT_FILE=${SSL_CERT_FILE} CURL_CA_BUNDLE=${CURL_CA_BUNDLE} CUSTOM_CA=${CUSTOM_CA} ANSIBLE_ARGS='--extra-vars "local_test=true"' vagrant up --provision
 endif
 
+status:
+	vagrant global-status
+
 # clean commands
 destroy-box:
 	vagrant destroy -f
 
 remove-tmp:
+remove-tmp:
 	rm -rf ./tmp
+	rm -rf ./.vagrant
+	rm -rf ./.minio.sys
+	rm -rf ./example/.terraform
+	rm -rf ./example/terraform.tfstate
+	rm -rf ./example/terraform.tfstate.backup
 
 clean: destroy-box remove-tmp
 
@@ -74,3 +98,7 @@ presto-cli:
 	CID=$$(docker run --rm -d --network host consul:1.8 connect proxy -service presto-local -upstream presto:8080)
 	docker run --rm -it --network host prestosql/presto:${PRESTO_VERSION} presto --server localhost:8080 --http-proxy localhost:8080 --catalog hive --schema default --user presto --debug
 	docker rm -f $$CID
+
+pre-commit: check_for_docker_binary
+	docker run -e RUN_LOCAL=true -v "${PWD}:/tmp/lint/" github/super-linter
+	terraform fmt -recursive && echo "\e[32mTrying to prettify all .tf files.\e[0m"

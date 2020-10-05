@@ -13,7 +13,7 @@ locals {
 }
 
 
-data "template_file" "template-nomad-job-presto" {
+data "template_file" "template_nomad_job_presto" {
   template = var.mode == "standalone" ? local.template_standalone : local.template_cluster
 
   vars = {
@@ -55,6 +55,6 @@ data "template_file" "template-nomad-job-presto" {
 }
 
 resource "nomad_job" "nomad-job-presto" {
-  jobspec = data.template_file.template-nomad-job-presto.rendered
+  jobspec = data.template_file.template_nomad_job_presto.rendered
   detach  = false
 }
