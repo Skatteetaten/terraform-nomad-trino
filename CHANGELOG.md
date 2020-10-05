@@ -13,6 +13,7 @@
 
 - Use docker instead fo binaries #21
 - size vagrant box to runner in github actions #23
+- Sync origin template #28
 
 ## Fixed
 
