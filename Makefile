@@ -82,19 +82,19 @@ update-box:
 
 # to-hivemetastore
 proxy-h:
-	docker run --rm -it --network host consul:1.8 consul connect proxy -service hivemetastore-local -upstream hive-metastore:9083 -log-level debug
+	docker run --rm -it --network host consul:1.8 consul connect proxy -token master -service hivemetastore-local -upstream hive-metastore:9083 -log-level debug
 # to-minio
 proxy-m:
-	docker run --rm -it --network host consul:1.8 consul connect proxy -service minio-local -upstream minio:9090 -log-level debug
+	docker run --rm -it --network host consul:1.8 consul connect proxy -token master -service minio-local -upstream minio:9090 -log-level debug
 # to-postgres
 proxy-pg:
-	docker run --rm -it --network host consul:1.8 consul connect proxy -service postgres-local -upstream postgres:5432 -log-level debug
+	docker run --rm -it --network host consul:1.8 consul connect proxy -token master -service postgres-local -upstream postgres:5432 -log-level debug
 # to-presto
 proxy-presto:
-	docker run --rm -it --network host consul:1.8 consul connect proxy -service presto-local -upstream presto:8080 -log-level debug
+	docker run --rm -it --network host consul:1.8 consul connect proxy -token master -service presto-local -upstream presto:8080 -log-level debug
 
-presto-cli:
-	CID=$$(docker run --rm -d --network host consul:1.8 connect proxy -service presto-local -upstream presto:8080)
+presto-cli:y
+	CID=$$(docker run --rm -d --network host consul:1.8 connect proxy -token master -service presto-local -upstream presto:8080)
 	docker run --rm -it --network host prestosql/presto:${PRESTO_VERSION} presto --server localhost:8080 --http-proxy localhost:8080 --catalog hive --schema default --user presto --debug
 	docker rm -f $$CID
 

@@ -44,7 +44,7 @@ module "presto" {
 }
 
 module "minio" {
-  source = "github.com/fredrikhgrelland/terraform-nomad-minio.git?ref=0.0.3"
+  source = "github.com/fredrikhgrelland/terraform-nomad-minio.git?ref=0.1.0"
 
   # nomad
   nomad_datacenters = local.nomad_datacenters
