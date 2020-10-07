@@ -96,7 +96,7 @@ variable "consul_connect_plugin_version" {
 
 variable "consul_connect_plugin_artifact_source" {
   type = string
-  default = "https://oss.sonatype.org/service/local/repositories/releases/content/io/github/gugalnikov/presto-consul-connect/"
+  default = "https://oss.sonatype.org/service/local/repositories/releases/content/io/github/gugalnikov/presto-consul-connect"
 }
 
 variable "container_environment_variables" {
