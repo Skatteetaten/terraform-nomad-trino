@@ -132,6 +132,12 @@ job "${nomad_job_name}" {
 
     task "server" {
       driver = "docker"
+      %{ if shared_secret_provider == "vault" }
+      vault {
+              policies = "${vault_kv_policy_name}"
+            }
+      %{ endif }
+
   %{ if local_docker_image }
       artifact {
         source = "s3::http://127.0.0.1:9000/dev/tmp/docker_image.tar"
@@ -312,7 +318,13 @@ http-server.https.truststore.path=/local/roots.pem
 
 # This is the same jks, but it will not do the consul connect authorization in intra cluster communication
 internal-communication.https.required=true
-internal-communication.shared-secret=${cluster_shared_secret}
+%{ if shared_secret_provider == "user" }
+internal-communication.shared-secret= "${shared_secret_user}"
+%{ else }
+{{ with secret "${vault_kv_path}" }}
+internal-communication.shared-secret="{{ .Data.data.${vault_kv_secret_key_name}}}"
+{{end}}
+%{ endif }
 internal-communication.https.keystore.path=/local/presto.pem
 internal-communication.https.truststore.path=/local/roots.pem
 
