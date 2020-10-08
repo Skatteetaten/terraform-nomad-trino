@@ -16,6 +16,7 @@
 - size vagrant box to runner in github actions #23
 - Sync origin template #28
 - Bumped version for terraform-minio-module 0.0.3 -> 0.1.0 #34
+- Consul Connect plugin optional with configurable artifact source #30
 
 ## Fixed
 

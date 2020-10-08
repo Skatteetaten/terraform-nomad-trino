@@ -82,10 +82,22 @@ variable "docker_image" {
   default     = "prestosql/presto:341"
 }
 
+variable "consul_connect_plugin" {
+  type = bool
+  description = "Deploy consul connect plugin for presto"
+  default = true
+}
+
 variable "consul_connect_plugin_version" {
   type = string
   description = "Version of the consul connect plugin for presto (on maven central) src here: https://github.com/gugalnikov/presto-consul-connect"
   default = "2.2.0"
+}
+
+variable "consul_connect_plugin_artifact_source" {
+  type = string
+  description = "Artifact URI source"
+  default = "https://oss.sonatype.org/service/local/repositories/releases/content/io/github/gugalnikov/presto-consul-connect"
 }
 
 variable "container_environment_variables" {

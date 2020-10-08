@@ -77,6 +77,8 @@ This module uses the [Nomad](https://registry.terraform.io/providers/hashicorp/n
 | port | Presto http port | number | 8080 | yes |
 | docker\_image | Presto docker image | string | "prestosql/presto:333" | yes |
 | container\_environment\_variables | Presto environment variables | list(string) | [""] | no |
+| consul\_connect\_plugin | Deploy consul connect plugin for presto | bool | true | no |
+| consul\_connect\_plugin\_artifact\_source | Artifact URI source | string | "https://oss.sonatype.org/service/local/repositories/releases/content/io/github/gugalnikov/presto-consul-connect" | no |
 | hivemetastore.service_name | Hive metastore service name | string | "hive-metastore" | yes |
 | hivemetastore.port | Hive metastore port | number | 9083 | yes |
 | minio.service_name | minio service name | string |  | yes |

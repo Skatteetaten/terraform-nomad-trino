@@ -153,9 +153,10 @@ job "${nomad_job_name}" {
           # General configuration file
           "local/presto/config.properties:/lib/presto/default/etc/config.properties",
           # Custom certificate authenticator configuration
-          # TODO: add variable and make it optional
+          %{ if consul_connect_plugin }
           "local/presto/plugin/presto-consul-connect.jar:/usr/lib/presto/plugin/consulconnect/presto-consul-connect.jar",
           "local/presto/certificate-authenticator.properties:/lib/presto/default/etc/certificate-authenticator.properties",
+          %{ endif }
           # Mount for debug purposes
           %{ if debug }"local/presto/log.properties:/lib/presto/default/etc/log.properties",%{ endif }
           # Hive connector configuration
@@ -168,13 +169,14 @@ job "${nomad_job_name}" {
           "local/scripts/run-presto:/usr/lib/presto/bin/run-presto",
         ]
       }
+%{ if consul_connect_plugin }
       artifact {
         # Download custom certificate authenticator plugin
-        # TODO: add variable for this and make it optional
-        source = "https://oss.sonatype.org/service/local/repositories/releases/content/io/github/gugalnikov/presto-consul-connect/${consul_connect_plugin_version}/presto-consul-connect-${consul_connect_plugin_version}-jar-with-dependencies.jar"
+        source = "${consul_connect_plugin_uri}"
         mode = "file"
         destination = "local/presto/plugin/presto-consul-connect.jar"
       }
+%{ endif }
       template {
         data = <<EOH
           connector.name=hive-hadoop2
