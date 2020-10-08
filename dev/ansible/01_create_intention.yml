@@ -1,0 +1,106 @@
+- name: set variable
+  set_fact:
+    consul_token: "master"
+
+#*************************************************************************************************#
+# mc => minio (allow)
+#*************************************************************************************************#
+- name: Check if intention mc => minio (allow) exists
+  shell: consul intention match -source mc
+  register: mc_intention
+  when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny'
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_token }}"
+
+- name: Consul create intention mc => minio (allow)
+  shell: consul intention create mc minio
+  when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny' and mc_intention.stdout_lines == []
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_token }}"
+
+#*************************************************************************************************#
+# hive-metastore => postgres (allow),hive-metastore => minio (allow)
+#*************************************************************************************************#
+- name: Check if intentions from hive-metastore exist
+  shell: consul intention match -source hive-metastore
+  register: hive_metastore_intention
+  when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny'
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_token }}"
+
+- name: Consul create intention hive-metastore => postgres (allow),hive-metastore => minio (allow)
+  shell: |
+      consul intention create hive-metastore postgres
+      consul intention create hive-metastore minio
+  when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny' and hive_metastore_intention.stdout_lines == []
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_token }}"
+
+
+# ====All the below listed intentions are required for running tests ===#
+
+#*************************************************************************************************#
+# presto-local => presto (allow)
+#*************************************************************************************************#
+- name: Check if intention presto-local => presto (allow) exists
+  shell: consul intention match -source presto-local
+  register: presto_local_intention
+  when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny'
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_token }}"
+
+- name: Consul create intention presto-local => presto (allow)
+  shell: consul intention create presto-local presto
+  when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny' and presto_local_intention.stdout_lines == []
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_token }}"
+
+#*************************************************************************************************#
+# minio-local => minio (allow)
+#*************************************************************************************************#
+- name: Check if intention minio-local => minio (allow) exists
+  shell: consul intention match -source minio-local
+  register: minio_local_intention
+  when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny'
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_token }}"
+
+- name: Consul create intention minio-local => minio (allow)
+  shell: consul intention create minio-local minio
+  when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny' and minio_local_intention.stdout_lines == []
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_token }}"
+
+#*************************************************************************************************#
+# presto => hive-metastore(allow)
+#*************************************************************************************************#
+- name: Check if intention presto => hive-metastore(allow) exists
+  shell: consul intention match -source presto
+  register: presto_intention
+  when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny'
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_token }}"
+
+- name: Consul create intention presto => hive-metastore(allow)
+  shell: consul intention create presto hive-metastore
+  when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny' and presto_intention.stdout_lines == []
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_token }}"
+
+#*************************************************************************************************#
+# presto-sidecar-proxy => hive-metastore(allow),presto-sidecar-proxy => minio(allow)
+#*************************************************************************************************#
+- name: Check if intentions from presto-sidecar-proxy exist
+  shell: consul intention match -source presto-sidecar-proxy
+  register: presto_sidecar_proxy_intention
+  when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny'
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_token }}"
+
+- name: Consul create intention presto-sidecar-proxy => hive-metastore(allow),presto-sidecar-proxy => minio(allow)
+  shell: |
+    consul intention create presto-sidecar-proxy hive-metastore
+    consul intention create presto-sidecar-proxy minio
+  when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny' and presto_sidecar_proxy_intention.stdout_lines == []
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_token }}"
