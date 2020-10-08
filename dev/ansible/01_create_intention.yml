@@ -9,6 +9,8 @@
   shell: consul intention match -source mc
   register: mc_intention
   when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny'
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_token }}"
 
 - name: Consul create intention mc => minio (allow)
   shell: consul intention create mc minio
@@ -23,6 +25,8 @@
   shell: consul intention match -source hive-metastore
   register: hive_metastore_intention
   when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny'
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_token }}"
 
 - name: Consul create intention hive-metastore => postgres (allow),hive-metastore => minio (allow)
   shell: |
@@ -42,6 +46,8 @@
   shell: consul intention match -source presto-local
   register: presto_local_intention
   when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny'
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_token }}"
 
 - name: Consul create intention presto-local => presto (allow)
   shell: consul intention create presto-local presto
@@ -56,6 +62,8 @@
   shell: consul intention match -source minio-local
   register: minio_local_intention
   when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny'
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_token }}"
 
 - name: Consul create intention minio-local => minio (allow)
   shell: consul intention create minio-local minio
@@ -70,6 +78,8 @@
   shell: consul intention match -source presto
   register: presto_intention
   when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny'
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_token }}"
 
 - name: Consul create intention presto => hive-metastore(allow)
   shell: consul intention create presto hive-metastore
@@ -84,6 +94,8 @@
   shell: consul intention match -source presto-sidecar-proxy
   register: presto_sidecar_proxy_intention
   when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny'
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_token }}"
 
 - name: Consul create intention presto-sidecar-proxy => hive-metastore(allow),presto-sidecar-proxy => minio(allow)
   shell: |
