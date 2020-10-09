@@ -31,6 +31,7 @@ data "template_file" "template_nomad_job_presto" {
     debug                 = var.debug
     memory                = var.memory
     consul_http_addr      = var.consul_http_addr
+    use_canary            = var.use_canary
     # Memory allocations for presto is automatically tuned based on memory sizing set at the task driver level in nomad.
     # Based on web-resources and presto community slack, we choose to allocate 75% (up to 80% should work) to the JVM
     # Resources: https://prestosql.io/blog/2020/08/27/training-performance.html

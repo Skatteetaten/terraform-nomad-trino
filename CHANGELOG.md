@@ -9,6 +9,7 @@
 - Fixate linter version #10
 - Consul Connect enabled multi node cluster #13 #14 #16 #19 #24
 - Code to support successful execution of nomad presto job and tests when consul_acl_default_policy is deny #32
+- Added switch for canary deployment #25
 
 ## Changed
 
