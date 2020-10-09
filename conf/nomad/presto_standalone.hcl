@@ -12,6 +12,7 @@ job "${nomad_job_name}" {
   %{ if use_canary }
     canary            = 1
     auto_promote      = true
+    auto_revert       = true
   %{ endif }
     stagger           = "30s"
   }
