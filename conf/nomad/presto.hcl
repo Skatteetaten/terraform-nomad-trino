@@ -9,10 +9,10 @@ job "${nomad_job_name}" {
     min_healthy_time  = "10s"
     healthy_deadline  = "12m"
     progress_deadline = "15m"
-    auto_revert       = true
   %{ if use_canary }
     canary            = 1
     auto_promote      = true
+    auto_revert       = true
   %{ endif }
     stagger           = "30s"
   }

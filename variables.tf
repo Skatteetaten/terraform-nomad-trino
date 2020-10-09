@@ -109,7 +109,7 @@ variable "container_environment_variables" {
 variable "use_canary" {
   type = bool
   description = "Uses canary deployment for Presto"
-  default = true
+  default = false
 }
 
 variable "hivemetastore" {
