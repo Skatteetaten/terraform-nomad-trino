@@ -73,6 +73,9 @@ This module uses the [Nomad](https://registry.terraform.io/providers/hashicorp/n
 | nomad\_data\_center | Nomad data centers | list(string) | ["dc1"] | yes |
 | nomad\_namespace | [Enterprise] Nomad namespace | string | "default" | yes |
 | nomad\_job\_name | Nomad job name | string | "presto" | yes |
+| shared\_secret\_provider | Provider for the shared secret: user or vault | string | "user" | no |
+| shared\_secret\_user | Shared secret provided by user(length must be >= 12)  | string | "asdasdsadafdsa" | no |
+| shared\_secret\_vault | Set of properties to be able fetch shared cluster secret from vault  | object | `default = { vault_kv_policy_name = "kv-secret", vault_kv_path = "secret/data/presto", vault_kv_secret_key_name = "cluster_shared_secret"`}` | no |
 | service\_name | Presto service name | string | "presto" | yes |
 | port | Presto http port | number | 8080 | yes |
 | docker\_image | Presto docker image | string | "prestosql/presto:333" | yes |
