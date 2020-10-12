@@ -135,6 +135,12 @@ variable "container_environment_variables" {
   default     = [""]
 }
 
+variable "use_canary" {
+  type = bool
+  description = "Uses canary deployment for Presto"
+  default = false
+}
+
 variable "hivemetastore" {
   type = object({
     service_name = string,

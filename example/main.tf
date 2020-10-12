@@ -42,12 +42,12 @@ module "presto" {
     vault_kv_secret_key_name = local.presto.vault_kv_secret_key_name
   }
 
-  service_name     = local.presto.service_name
-  mode             = "cluster"
-  workers          = 1
-  consul_http_addr = "http://10.0.3.10:8500"
-  debug            = true
-
+  service_name          = local.presto.service_name
+  mode                  = "cluster"
+  workers               = 1
+  consul_http_addr      = "http://10.0.3.10:8500"
+  debug                 = true
+  use_canary            = false
 
   minio         = local.minio
   hivemetastore = local.hivemetastore
