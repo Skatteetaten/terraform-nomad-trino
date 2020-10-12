@@ -3,8 +3,11 @@ locals {
   nomad_datacenters = ["dc1"]
 
   presto = {
-    cluster_shared_secret = "asdasdsadafdsa"
-    service_name          = "presto"
+    shared_secret_provider   = "user"
+    vault_kv_policy_name     = "kv-secret"
+    vault_kv_path            = "secret/data/presto"
+    vault_kv_secret_key_name = "cluster_shared_secret"
+    service_name             = "presto"
   }
 
   hivemetastore = {
@@ -28,14 +31,20 @@ module "presto" {
 
   source = "../."
 
-  nomad_job_name    = local.presto.service_name
-  nomad_datacenters = local.nomad_datacenters
-  nomad_namespace   = local.nomad_namespace
+  nomad_job_name         = local.presto.service_name
+  nomad_datacenters      = local.nomad_datacenters
+  nomad_namespace        = local.nomad_namespace
+  shared_secret_provider = local.presto.shared_secret_provider
+
+  shared_secret_vault = {
+    vault_kv_policy_name     = local.presto.vault_kv_policy_name
+    vault_kv_path            = local.presto.vault_kv_path
+    vault_kv_secret_key_name = local.presto.vault_kv_secret_key_name
+  }
 
   service_name          = local.presto.service_name
   mode                  = "cluster"
   workers               = 1
-  cluster_shared_secret = local.presto.cluster_shared_secret
   consul_http_addr      = "http://10.0.3.10:8500"
   debug                 = true
   use_canary            = false

@@ -32,9 +32,38 @@ variable "mode" {
 }
 
 # presto
-variable "cluster_shared_secret" {
+variable "shared_secret_provider" {
   type        = string
-  description = "Shared secret between coordinator and workers"
+  description = "Provider for the shared secret"
+  default     = "user"
+  validation {
+    condition     = var.shared_secret_provider == "user" || var.shared_secret_provider == "vault"
+    error_message = "Valid provider: \"user\" or \"vault\"."
+  }
+}
+
+variable "shared_secret_user" {
+  type        = string
+  description = "Shared secret provided by user"
+  default     = "asdasdsadafdsa"
+  validation {
+    condition     = length(var.shared_secret_user) >= 12
+    error_message = "The length of the shared secret must be 12 characters or more."
+  }
+}
+
+variable "shared_secret_vault" {
+  type = object({
+    vault_kv_policy_name     = string,
+    vault_kv_path            = string,
+    vault_kv_secret_key_name = string
+  })
+  description = "Set of properties to be able fetch shared cluster secret from vault"
+  default = {
+    vault_kv_policy_name     = "kv-secret"
+    vault_kv_path            = "secret/data/presto"
+    vault_kv_secret_key_name = "cluster_shared_secret"
+  }
 }
 
 variable "service_name" {
@@ -71,8 +100,8 @@ variable "memory" {
   description = "Memory allocation for presto nodes"
   default     = 1024
   validation {
-    condition = var.memory >= 738
-    error_message = "Presto can not run with less than 512MB of memory. 256MB is subtracted for OS. Total must be at least 738MB."
+    condition     = var.memory >= 768
+    error_message = "Presto can not run with less than 512MB of memory. 256MB is subtracted for OS. Total must be at least 768MB."
   }
 }
 
@@ -89,9 +118,9 @@ variable "consul_connect_plugin" {
 }
 
 variable "consul_connect_plugin_version" {
-  type = string
+  type        = string
   description = "Version of the consul connect plugin for presto (on maven central) src here: https://github.com/gugalnikov/presto-consul-connect"
-  default = "2.2.0"
+  default     = "2.2.0"
 }
 
 variable "consul_connect_plugin_artifact_source" {
