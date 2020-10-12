@@ -77,7 +77,7 @@ module "minio" {
 }
 
 module "postgres" {
-  source = "github.com/fredrikhgrelland/terraform-nomad-postgres.git?ref=0.0.1"
+  source = "github.com/fredrikhgrelland/terraform-nomad-postgres.git?ref=0.1.0"
 
   # nomad
   nomad_datacenters = local.nomad_datacenters
