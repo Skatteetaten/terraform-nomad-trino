@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.0 UNRELEASED]
+
+### Added
+
+- Github templates for issues and PRs #43
+
 ## [0.1.0]
 
 ### Added
