@@ -33,6 +33,7 @@ Additional information:
 5. [Examples](#examples)
 6. [Authors](#authors)
 7. [License](#license)
+8. [References](#references)
 
 ## Prerequisites
 Please follow [this section in original template](https://github.com/fredrikhgrelland/vagrant-hashistack-template#install-prerequisites)
