@@ -7,6 +7,7 @@
 
 ### Changed
 - Synced with template and upgraded box version #41
+- Updated input and ouput sections in readme #49
 
 ## [0.1.0]
 
