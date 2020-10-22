@@ -74,16 +74,24 @@ This module uses the [Nomad](https://registry.terraform.io/providers/hashicorp/n
 | nomad\_data\_center | Nomad data centers | list(string) | ["dc1"] | yes |
 | nomad\_namespace | [Enterprise] Nomad namespace | string | "default" | yes |
 | nomad\_job\_name | Nomad job name | string | "presto" | yes |
+| mode | Switch for nomad jobs to use cluster or standalone deployment | string | "standalone" | no |
 | shared\_secret\_provider | Provider for the shared secret: user or vault | string | "user" | no |
 | shared\_secret\_user | Shared secret provided by user(length must be >= 12)  | string | "asdasdsadafdsa" | no |
-| shared\_secret\_vault | Set of properties to be able fetch shared cluster secret from vault  | object | `default = { vault_kv_policy_name = "kv-secret", vault_kv_path = "secret/data/presto", vault_kv_secret_key_name = "cluster_shared_secret"`}` | no |
+| shared\_secret\_vault | Set of properties to be able fetch shared cluster secret from vault  | object | `default = { vault_kv_policy_name = "kv-secret", vault_kv_path = "secret/data/presto", vault_kv_secret_key_name = "cluster_shared_secret"}` | no |
+| memory | Memory allocation for presto nodes | number | 1024 | no |
 | service\_name | Presto service name | string | "presto" | yes |
 | port | Presto http port | number | 8080 | yes |
-| docker\_image | Presto docker image | string | "prestosql/presto:333" | yes |
+| docker\_image | Presto docker image | string | "prestosql/presto:341" | yes |
+| local_docker_image | Switch for nomad jobs to use artifact for image lookup | bool | false | no |
 | container\_environment\_variables | Presto environment variables | list(string) | [""] | no |
+| workers | cluster: Number of nomad worker nodes | number | 1 | no |
+| coordinator | Include a coordinator in addition to the workers. Set this to `false` when extending an existing cluster | bool | true | no |
 | use\_canary | Uses canary deployment for Presto | bool | false | no |
+| consul_http_addr | Address to consul, resolvable from the container. e.g. <http://127.0.0.1:8500> | string | - | yes |
 | consul\_connect\_plugin | Deploy consul connect plugin for presto | bool | true | no |
+| consul_connect_plugin_version | Version of the consul connect plugin for presto (on maven central) src here: <https://github.com/gugalnikov/presto-consul-connect> | string | "2.2.0" | no |
 | consul\_connect\_plugin\_artifact\_source | Artifact URI source | string | "https://oss.sonatype.org/service/local/repositories/releases/content/io/github/gugalnikov/presto-consul-connect" | no |
+| debug | Turn on debug logging in presto nodes | bool | false | no |
 | hivemetastore.service_name | Hive metastore service name | string | "hive-metastore" | yes |
 | hivemetastore.port | Hive metastore port | number | 9083 | yes |
 | minio.service_name | minio service name | string |  | yes |
@@ -96,7 +104,7 @@ This module uses the [Nomad](https://registry.terraform.io/providers/hashicorp/n
 | Name | Description | Type |
 |------|-------------|------|
 | presto\_service\_name | Presto service name | string |
-| presto\_port | Presto port | number |
+
 
 ## Examples
 ```hcl
