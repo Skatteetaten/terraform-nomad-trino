@@ -7,6 +7,4 @@ terraform.tfstate*
 tmp
 docker/conf/certificates/*.crt
 *.log
-# any presto binary
-presto*
 super-linter.log

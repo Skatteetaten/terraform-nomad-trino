@@ -1,0 +1,11 @@
+- name: Create directory /persistence/minio for persisting minio data
+  file:
+      path: /persistence/minio
+      state: directory
+      mode: '0777'
+
+- name: Create directory /persistence/postgres for persisting postrges data
+  file:
+      path: /persistence/postgres
+      state: directory
+      mode: '0777'

@@ -29,7 +29,7 @@ module "presto" {
     module.hive
   ]
 
-  source = "../."
+  source = "../.."
 
   nomad_job_name         = local.presto.service_name
   nomad_datacenters      = local.nomad_datacenters
@@ -54,11 +54,12 @@ module "presto" {
 }
 
 module "minio" {
-  source = "github.com/fredrikhgrelland/terraform-nomad-minio.git?ref=0.1.0"
+  source = "github.com/fredrikhgrelland/terraform-nomad-minio.git?ref=0.2.0"
 
   # nomad
   nomad_datacenters = local.nomad_datacenters
   nomad_namespace   = local.nomad_namespace
+  nomad_host_volume = "persistence-minio"
 
   # minio
   service_name                    = "minio"
@@ -69,6 +70,8 @@ module "minio" {
   secret_key                      = "minio123"
   buckets                         = ["default", "hive"]
   container_environment_variables = ["JUST_EXAMPLE_VAR1=some-value", "ANOTHER_EXAMPLE2=some-other-value"]
+  use_host_volume                 = true
+  data_dir                        = "/minio/data"
 
   # mc
   mc_service_name                    = "mc"
@@ -77,11 +80,12 @@ module "minio" {
 }
 
 module "postgres" {
-  source = "github.com/fredrikhgrelland/terraform-nomad-postgres.git?ref=0.1.0"
+  source = "github.com/fredrikhgrelland/terraform-nomad-postgres.git?ref=0.2.0"
 
   # nomad
   nomad_datacenters = local.nomad_datacenters
   nomad_namespace   = local.nomad_namespace
+  nomad_host_volume = "persistence-postgres"
 
   # postgres
   service_name                    = "postgres"
@@ -91,20 +95,27 @@ module "postgres" {
   admin_password                  = "hive"
   database                        = "metastore"
   container_environment_variables = ["PGDATA=/var/lib/postgresql/data"]
+  use_host_volume                 = true
+  volume_destination              = "/var/lib/postgresql/data"
 }
 
 module "hive" {
-  source = "github.com/fredrikhgrelland/terraform-nomad-hive.git?ref=0.1.0"
+  source = "github.com/fredrikhgrelland/terraform-nomad-hive.git?ref=0.2.0"
 
   # nomad
-  nomad_datacenters = local.nomad_datacenters
-  nomad_namespace   = local.nomad_namespace
-
-  nomad_job_switch_local = false
+  nomad_datacenters  = local.nomad_datacenters
+  nomad_namespace    = local.nomad_namespace
+  local_docker_image = false
 
   # hive
+  use_canary          = false
   hive_service_name   = "hive-metastore"
   hive_container_port = 9083
+  hive_docker_image   = "fredrikhgrelland/hive:3.1.0"
+  resource = {
+    cpu     = 500,
+    memory  = 1024
+  }
 
   #support CSV -> https://towardsdatascience.com/load-and-query-csv-file-in-s3-with-presto-b0d50bc773c9
   #metastore.storage.schema.reader.impl=org.apache.hadoop.hive.metastore.SerDeStorageSchemaReader
@@ -119,7 +130,7 @@ module "hive" {
   }
   minio_service = {
     service_name = module.minio.minio_service_name,
-    port         = 9000, # todo: minio 0.0.1 does not have output variable port
+    port         = 9000,
     access_key   = module.minio.minio_access_key,
     secret_key   = module.minio.minio_secret_key,
   }
