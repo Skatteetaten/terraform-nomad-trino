@@ -24,16 +24,17 @@ Additional information:
 ## Contents
 0. [Prerequisites](#prerequisites)
 1. [Compatibility](#compatibility)
-2. [Usage](#usage)
-   1. [Requirements](#requirements)
-      1. [Required software](#required-software)
-   2. [Providers](#providers)
-3. [Inputs](#inputs)
-4. [Outputs](#outputs)
-5. [Examples](#examples)
-6. [Authors](#authors)
-7. [License](#license)
-8. [References](#references)
+2. [Requirements](#requirements)
+    1. [Required software](#required-software)
+3. [Usage](#usage)
+   1. [Providers](#providers)
+   2. [Intentions](#intentions)
+4. [Inputs](#inputs)
+5. [Outputs](#outputs)
+6. [Examples](#examples)
+7. [Authors](#authors)
+8. [License](#license)
+9. [References](#references)
 
 ## Prerequisites
 Please follow [this section in original template](https://github.com/fredrikhgrelland/vagrant-hashistack-template#install-prerequisites)
@@ -46,26 +47,37 @@ Please follow [this section in original template](https://github.com/fredrikhgre
 |Vault|1.5.2.1 or newer|1.5.2.1 or newer|
 |Nomad|0.12.3 or newer|0.12.3 or newer|
 
-## Usage
+## Requirements
 
-```text
-make up
-```
-
-Check the example of terraform-nomad-presto documentation [here](./example).
-
-Example contains [csv, json, avro, protobuf](./example/resources/data) file types.
-
-### Requirements
-
-#### Required software
+### Required software
 See [template README's prerequisites](template_README.md#install-prerequisites).
 
 All software is provided and run with docker.
 See the [Makefile](Makefile) for inspiration.
 
+## Usage
+The following command will run the example in [example/presto_cluster](./example/presto_cluster):
+```text
+make up
+```
+
+For more information, check out the documentation in the [presto_cluster](./example/presto_cluster) README.
+
 ### Providers
 This module uses the [Nomad](https://registry.terraform.io/providers/hashicorp/nomad/latest/docs) provider.
+
+### Intentions
+The following intentions are required. In the examples, intentions are created in the Ansible playboook [01_create_intetion.yml](dev/ansible/01_create_intention.yml):
+
+| Intention between | type |
+| :---------------- | :--- |
+| presto-local => presto | allow |
+| minio-local => minio | allow |
+| presto => hive-metastore | allow |
+| presto-sidecar-proxy => hive-metastore | allow |
+| presto-sidecar-proxy => minio | allow |
+
+> :warning: Note that these intentions needs to be created if you are using the module in another module.
 
 ## Inputs
 | Name | Description | Type | Default | Required |
@@ -99,12 +111,10 @@ This module uses the [Nomad](https://registry.terraform.io/providers/hashicorp/n
 | minio.access_key | minio access key | string |  | yes |
 | minio.secret_key | minio secret key | string |  | yes |
 
-
 ## Outputs
 | Name | Description | Type |
 |------|-------------|------|
 | presto\_service\_name | Presto service name | string |
-
 
 ## Examples
 ```hcl
@@ -140,10 +150,9 @@ module "presto" {
 }
 ```
 
-For detailed information check [example/](./example) directory.
+For detailed information check [example/presto_cluster](./example/presto_cluster) directory.
 
 ### Verifying setup
-
 You can verify successful run with next steps:
 
 #### Option 1 [hive-metastore and nomad]

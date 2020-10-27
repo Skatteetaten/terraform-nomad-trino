@@ -74,14 +74,14 @@
 #*************************************************************************************************#
 # presto => hive-metastore(allow)
 #*************************************************************************************************#
-- name: Check if intention presto => hive-metastore(allow) exists
+- name: Check if intention presto => hive-metastore (allow) exists
   shell: consul intention match -source presto
   register: presto_intention
   when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny'
   environment:
     CONSUL_HTTP_TOKEN: "{{ consul_token }}"
 
-- name: Consul create intention presto => hive-metastore(allow)
+- name: Consul create intention presto => hive-metastore (allow)
   shell: consul intention create presto hive-metastore
   when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny' and presto_intention.stdout_lines == []
   environment:
@@ -97,7 +97,7 @@
   environment:
     CONSUL_HTTP_TOKEN: "{{ consul_token }}"
 
-- name: Consul create intention presto-sidecar-proxy => hive-metastore(allow),presto-sidecar-proxy => minio(allow)
+- name: Consul create intention presto-sidecar-proxy => hive-metastore (allow) and presto-sidecar-proxy => minio (allow)
   shell: |
     consul intention create presto-sidecar-proxy hive-metastore
     consul intention create presto-sidecar-proxy minio
