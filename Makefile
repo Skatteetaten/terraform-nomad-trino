@@ -92,7 +92,7 @@ proxy-pg:
 proxy-presto:
 	docker run --rm -it --network host consul:1.8 consul connect proxy -token master -service presto-local -upstream presto:8080 -log-level debug
 
-presto-cli:y
+presto-cli:
 	CID=$$(docker run --rm -d --network host consul:1.8 connect proxy -token master -service presto-local -upstream presto:8080)
 	docker run --rm -it --network host prestosql/presto:${PRESTO_VERSION} presto --server localhost:8080 --http-proxy localhost:8080 --catalog hive --schema default --user presto --debug
 	docker rm -f $$CID
