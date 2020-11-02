@@ -78,7 +78,7 @@ CREATE OR REPLACE VIEW hive.default.flattenedjson AS
          entry,
          entrydetails
   );
-``` 
+```
 
 ## AVRO
 
