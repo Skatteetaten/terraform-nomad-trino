@@ -218,6 +218,7 @@ Some useful commands.
 # manual table creation for different file types
 presto --server localhost:8080 --catalog hive --schema default --user presto --file ./example/resources/query/csv_create_table.sql
 presto --server localhost:8080 --catalog hive --schema default --user presto --file ./example/resources/query/json_create_table.sql
+presto --server localhost:8080 --catalog hive --schema default --user presto --file ./example/resources/query/flattenedjson_json.sql
 presto --server localhost:8080 --catalog hive --schema default --user presto --file ./example/resources/query/avro_tweets_create_table.sql
 ```
 
