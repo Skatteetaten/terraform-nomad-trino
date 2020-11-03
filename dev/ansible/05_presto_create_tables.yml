@@ -129,3 +129,22 @@
   tags:
     - example-upload
     - test
+
+# Flatten json VIEW example
+- name: Flatten JSON table with VIEW
+  shell: docker run --network host -v "/vagrant/example/resources/query/flattenedjson_json.sql:/flattenedjson_json.sql" prestosql/presto:341 presto --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user presto --file /flattenedjson_json.sql
+  register: docker_output_cmd_json_2
+  retries: 10
+  delay: 2
+  until: docker_output_cmd_json_2.stderr.find("CREATE VIEW") != -1
+  tags:
+    - example-upload
+    - test
+
+- name: Verify JSON view - available 2 records
+  shell: docker run --network host prestosql/presto:341 presto --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user presto --execute "SELECT COUNT(*) FROM flattenedjson;"
+  register: query_json_result_2
+  until: query_json_result_2.stdout == "\"2\""
+  tags:
+    - example-upload
+    - test

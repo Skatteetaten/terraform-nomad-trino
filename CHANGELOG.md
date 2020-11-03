@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.0 UNRELEASED]
+
+### Added
+
+- Json flatten VIEW example #65
+
 ## [0.2.0]
 
 ### Added
