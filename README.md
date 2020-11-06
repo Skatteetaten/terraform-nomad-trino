@@ -193,8 +193,8 @@ The following intentions are required. In the examples, intentions are created i
 When using the `mode = "cluster`, you can set your secrets in two ways, either manually or upload secrets to Vault.
 
 ### Set credentials manually
-To set the credentials manually you first need to tell the module to not fetch credentials from Vault. To do that, set `vault_secret.use_vault_secret_provider` to `false` (see below for example). 
-If this is done the module will use the variable `shared_secret_user` to set the Presto credentials. These will default to `defaultprestosecret` if not set by the user. 
+To set the credentials manually you first need to tell the module to not fetch credentials from Vault. To do that, set `vault_secret.use_vault_secret_provider` to `false` (see below for example).
+If this is done the module will use the variable `shared_secret_user` to set the Presto credentials. These will default to `defaultprestosecret` if not set by the user.
 Below is an example on how to disable the use of vault credentials, and setting your own credentials.
 
 ```hcl
@@ -211,8 +211,8 @@ module "postgres" {
 ```
 
 ### Set credentials using Vault secrets
-By default `use_vault_secret_provider` is set to `true`. 
-However, when testing using the box (e.g. `make dev`) the Presto secret is randomly generated and put in `secret/presto` inside Vault, from the [01_generate_secrets_vault.yml](dev/ansible/00_generate_secrets_vault.yml) playbook. 
+By default `use_vault_secret_provider` is set to `true`.
+However, when testing using the box (e.g. `make dev`) the Presto secret is randomly generated and put in `secret/presto` inside Vault, from the [01_generate_secrets_vault.yml](dev/ansible/00_generate_secrets_vault.yml) playbook.
 This is an independet process and will run regardless of the `vault_secret.use_vault_secret_provider` is `false/true`.
 
 If you want to use the automatically generated credentials in the box, you can do so by changing the `vault_secret` object as seen below:
@@ -228,7 +228,7 @@ module "postgres" {
 }
 ```
 
-If you want to change the secrets path and keys/values in Vault with your own configuration you would need to change the variables in the `vault_secret`-object. 
+If you want to change the secrets path and keys/values in Vault with your own configuration you would need to change the variables in the `vault_secret`-object.
 Say that you have put your secrets in `secret/services/postgres/users` and change the key to `my_presto_secret_name`. Then you need to do the following configuration:
 ```hcl
 module "postgres" {
