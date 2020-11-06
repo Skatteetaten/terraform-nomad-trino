@@ -32,37 +32,29 @@ variable "mode" {
 }
 
 # presto
-variable "shared_secret_provider" {
-  type        = string
-  description = "Provider for the shared secret"
-  default     = "user"
-  validation {
-    condition     = var.shared_secret_provider == "user" || var.shared_secret_provider == "vault"
-    error_message = "Valid provider: \"user\" or \"vault\"."
-  }
-}
-
 variable "shared_secret_user" {
   type        = string
   description = "Shared secret provided by user"
-  default     = "asdasdsadafdsa"
+  default     = "defaultprestosecret"
   validation {
     condition     = length(var.shared_secret_user) >= 12
     error_message = "The length of the shared secret must be 12 characters or more."
   }
 }
 
-variable "shared_secret_vault" {
+variable "vault_secret" {
   type = object({
-    vault_kv_policy_name     = string,
-    vault_kv_path            = string,
-    vault_kv_secret_key_name = string
+    use_vault_secret_provider = string,
+    vault_kv_policy_name      = string,
+    vault_kv_path             = string,
+    vault_kv_secret_key_name  = string
   })
   description = "Set of properties to be able fetch shared cluster secret from vault"
   default = {
-    vault_kv_policy_name     = "kv-secret"
-    vault_kv_path            = "secret/data/presto"
-    vault_kv_secret_key_name = "cluster_shared_secret"
+    use_vault_secret_provider = true
+    vault_kv_policy_name      = "kv-secret"
+    vault_kv_path             = "secret/data/presto"
+    vault_kv_secret_key_name  = "cluster_shared_secret"
   }
 }
 

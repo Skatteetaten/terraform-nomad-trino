@@ -27,14 +27,16 @@ Additional information:
 2. [Requirements](#requirements)
     1. [Required software](#required-software)
 3. [Usage](#usage)
-   1. [Providers](#providers)
-   2. [Intentions](#intentions)
+    1. [Verifying setup](#verifying-setup)
+    2. [Providers](#providers)
+    3. [Intentions](#intentions)
 4. [Inputs](#inputs)
 5. [Outputs](#outputs)
-6. [Examples](#examples)
-7. [Authors](#authors)
-8. [License](#license)
-9. [References](#references)
+6. [Secrets & credentials](#secrets--credentials)
+7. [Examples](#examples)
+8. [Contributors](#contributors)
+9. [License](#license)
+10. [References](#references)
 
 ## Prerequisites
 Please follow [this section in original template](https://github.com/fredrikhgrelland/vagrant-hashistack-template#install-prerequisites)
@@ -62,99 +64,6 @@ make up
 ```
 
 For more information, check out the documentation in the [presto_cluster](./example/presto_cluster) README.
-
-### Providers
-This module uses the [Nomad](https://registry.terraform.io/providers/hashicorp/nomad/latest/docs) provider.
-
-### Intentions
-The following intentions are required. In the examples, intentions are created in the Ansible playboook [01_create_intetion.yml](dev/ansible/01_create_intention.yml):
-
-| Intention between | type |
-| :---------------- | :--- |
-| presto-local => presto | allow |
-| minio-local => minio | allow |
-| presto => hive-metastore | allow |
-| presto-sidecar-proxy => hive-metastore | allow |
-| presto-sidecar-proxy => minio | allow |
-
-> :warning: Note that these intentions needs to be created if you are using the module in another module.
-
-## Inputs
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| nomad\_provider\_address | Nomad provider address | string | "http://127.0.0.1:4646" | yes |
-| nomad\_data\_center | Nomad data centers | list(string) | ["dc1"] | yes |
-| nomad\_namespace | [Enterprise] Nomad namespace | string | "default" | yes |
-| nomad\_job\_name | Nomad job name | string | "presto" | yes |
-| mode | Switch for nomad jobs to use cluster or standalone deployment | string | "standalone" | no |
-| shared\_secret\_provider | Provider for the shared secret: user or vault | string | "user" | no |
-| shared\_secret\_user | Shared secret provided by user(length must be >= 12)  | string | "asdasdsadafdsa" | no |
-| shared\_secret\_vault | Set of properties to be able fetch shared cluster secret from vault  | object | `default = { vault_kv_policy_name = "kv-secret", vault_kv_path = "secret/data/presto", vault_kv_secret_key_name = "cluster_shared_secret"}` | no |
-| memory | Memory allocation for presto nodes | number | 1024 | no |
-| cpu | CPU allocation for presto nodes | number | 500 | no |
-| service\_name | Presto service name | string | "presto" | yes |
-| port | Presto http port | number | 8080 | yes |
-| docker\_image | Presto docker image | string | "prestosql/presto:341" | yes |
-| local_docker_image | Switch for nomad jobs to use artifact for image lookup | bool | false | no |
-| container\_environment\_variables | Presto environment variables | list(string) | [""] | no |
-| workers | cluster: Number of nomad worker nodes | number | 1 | no |
-| coordinator | Include a coordinator in addition to the workers. Set this to `false` when extending an existing cluster | bool | true | no |
-| use\_canary | Uses canary deployment for Presto | bool | false | no |
-| consul_http_addr | Address to consul, resolvable from the container. e.g. <http://127.0.0.1:8500> | string | - | yes |
-| consul\_connect\_plugin | Deploy consul connect plugin for presto | bool | true | no |
-| consul_connect_plugin_version | Version of the consul connect plugin for presto (on maven central) src here: <https://github.com/gugalnikov/presto-consul-connect> | string | "2.2.0" | no |
-| consul\_connect\_plugin\_artifact\_source | Artifact URI source | string | "https://oss.sonatype.org/service/local/repositories/releases/content/io/github/gugalnikov/presto-consul-connect" | no |
-| debug | Turn on debug logging in presto nodes | bool | false | no |
-| hivemetastore.service_name | Hive metastore service name | string | "hive-metastore" | yes |
-| hivemetastore.port | Hive metastore port | number | 9083 | yes |
-| minio.service_name | minio service name | string |  | yes |
-| minio.port | minio port | number |  | yes |
-| minio.access_key | minio access key | string |  | yes |
-| minio.secret_key | minio secret key | string |  | yes |
-
-## Outputs
-| Name | Description | Type |
-|------|-------------|------|
-| presto\_service\_name | Presto service name | string |
-
-## Examples
-```hcl
-module "presto" {
-  depends_on = [
-    module.minio,
-    module.hive
-  ]
-
-  source = "github.com/fredrikhgrelland/terraform-nomad-presto.git?ref=0.0.1"
-
-  nomad_job_name    = "presto"
-  nomad_datacenters = ["dc1"]
-  nomad_namespace   = "default"
-
-  service_name = "presto"
-  port         = 8080
-  docker_image = "prestosql/presto:341"
-
-  memory  = 2048
-  cpu     = 600
-
-  #hivemetastore
-  hivemetastore = {
-    service_name = module.hive.service_name
-    port         = 9083
-  }
-
-  # minio
-  minio = {
-    service_name = module.minio.minio_service_name
-    port         = 9000
-    access_key   = module.minio.minio_access_key
-    secret_key   = module.minio.minio_secret_key
-  }
-}
-```
-
-For detailed information check [example/presto_cluster](./example/presto_cluster) directory.
 
 ### Verifying setup
 You can verify successful run with next steps:
@@ -226,7 +135,175 @@ presto --server localhost:8080 --catalog hive --schema default --user presto --f
 presto --server localhost:8080 --catalog hive --schema default --user presto --file ./example/resources/query/avro_tweets_create_table.sql
 ```
 
-## Authors
+### Providers
+This module uses the [Nomad](https://registry.terraform.io/providers/hashicorp/nomad/latest/docs) provider.
+
+### Intentions
+The following intentions are required. In the examples, intentions are created in the Ansible playboook [01_create_intetion.yml](dev/ansible/01_create_intention.yml):
+
+| Intention between | type |
+| :---------------- | :--- |
+| presto-local => presto | allow |
+| minio-local => minio | allow |
+| presto => hive-metastore | allow |
+| presto-sidecar-proxy => hive-metastore | allow |
+| presto-sidecar-proxy => minio | allow |
+
+> :warning: Note that these intentions needs to be created if you are using the module in another module.
+
+## Inputs
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| nomad_provider_address | Nomad provider address | string | "http://127.0.0.1:4646" | yes |
+| nomad_data_center | Nomad data centers | list(string) | ["dc1"] | yes |
+| nomad_namespace | [Enterprise] Nomad namespace | string | "default" | yes |
+| nomad_job_name | Nomad job name | string | "presto" | yes |
+| mode | Switch for nomad jobs to use cluster or standalone deployment | string | "standalone" | no |
+| shared_secret_provider | Provider for the shared secret: user or vault | string | "user" | no |
+| shared_secret_user | Shared secret provided by user(length must be >= 12)  | string | "asdasdsadafdsa" | no |
+| vault_secret | Set of properties to be able fetch shared cluster secret from vault  | object(bool, string, string, string) | use_vault_secret_provider = true <br> vault_kv_policy_name = "kv-secret" <br> vault_kv_path = "secret/data/presto" <br> vault_kv_secret_key_name = "cluster_shared_secret" | no |
+| service_name | Presto service name | string | "presto" | yes |
+| memory | Memory allocation for presto nodes | number | 1024 | no |
+| cpu | CPU allocation for presto nodes | number | 500 | no |
+| port | Presto http port | number | 8080 | yes |
+| docker_image | Presto docker image | string | "prestosql/presto:341" | yes |
+| local_docker_image | Switch for nomad jobs to use artifact for image lookup | bool | false | no |
+| container_environment_variables | Presto environment variables | list(string) | [""] | no |
+| workers | cluster: Number of nomad worker nodes | number | 1 | no |
+| coordinator | Include a coordinator in addition to the workers. Set this to `false` when extending an existing cluster | bool | true | no |
+| use_canary | Uses canary deployment for Presto | bool | false | no |
+| consul_http_addr | Address to consul, resolvable from the container. e.g. <http://127.0.0.1:8500> | string | - | yes |
+| consul_connect_plugin | Deploy consul connect plugin for presto | bool | true | no |
+| consul_connect_plugin_version | Version of the consul connect plugin for presto (on maven central) src here: <https://github.com/gugalnikov/presto-consul-connect> | string | "2.2.0" | no |
+| consul_connect_plugin_artifact_source | Artifact URI source | string | "https://oss.sonatype.org/service/local/repositories/releases/content/io/github/gugalnikov/presto-consul-connect" | no |
+| debug | Turn on debug logging in presto nodes | bool | false | no |
+| hivemetastore.service_name | Hive metastore service name | string | "hive-metastore" | yes |
+| hivemetastore.port | Hive metastore port | number | 9083 | yes |
+| minio.service_name | minio service name | string |  | yes |
+| minio.port | minio port | number |  | yes |
+| minio.access_key | minio access key | string |  | yes |
+| minio.secret_key | minio secret key | string |  | yes |
+
+## Outputs
+| Name | Description | Type |
+|------|-------------|------|
+| presto_service_name | Presto service name | string |
+
+## Secrets & credentials
+When using the `mode = "cluster"`, you can set your secrets in two ways, either manually or upload secrets to Vault.
+
+### Set credentials manually
+To set the credentials manually you first need to tell the module to not fetch credentials from Vault. To do that, set `vault_secret.use_vault_secret_provider` to `false` (see below for example).
+If this is done the module will use the variable `shared_secret_user` to set the Presto credentials. These will default to `defaultprestosecret` if not set by the user.
+Below is an example on how to disable the use of vault credentials, and setting your own credentials.
+
+```hcl
+module "postgres" {
+...
+  vault_secret  = {
+                    use_vault_secret_provider = false,
+                    vault_kv_policy_name      = "",
+                    vault_kv_path             = "",
+                    vault_kv_secret_key_name  = "",
+                  }
+  shared_secret_user = "my-secret-key" # default 'defaultprestosecret'
+}
+```
+
+### Set credentials using Vault secrets
+By default `use_vault_secret_provider` is set to `true`.
+However, when testing using the box (e.g. `make dev`) the Presto secret is randomly generated and put in `secret/presto` inside Vault, from the [01_generate_secrets_vault.yml](dev/ansible/00_generate_secrets_vault.yml) playbook.
+This is an independet process and will run regardless of the `vault_secret.use_vault_secret_provider` is `false/true`.
+
+If you want to use the automatically generated credentials in the box, you can do so by changing the `vault_secret` object as seen below:
+```hcl
+module "postgres" {
+...
+  vault_secret  = {
+                    use_vault_secret_provider = true
+                    vault_kv_policy_name      = "kv-secret"
+                    vault_kv_path             = "secret/data/presto"
+                    vault_kv_secret_key_name  = "cluster_shared_secret"
+                  }
+}
+```
+
+If you want to change the secrets path and keys/values in Vault with your own configuration you would need to change the variables in the `vault_secret`-object.
+Say that you have put your secrets in `secret/services/postgres/users` and change the key to `my_presto_secret_name`. Then you need to do the following configuration:
+```hcl
+module "postgres" {
+...
+  vault_secret  = {
+                    use_vault_secret_provider = true,
+                    vault_kv_policy_name     = "kv-users-secret"
+                    vault_kv_path            = "secret/data/services/presto/users",
+                    vault_kv_secret_key_name = "my_presto_secret_name"
+                  }
+}
+```
+
+## Examples
+```hcl
+module "presto" {
+  depends_on = [
+    module.minio,
+    module.hive
+  ]
+
+  source = "github.com/fredrikhgrelland/terraform-nomad-presto.git?ref=0.0.1"
+
+  nomad_job_name    = "presto"
+  nomad_datacenters = ["dc1"]
+  nomad_namespace   = "default"
+
+  vault_secret = {
+    use_vault_secret_provider = true
+    vault_kv_policy_name      = "kv-secret"
+    vault_kv_path             = "secret/data/presto"
+    vault_kv_secret_key_name  = "cluster_shared_secret"
+  }
+
+  service_name = "presto"
+  port         = 8080
+  docker_image = "prestosql/presto:341"
+  mode             = "cluster"
+  workers          = 1
+  consul_http_addr = "http://10.0.3.10:8500"
+  debug            = true
+  use_canary       = true
+
+  minio            = local.minio
+  hivemetastore    = local.hivemetastore
+
+  memory  = 2048
+  cpu     = 600
+
+  #hivemetastore
+  hivemetastore = {
+    service_name = module.hive.service_name
+    port         = 9083
+  }
+
+  # minio
+  minio = {
+    service_name = module.minio.minio_service_name
+    port         = 9000
+    access_key   = module.minio.minio_access_key
+    secret_key   = module.minio.minio_secret_key
+  }
+}
+```
+
+For detailed information check [example/presto_cluster](./example/presto_cluster) directory.
+
+## Contributors
+[<img src="https://avatars0.githubusercontent.com/u/40291976?s=64&v=4">](https://github.com/fredrikhgrelland)
+[<img src="https://avatars2.githubusercontent.com/u/29984156?s=64&v=4">](https://github.com/claesgill)
+[<img src="https://avatars3.githubusercontent.com/u/15572799?s=64&v=4">](https://github.com/zhenik)
+[<img src="https://avatars3.githubusercontent.com/u/67954397?s=64&v=4">](https://github.com/Neha-Sinha2305)
+[<img src="https://avatars3.githubusercontent.com/u/71001093?s=64&v=4">](https://github.com/dangernil)
+[<img src="https://avatars1.githubusercontent.com/u/51820995?s=64&v=4">](https://github.com/pdmthorsrud)
+[<img src="https://avatars3.githubusercontent.com/u/10536149?s=64&v=4">](https://github.com/oschistad)
 
 ## License
 This work is licensed under Apache 2 License. See [LICENSE](./LICENSE) for full details.

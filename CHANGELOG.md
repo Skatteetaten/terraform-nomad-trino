@@ -3,9 +3,15 @@
 ## [0.3.0 UNRELEASED]
 
 ### Added
-
 - Json flatten VIEW example #65
 - Added CPU as user defined variable #67
+
+### Changed
+- Variables regarding credentials/secrets & updated documentation #52
+- Updated box version to 0.7.x #69
+
+### Fixed
+- `make up` warning #57
 
 ## [0.2.0]
 
