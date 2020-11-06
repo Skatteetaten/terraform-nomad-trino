@@ -27,9 +27,10 @@ Additional information:
 2. [Requirements](#requirements)
     1. [Required software](#required-software)
 3. [Usage](#usage)
-    1. [Verifying setup](#verifying-setup)
-    2. [Providers](#providers)
-    3. [Intentions](#intentions)
+    1. [Connect to the services (proxies)](#connect-to-the-services-proxies)
+    2. [Verifying setup](#verifying-setup)
+    3. [Providers](#providers)
+    4. [Intentions](#intentions)
 4. [Inputs](#inputs)
 5. [Outputs](#outputs)
 6. [Secrets & credentials](#secrets--credentials)
@@ -65,11 +66,30 @@ make up
 
 For more information, check out the documentation in the [presto_cluster](./example/presto_cluster) README.
 
+### Connect to the services (proxies)
+Since the services in this module uses the [`sidecar_service`](https://www.nomadproject.io/docs/job-specification/sidecar_service), you need to connect to the sevices using a [consul connect proxy](https://www.consul.io/commands/connect/proxy).
+The proxy connections are pre-made and defined in the `Makefile`:
+```sh
+make proxy-hive     # to hivemetastore
+make proxy-minio    # to minio
+make proxy-postgres # to postgres
+make proxy-presto   # to presto
+```
+
+You can now connect to Presto using the Presto CLI with the following command: 
+```sh
+make presto-cli # connect to Presto CLI
+```
+
+#### :warning: Note
+If you are on a Mac the proxies and Presto CLI may not work.
+Instead, you can install the [Consul binary](https://www.consul.io/docs/install) and run the commands in the `Makefile` manually (without `docker run ..`).
+Further, you need to install the [Presto CLI](https://prestodb.io/) on your local machine or inside the box.
+
 ### Verifying setup
 You can verify successful run with next steps:
 
 #### Option 1 [hive-metastore and nomad]
-
 * Go to [http://localhost:4646/ui/exec/hive-metastore](http://localhost:4646/ui/exec/hive-metastore)
 * Chose metastoreserver -> metastoreserver and click enter.
 * Connect using beeline cli
