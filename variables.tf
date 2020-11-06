@@ -105,6 +105,16 @@ variable "memory" {
   }
 }
 
+variable "cpu" {
+  type        = number
+  description = "CPU allocation for presto nodes"
+  default     = 500
+  validation {
+    condition     = var.cpu >= 500
+    error_message = "Presto can not run with less than 300Mhz CPU."
+  }
+}
+
 variable "docker_image" {
   type        = string
   description = "Presto docker image"

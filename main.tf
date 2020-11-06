@@ -33,6 +33,7 @@ data "template_file" "template_nomad_job_presto" {
     envs                     = local.presto_env_vars
     debug                    = var.debug
     memory                   = var.memory
+    cpu                      = var.cpu
     consul_http_addr         = var.consul_http_addr
     use_canary               = var.use_canary
 

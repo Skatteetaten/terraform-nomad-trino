@@ -91,6 +91,7 @@ The following intentions are required. In the examples, intentions are created i
 | shared\_secret\_user | Shared secret provided by user(length must be >= 12)  | string | "asdasdsadafdsa" | no |
 | shared\_secret\_vault | Set of properties to be able fetch shared cluster secret from vault  | object | `default = { vault_kv_policy_name = "kv-secret", vault_kv_path = "secret/data/presto", vault_kv_secret_key_name = "cluster_shared_secret"}` | no |
 | memory | Memory allocation for presto nodes | number | 1024 | no |
+| cpu | CPU allocation for presto nodes | number | 500 | no |
 | service\_name | Presto service name | string | "presto" | yes |
 | port | Presto http port | number | 8080 | yes |
 | docker\_image | Presto docker image | string | "prestosql/presto:341" | yes |
@@ -133,6 +134,9 @@ module "presto" {
   service_name = "presto"
   port         = 8080
   docker_image = "prestosql/presto:341"
+
+  memory  = 2048
+  cpu     = 600
 
   #hivemetastore
   hivemetastore = {
