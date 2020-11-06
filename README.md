@@ -190,7 +190,7 @@ The following intentions are required. In the examples, intentions are created i
 | presto_service_name | Presto service name | string |
 
 ## Secrets & credentials
-When using the `mode = "cluster`, you can set your secrets in two ways, either manually or upload secrets to Vault.
+When using the `mode = "cluster"`, you can set your secrets in two ways, either manually or upload secrets to Vault.
 
 ### Set credentials manually
 To set the credentials manually you first need to tell the module to not fetch credentials from Vault. To do that, set `vault_secret.use_vault_secret_provider` to `false` (see below for example).
