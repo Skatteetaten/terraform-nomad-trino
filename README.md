@@ -162,8 +162,9 @@ The following intentions are required. In the examples, intentions are created i
 | shared_secret_provider | Provider for the shared secret: user or vault | string | "user" | no |
 | shared_secret_user | Shared secret provided by user(length must be >= 12)  | string | "asdasdsadafdsa" | no |
 | vault_secret | Set of properties to be able fetch shared cluster secret from vault  | object(bool, string, string, string) | use_vault_secret_provider = true <br> vault_kv_policy_name = "kv-secret" <br> vault_kv_path = "secret/data/presto" <br> vault_kv_secret_key_name = "cluster_shared_secret" | no |
-| memory | Memory allocation for presto nodes | number | 1024 | no |
 | service_name | Presto service name | string | "presto" | yes |
+| memory | Memory allocation for presto nodes | number | 1024 | no |
+| cpu | CPU allocation for presto nodes | number | 500 | no |
 | port | Presto http port | number | 8080 | yes |
 | docker_image | Presto docker image | string | "prestosql/presto:341" | yes |
 | local_docker_image | Switch for nomad jobs to use artifact for image lookup | bool | false | no |
@@ -273,6 +274,9 @@ module "presto" {
 
   minio            = local.minio
   hivemetastore    = local.hivemetastore
+
+  memory  = 2048
+  cpu     = 600
 
   #hivemetastore
   hivemetastore = {

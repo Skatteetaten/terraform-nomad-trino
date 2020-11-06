@@ -4,6 +4,7 @@
 
 ### Added
 - Json flatten VIEW example #65
+- Added CPU as user defined variable #67
 
 ### Changed
 - Variables regarding credentials/secrets & updated documentation #52

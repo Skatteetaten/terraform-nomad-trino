@@ -385,6 +385,7 @@ EOF
       }
       resources {
         memory = ${memory}
+        cpu = ${cpu}
       }
     }
 
