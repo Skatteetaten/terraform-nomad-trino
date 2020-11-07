@@ -76,7 +76,7 @@ make proxy-postgres # to postgres
 make proxy-presto   # to presto
 ```
 
-You can now connect to Presto using the Presto CLI with the following command: 
+You can now connect to Presto using the Presto CLI with the following command:
 ```sh
 make presto-cli # connect to Presto CLI
 ```
