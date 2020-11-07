@@ -84,7 +84,7 @@ make presto-cli # connect to Presto CLI
 #### :warning: Note
 If you are on a Mac the proxies and Presto CLI may not work.
 Instead, you can install the [Consul binary](https://www.consul.io/docs/install) and run the commands in the `Makefile` manually (without `docker run ..`).
-Further, you need to install the [Presto CLI](https://prestodb.io/) on your local machine or inside the box.
+Further, you need to install the [Presto CLI](https://prestosql.io/docs/current/installation/cli.html) on your local machine or inside the box.
 
 ### Verifying setup
 You can verify successful run with next steps:
