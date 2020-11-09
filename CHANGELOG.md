@@ -9,6 +9,7 @@
 ### Changed
 - Variables regarding credentials/secrets & updated documentation #52
 - Updated box version to 0.7.x #69
+- Additional information about proxies and Presto CLI #60
 
 ### Fixed
 - `make up` warning #57

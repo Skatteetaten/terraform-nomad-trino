@@ -78,13 +78,13 @@ update-box:
 	@SSL_CERT_FILE=${SSL_CERT_FILE} CURL_CA_BUNDLE=${CURL_CA_BUNDLE} vagrant box update || (echo '\n\nIf you get an SSL error you might be behind a transparent proxy. \nMore info https://github.com/fredrikhgrelland/vagrant-hashistack/blob/master/README.md#proxy\n\n' && exit 2)
 
 # to-hivemetastore
-proxy-h:
+proxy-hive:
 	docker run --rm -it --network host consul:1.8 consul connect proxy -token master -service hivemetastore-local -upstream hive-metastore:9083 -log-level debug
 # to-minio
-proxy-m:
+proxy-minio:
 	docker run --rm -it --network host consul:1.8 consul connect proxy -token master -service minio-local -upstream minio:9090 -log-level debug
 # to-postgres
-proxy-pg:
+proxy-postgres:
 	docker run --rm -it --network host consul:1.8 consul connect proxy -token master -service postgres-local -upstream postgres:5432 -log-level debug
 # to-presto
 proxy-presto:
