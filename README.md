@@ -67,7 +67,7 @@ make up
 For more information, check out the documentation in the [presto_cluster](./example/presto_cluster) README.
 
 ### Connect to the services (proxies)
-Since the services in this module uses the [`sidecar_service`](https://www.nomadproject.io/docs/job-specification/sidecar_service), you need to connect to the sevices using a [consul connect proxy](https://www.consul.io/commands/connect/proxy).
+Since the services in this module use the [`sidecar_service`](https://www.nomadproject.io/docs/job-specification/sidecar_service), you need to connect to the services using a [consul connect proxy](https://www.consul.io/commands/connect/proxy).
 The proxy connections are pre-made and defined in the `Makefile`:
 ```sh
 make proxy-hive     # to hivemetastore
