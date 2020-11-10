@@ -63,6 +63,11 @@ The following command will run the example in [example/presto_cluster](./example
 ```text
 make up
 ```
+and
+```text
+make up-standalone
+```
+will run the example in [example/presto_standalone](./example/presto_standalone)
 
 For more information, check out the documentation in the [presto_cluster](./example/presto_cluster) README.
 
