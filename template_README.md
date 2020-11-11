@@ -178,7 +178,7 @@ To use enterprise versions of the hashistack components set the software's corre
 When ACLs are enabled in Nomad the bootstrap token will be available in vault under `secret/nomad/management-token` with the two key-value pairs `accessor-id` and `secret-id`. `secret-id` is the token itself. These can be accessed in several ways:
 - From inside the vagrant box with `vault kv get secret/nomad-bootstrap-token`
 - From local machine with `vagrant ssh -c vault kv get secret/nomad-bootstrap-token"`
-- By going to vault's UI on `localhost:8200`, and signing in with the root token.
+- By going to Vault's UI on `localhost:8200`, and signing in with the root token.
 
 #### Consul
 

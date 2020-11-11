@@ -1,6 +1,7 @@
-# Presto cluster example
-The current directory contains terraform related files that use the module in `../../`. The example module spins up Presto in [cluster mode](../conf/nomad/presto.hcl) having one worker.
-It uses vault as the shared secret provider. For more details check [main.tf](./main.tf).
+# Presto standalone example
+The current directory contains terraform related files that use the module in `../../`. The example module spins up Presto in [standalone mode](../conf/nomad/presto_standalone.hcl
+) having one node work as both coordinator and worker.
+It uses Vault as the shared secret provider. For more details check [main.tf](./main.tf).
 
 ## Modules in use
 | Modules       | version       |
@@ -19,7 +20,7 @@ This example uses the following file types found in the [example/resources/data]
 - avro
 - protobuf
 
-Directory [`/resources`](../resources) contains data example with will be loaded to technology stack in the current example.
+Directory [`../resources`](../resources) contains data example with will be loaded to technology stack in the current example.
 
 ```text
 ├── resources

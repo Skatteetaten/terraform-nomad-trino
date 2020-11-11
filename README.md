@@ -63,6 +63,11 @@ The following command will run the example in [example/presto_cluster](./example
 ```text
 make up
 ```
+and
+```text
+make up-standalone
+```
+will run the example in [example/presto_standalone](./example/presto_standalone)
 
 For more information, check out the documentation in the [presto_cluster](./example/presto_cluster) README.
 
@@ -179,7 +184,7 @@ The following intentions are required. In the examples, intentions are created i
 | nomad_namespace | [Enterprise] Nomad namespace | string | "default" | yes |
 | nomad_job_name | Nomad job name | string | "presto" | yes |
 | mode | Switch for nomad jobs to use cluster or standalone deployment | string | "standalone" | no |
-| shared_secret_provider | Provider for the shared secret: user or vault | string | "user" | no |
+| shared_secret_provider | Provider for the shared secret: user or Vault | string | "user" | no |
 | shared_secret_user | Shared secret provided by user(length must be >= 12)  | string | "asdasdsadafdsa" | no |
 | vault_secret | Set of properties to be able fetch shared cluster secret from vault  | object(bool, string, string, string) | use_vault_secret_provider = true <br> vault_kv_policy_name = "kv-secret" <br> vault_kv_path = "secret/data/presto" <br> vault_kv_secret_key_name = "cluster_shared_secret" | no |
 | service_name | Presto service name | string | "presto" | yes |
@@ -215,7 +220,7 @@ When using the `mode = "cluster"`, you can set your secrets in two ways, either 
 ### Set credentials manually
 To set the credentials manually you first need to tell the module to not fetch credentials from Vault. To do that, set `vault_secret.use_vault_secret_provider` to `false` (see below for example).
 If this is done the module will use the variable `shared_secret_user` to set the Presto credentials. These will default to `defaultprestosecret` if not set by the user.
-Below is an example on how to disable the use of vault credentials, and setting your own credentials.
+Below is an example on how to disable the use of Vault credentials, and setting your own credentials.
 
 ```hcl
 module "postgres" {
