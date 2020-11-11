@@ -31,10 +31,10 @@ Additional information:
     2. [Verifying setup](#verifying-setup)
     3. [Providers](#providers)
     4. [Intentions](#intentions)
-4. [Inputs](#inputs)
-5. [Outputs](#outputs)
-6. [Secrets & credentials](#secrets--credentials)
-7. [Examples](#examples)
+4. [Example usage](#example-usage)
+5. [Inputs](#inputs)
+6. [Outputs](#outputs)
+7. [Secrets & credentials](#secrets--credentials)
 8. [Contributors](#contributors)
 9. [License](#license)
 10. [References](#references)
@@ -179,6 +179,54 @@ The following intentions are required. In the examples, intentions are created i
 
 > :warning: Note that these intentions needs to be created if you are using the module in another module.
 
+## Example usage
+The following code is an example of the Presto module in `cluster` mode. 
+For detailed information check the [example/presto_cluster](example/presto_cluster) or the [example/presto_standalone](example/presto_standalone) directory.
+```hcl
+module "presto" {
+  depends_on = [
+    module.minio,
+    module.hive
+  ]
+
+  source = "github.com/fredrikhgrelland/terraform-nomad-presto.git?ref=0.0.1"
+
+  # nomad
+  nomad_job_name    = "presto"
+  nomad_datacenters = ["dc1"]
+  nomad_namespace   = "default"
+
+  # presto
+  vault_secret      = {
+                        use_vault_secret_provider = true
+                        vault_kv_policy_name      = "kv-secret"
+                        vault_kv_path             = "secret/data/presto"
+                        vault_kv_secret_key_name  = "cluster_shared_secret"
+                      }
+  service_name     = "presto"
+  docker_image     = "prestosql/presto:341"
+  mode             = "cluster"
+  workers          = 1
+  consul_http_addr = "http://10.0.3.10:8500"
+  use_canary       = true
+  debug            = true
+
+  #hivemetastore
+  hivemetastore = {
+    service_name = module.hive.service_name
+    port         = module.hive.port
+  }
+
+  # minio
+  minio = {
+    service_name = module.minio.minio_service_name
+    port         = module.minio.minio_port
+    access_key   = module.minio.minio_access_key
+    secret_key   = module.minio.minio_secret_key
+  }
+}
+```
+
 ## Inputs
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
@@ -269,60 +317,6 @@ module "postgres" {
                   }
 }
 ```
-
-## Examples
-```hcl
-module "presto" {
-  depends_on = [
-    module.minio,
-    module.hive
-  ]
-
-  source = "github.com/fredrikhgrelland/terraform-nomad-presto.git?ref=0.0.1"
-
-  nomad_job_name    = "presto"
-  nomad_datacenters = ["dc1"]
-  nomad_namespace   = "default"
-
-  vault_secret = {
-    use_vault_secret_provider = true
-    vault_kv_policy_name      = "kv-secret"
-    vault_kv_path             = "secret/data/presto"
-    vault_kv_secret_key_name  = "cluster_shared_secret"
-  }
-
-  service_name = "presto"
-  port         = 8080
-  docker_image = "prestosql/presto:341"
-  mode             = "cluster"
-  workers          = 1
-  consul_http_addr = "http://10.0.3.10:8500"
-  debug            = true
-  use_canary       = true
-
-  minio            = local.minio
-  hivemetastore    = local.hivemetastore
-
-  memory  = 2048
-  cpu     = 600
-
-  #hivemetastore
-  hivemetastore = {
-    service_name = module.hive.service_name
-    port         = 9083
-  }
-
-  # minio
-  minio = {
-    service_name = module.minio.minio_service_name
-    port         = 9000
-    access_key   = module.minio.minio_access_key
-    secret_key   = module.minio.minio_secret_key
-  }
-}
-```
-
-For detailed information check [example/presto_cluster](./example/presto_cluster) directory.
 
 ## Contributors
 [<img src="https://avatars0.githubusercontent.com/u/40291976?s=64&v=4">](https://github.com/fredrikhgrelland)
