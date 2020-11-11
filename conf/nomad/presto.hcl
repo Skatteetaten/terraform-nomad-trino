@@ -201,7 +201,7 @@ job "${nomad_job_name}" {
           hive.metastore-timeout=1m
           hive.s3.path-style-access=true
           EOH
-        destination = "/local/presto/hive.properties"
+        destination = "local/presto/hive.properties"
       }
       template {
         # TODO: Create issue with hashicorp. Is there a way to mount directly to /etc/hosts ( for continual updates )
