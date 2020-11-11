@@ -150,7 +150,7 @@ job "${nomad_job_name}" {
       //     could end up with exception: The AWS Access Key Id you provided does not exist in our records.
       //     Looks like, slow render of env variables (when one template depends on other template). Maybe because, all runs on local machine
       template {
-        destination = "/local/presto/catalog/hive.properties"
+        destination = "local/presto/catalog/hive.properties"
         data = <<EOH
 connector.name=hive-hadoop2
 hive.metastore.uri=thrift://{{ env "NOMAD_UPSTREAM_ADDR_${hivemetastore_service_name}" }}
