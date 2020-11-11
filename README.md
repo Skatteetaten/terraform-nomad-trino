@@ -92,12 +92,13 @@ Instead, you can install the [Consul binary](https://www.consul.io/docs/install)
 Further, you need to install the [Presto CLI](https://prestosql.io/docs/current/installation/cli.html) on your local machine or inside the box.
 
 ### Verifying setup
-You can verify successful run with next steps:
+- If you ran the [presto_standalone](example/presto_standalone) example, you can verify successful deployment with either of the following options.
+- If you ran the [presto_cluster](example/presto_cluster) example, you can only verify with [option 1](#option-1-hive-metastore-and-nomad) and [option 3](#option-3-local-presto-cli).
 
 #### Option 1 [hive-metastore and nomad]
-* Go to [http://localhost:4646/ui/exec/hive-metastore](http://localhost:4646/ui/exec/hive-metastore)
-* Chose metastoreserver -> metastoreserver and click enter.
-* Connect using beeline cli
+1. Go to [http://localhost:4646/ui/exec/hive-metastore](http://localhost:4646/ui/exec/hive-metastore)
+2. Chose metastoreserver -> metastoreserver and click enter.
+3. Connect using beeline cli:
 ```text
 # from metastore (loopback)
 beeline -u jdbc:hive2://
@@ -117,9 +118,11 @@ SELECT * FROM tweets;
 ```
 
 #### Option 2 [presto and nomad]
-* Go to [http://localhost:4646/ui/exec/presto](http://localhost:4646/ui/exec/presto)
-* Chose standalone -> server and click enter.
-* Connect using presto-cli
+> :warning: Only works with [presto_standalone](example/presto_standalone) example.
+
+1. Go to [http://localhost:4646/ui/exec/presto](http://localhost:4646/ui/exec/presto)
+2. Chose standalone -> server and click enter.
+3. Connect using presto-cli:
 ```text
 presto
 ```
@@ -137,14 +140,14 @@ SELECT * FROM hive.default.iris;
 ```
 
 #### Option 3 [local presto-cli]
-`NB!` Check [required software section](#required-software) first.
+> :information_source: Check [required software section](#required-software) first.
 
-* in a terminal run a proxy and `presto-cli` session
+In a terminal run a proxy and `presto-cli` session:
 ```text
 make presto-cli
 ```
 
-* Query tables (3 tables should be available)
+You can now query tables (3 tables should be available):
 ```text
 show tables;
 select * from <table>;
@@ -188,8 +191,8 @@ The following intentions are required. In the examples, intentions are created i
 | shared_secret_user | Shared secret provided by user(length must be >= 12)  | string | "asdasdsadafdsa" | no |
 | vault_secret | Set of properties to be able fetch shared cluster secret from vault  | object(bool, string, string, string) | use_vault_secret_provider = true <br> vault_kv_policy_name = "kv-secret" <br> vault_kv_path = "secret/data/presto" <br> vault_kv_secret_key_name = "cluster_shared_secret" | no |
 | service_name | Presto service name | string | "presto" | yes |
-| memory | Memory allocation for presto nodes | number | 1024 | no |
-| cpu | CPU allocation for presto nodes | number | 500 | no |
+| resource | Resource allocation for Presto nodes (cpu & memory) | object(number, number) | { <br> cpu = 500 <br> memory = 1024 <br> } | no |
+| resource_proxy | Resource allocation for proxy (cpu & memory) | object(number, number) | { <br> cpu = 200 <br> memory = 128 <br> } | no |
 | port | Presto http port | number | 8080 | yes |
 | docker_image | Presto docker image | string | "prestosql/presto:341" | yes |
 | local_docker_image | Switch for nomad jobs to use artifact for image lookup | bool | false | no |

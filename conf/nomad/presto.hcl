@@ -45,6 +45,13 @@ job "${nomad_job_name}" {
             }
           }
         }
+        sidecar_task {
+          driver = "docker"
+          resources {
+            cpu    = "${cpu_proxy}"
+            memory = "${memory_proxy}"
+          }
+        }
       }
     }
     service {

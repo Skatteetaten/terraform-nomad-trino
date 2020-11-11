@@ -87,26 +87,6 @@ variable "consul_http_addr" {
   description = "Address to consul, resolvable from the container. e.g. http://127.0.0.1:8500"
 }
 
-variable "memory" {
-  type        = number
-  description = "Memory allocation for presto nodes"
-  default     = 1024
-  validation {
-    condition     = var.memory >= 768
-    error_message = "Presto can not run with less than 512MB of memory. 256MB is subtracted for OS. Total must be at least 768MB."
-  }
-}
-
-variable "cpu" {
-  type        = number
-  description = "CPU allocation for presto nodes"
-  default     = 500
-  validation {
-    condition     = var.cpu >= 500
-    error_message = "Presto can not run with less than 300Mhz CPU."
-  }
-}
-
 variable "docker_image" {
   type        = string
   description = "Presto docker image"
@@ -141,6 +121,38 @@ variable "use_canary" {
   type = bool
   description = "Uses canary deployment for Presto"
   default = false
+}
+
+variable "resource" {
+  type = object({
+    cpu    = number,
+    memory = number
+  })
+  default = {
+    cpu    = 500,
+    memory = 1024
+  }
+  description = "Presto resources"
+  validation {
+    condition     = var.resource.cpu >= 500 && var.resource.memory >= 768
+    error_message = "Presto can not run with less than 300Mhz CPU and less than 512MB of memory. 256MB is subtracted for OS. Total must be at least 768MB."
+  }
+}
+
+variable "resource_proxy" {
+  type = object({
+    cpu     = number,
+    memory  = number
+  })
+  default = {
+    cpu     = 200,
+    memory  = 128
+  }
+  description = "Presto proxy resources"
+  validation {
+    condition     = var.resource_proxy.cpu >= 200 && var.resource_proxy.memory >= 128
+    error_message = "Proxy resource must be at least: cpu=200, memory=128."
+  }
 }
 
 variable "hivemetastore" {
