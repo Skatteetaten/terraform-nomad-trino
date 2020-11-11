@@ -1,5 +1,5 @@
 # Presto cluster example
-The current directory contains terraform related files that use the module in `../../`. The example module spins up presto in [cluster mode](../conf/nomad/presto.hcl) having one worker.
+The current directory contains terraform related files that use the module in `../../`. The example module spins up Presto in [cluster mode](../conf/nomad/presto.hcl) having one worker.
 It uses vault as the shared secret provider. For more details check [main.tf](./main.tf).
 
 ## Modules in use

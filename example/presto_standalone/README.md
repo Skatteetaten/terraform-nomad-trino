@@ -1,7 +1,7 @@
 # Presto standalone example
-The current directory contains terraform related files that use the module in `../../`. The example module spins up presto in [standalone mode](../conf/nomad/presto_standalone.hcl
+The current directory contains terraform related files that use the module in `../../`. The example module spins up Presto in [standalone mode](../conf/nomad/presto_standalone.hcl
 ) having one node work as both coordinator and worker.
-It uses vault as the shared secret provider. For more details check [main.tf](./main.tf).
+It uses Vault as the shared secret provider. For more details check [main.tf](./main.tf).
 
 ## Modules in use
 | Modules       | version       |
