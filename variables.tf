@@ -94,9 +94,9 @@ variable "docker_image" {
 }
 
 variable "consul_connect_plugin" {
-  type = bool
+  type        = bool
   description = "Deploy consul connect plugin for presto"
-  default = true
+  default     = true
 }
 
 variable "consul_connect_plugin_version" {
@@ -106,9 +106,9 @@ variable "consul_connect_plugin_version" {
 }
 
 variable "consul_connect_plugin_artifact_source" {
-  type = string
+  type        = string
   description = "Artifact URI source"
-  default = "https://oss.sonatype.org/service/local/repositories/releases/content/io/github/gugalnikov/presto-consul-connect"
+  default     = "https://oss.sonatype.org/service/local/repositories/releases/content/io/github/gugalnikov/presto-consul-connect"
 }
 
 variable "container_environment_variables" {
@@ -118,9 +118,9 @@ variable "container_environment_variables" {
 }
 
 variable "use_canary" {
-  type = bool
+  type        = bool
   description = "Uses canary deployment for Presto"
-  default = false
+  default     = false
 }
 
 variable "resource" {
@@ -141,12 +141,12 @@ variable "resource" {
 
 variable "resource_proxy" {
   type = object({
-    cpu     = number,
-    memory  = number
+    cpu    = number,
+    memory = number
   })
   default = {
-    cpu     = 200,
-    memory  = 128
+    cpu    = 200,
+    memory = 128
   }
   description = "Presto proxy resources"
   validation {

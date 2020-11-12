@@ -6,10 +6,10 @@ locals {
     ], var.container_environment_variables)
   )
 
-  template_standalone = file("${path.module}/conf/nomad/presto_standalone.hcl")
-  template_cluster    = file("${path.module}/conf/nomad/presto.hcl")
+  template_standalone       = file("${path.module}/conf/nomad/presto_standalone.hcl")
+  template_cluster          = file("${path.module}/conf/nomad/presto.hcl")
   consul_connect_plugin_uri = "${var.consul_connect_plugin_artifact_source}/${var.consul_connect_plugin_version}/presto-consul-connect-${var.consul_connect_plugin_version}-jar-with-dependencies.jar"
-  node_types = var.coordinator ? ["coordinator", "worker"] : ["worker"]
+  node_types                = var.coordinator ? ["coordinator", "worker"] : ["worker"]
 }
 
 data "template_file" "template_nomad_job_presto" {

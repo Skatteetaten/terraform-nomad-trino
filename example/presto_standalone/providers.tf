@@ -11,7 +11,7 @@ terraform {
 
 provider "vault" {
   address = "http://127.0.0.1:8200"
-  token = "master"
+  token   = "master"
 }
 
 data "vault_generic_secret" "nomad_secret_id" {
