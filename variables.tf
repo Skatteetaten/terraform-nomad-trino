@@ -44,7 +44,7 @@ variable "shared_secret_user" {
 
 variable "vault_secret" {
   type = object({
-    use_vault_secret_provider = string,
+    use_vault_secret_provider = bool,
     vault_kv_policy_name      = string,
     vault_kv_path             = string,
     vault_kv_secret_key_name  = string
