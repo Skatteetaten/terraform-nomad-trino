@@ -48,11 +48,22 @@ Please follow [this section in original template](https://github.com/fredrikhgre
 
 ## Requirements
 
-### Required software
-See [template README's prerequisites](template_README.md#install-prerequisites).
+### Required modules
+| Module | Version |
+| :----- | :------ |
+| [terraform-nomad-hive](https://github.com/fredrikhgrelland/terraform-nomad-hive) | 0.3.0 or newer |
+| [terraform-nomad-minio](https://github.com/fredrikhgrelland/terraform-nomad-minio) | 0.3.0 or newer |
+| [terraform-nomad-postgres](https://github.com/fredrikhgrelland/terraform-nomad-postgres) | 0.3.0 or newer |
 
+### Required software
 All software is provided and run with docker.
 See the [Makefile](Makefile) for inspiration.
+
+If you are using another system such as MacOS, you may need to install the following tools in some sections:
+- [GNU make](https://man7.org/linux/man-pages/man1/make.1.html)
+- [Docker](https://www.docker.com/)
+- [Consul](https://releases.hashicorp.com/consul/)
+- [Presto CLI](https://prestosql.io/docs/current/installation/cli.html)
 
 ## Usage
 The following command will run the example in [example/presto_cluster](./example/presto_cluster):
@@ -86,6 +97,7 @@ make presto-cli # connect to Presto CLI
 If you are on a Mac the proxies and Presto CLI may not work.
 Instead, you can install the [Consul binary](https://www.consul.io/docs/install) and run the commands in the `Makefile` manually (without `docker run ..`).
 Further, you need to install the [Presto CLI](https://prestosql.io/docs/current/installation/cli.html) on your local machine or inside the box.
+See also [required software](#required-software).
 
 ### Verifying setup
 - If you ran the [presto_standalone](example/presto_standalone) example, you can verify successful deployment with either of the following options.
@@ -99,7 +111,7 @@ Further, you need to install the [Presto CLI](https://prestosql.io/docs/current/
 # from metastore (loopback)
 beeline -u jdbc:hive2://
 ```
-* Query existing tables (beeline-cli)
+4. You can now query existing tables with the (beeline-cli)
 
 ```text
 SHOW DATABASES;
@@ -138,6 +150,9 @@ SELECT * FROM hive.default.iris;
 #### Option 3 [local Presto-cli]
 > :information_source: Check [required software section](#required-software) first.
 
+The following command contains two docker containers with the flag `--network=host`, natively run on Linux.
+An important note is that MacOS Docker runs in a virtual machine. In that case, you need to use the local binary `consul` to install proxy and in another terminal local binary with `presto` cli to connect.
+
 In a terminal run a proxy and `Presto-cli` session:
 ```text
 make presto-cli
@@ -160,7 +175,9 @@ presto --server localhost:8080 --catalog hive --schema default --user presto --f
 ```
 
 ### Providers
-This module uses the [Nomad](https://registry.terraform.io/providers/hashicorp/nomad/latest/docs) provider.
+This module uses the following roviders:
+- [Nomad](https://registry.terraform.io/providers/hashicorp/nomad/latest/docs)
+- [Vault](https://registry.terraform.io/providers/hashicorp/vault/latest/docs)
 
 ### Intentions
 The following intentions are required. In the examples, intentions are created in the Ansible playboook [01_create_intetion.yml](dev/ansible/01_create_intention.yml):
@@ -232,7 +249,7 @@ module "presto" {
 | nomad_job_name | Nomad job name | string | "presto" | yes |
 | mode | Switch for Nomad jobs to use cluster or standalone deployment | string | "standalone" | no |
 | shared_secret_user | Shared secret provided by user(length must be >= 12)  | string | "asdasdsadafdsa" | no |
-| vault_secret | Set of properties to be able fetch shared cluster secret from Vault  | object(bool, string, string, string) | use_vault_secret_provider = true <br> vault_kv_policy_name = "kv-secret" <br> vault_kv_path = "secret/data/presto" <br> vault_kv_secret_key_name = "cluster_shared_secret" | no |
+| vault_secret | Set of properties to be able fetch shared cluster secret from Vault  | object(bool, string, string, string) | use_vault_secret_provider = true <br> vault_kv_policy_name = "kv-secret" <br> vault_kv_path = "secret/data/dev/presto" <br> vault_kv_secret_key_name = "cluster_shared_secret" | no |
 | service_name | Presto service name | string | "presto" | yes |
 | resource | Resource allocation for Presto nodes (cpu & memory) | object(number, number) | { <br> cpu = 500 <br> memory = 1024 <br> } | no |
 | resource_proxy | Resource allocation for proxy (cpu & memory) | object(number, number) | { <br> cpu = 200 <br> memory = 128 <br> } | no |

@@ -5,7 +5,7 @@ locals {
   presto = {
     use_vault_secret_provider = true
     vault_kv_policy_name      = "kv-secret"
-    vault_kv_path             = "secret/data/presto"
+    vault_kv_path             = "secret/data/dev/presto"
     vault_kv_secret_key_name  = "cluster_shared_secret"
     service_name              = "presto"
   }
