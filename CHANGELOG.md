@@ -14,6 +14,7 @@
 - Additional information about proxies and Presto CLI #60
 - Updated Verifying setup section in readme #46
 - Bumped module versions in both examples #77
+- Using explicit variable definition instead of locals #82
 
 ### Fixed
 - `make up` warning #57
