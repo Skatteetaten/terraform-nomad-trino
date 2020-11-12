@@ -175,7 +175,7 @@ presto --server localhost:8080 --catalog hive --schema default --user presto --f
 ```
 
 ### Providers
-This module uses the following roviders:
+This module uses the following providers:
 - [Nomad](https://registry.terraform.io/providers/hashicorp/nomad/latest/docs)
 - [Vault](https://registry.terraform.io/providers/hashicorp/vault/latest/docs)
 
