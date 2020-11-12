@@ -15,11 +15,7 @@
 
 ---
 
-Module contains a nomad job [./conf/nomad/presto.hcl](./conf/nomad/presto.hcl) with [presto sql server](https://github.com/prestosql/presto).
-
-Additional information:
-- [consul-connect](https://www.consul.io/docs/connect) integration
-- [nomad docker driver](https://www.nomadproject.io/docs/drivers/docker.html)
+Module contains a Nomad job [./conf/nomad/presto.hcl](./conf/nomad/presto.hcl) with [Presto sql server](https://github.com/prestosql/presto).
 
 ## Contents
 0. [Prerequisites](#prerequisites)
@@ -72,7 +68,7 @@ will run the example in [example/presto_standalone](./example/presto_standalone)
 For more information, check out the documentation in the [presto_cluster](./example/presto_cluster) README.
 
 ### Connect to the services (proxies)
-Since the services in this module use the [`sidecar_service`](https://www.nomadproject.io/docs/job-specification/sidecar_service), you need to connect to the services using a [consul connect proxy](https://www.consul.io/commands/connect/proxy).
+Since the services in this module use the [`sidecar_service`](https://www.nomadproject.io/docs/job-specification/sidecar_service), you need to connect to the services using a Consul [connect proxy](https://www.consul.io/commands/connect/proxy).
 The proxy connections are pre-made and defined in the `Makefile`:
 ```sh
 make proxy-hive     # to hivemetastore
@@ -95,7 +91,7 @@ Further, you need to install the [Presto CLI](https://prestosql.io/docs/current/
 - If you ran the [presto_standalone](example/presto_standalone) example, you can verify successful deployment with either of the following options.
 - If you ran the [presto_cluster](example/presto_cluster) example, you can only verify with [option 1](#option-1-hive-metastore-and-nomad) and [option 3](#option-3-local-presto-cli).
 
-#### Option 1 [hive-metastore and nomad]
+#### Option 1 [Hive-metastore and Nomad]
 1. Go to [http://localhost:4646/ui/exec/hive-metastore](http://localhost:4646/ui/exec/hive-metastore)
 2. Chose metastoreserver -> metastoreserver and click enter.
 3. Connect using beeline cli:
@@ -117,16 +113,16 @@ SELECT * FROM iris;
 SELECT * FROM tweets;
 ```
 
-#### Option 2 [presto and nomad]
+#### Option 2 [Presto and Nomad]
 > :warning: Only works with [presto_standalone](example/presto_standalone) example.
 
 1. Go to [http://localhost:4646/ui/exec/presto](http://localhost:4646/ui/exec/presto)
 2. Chose standalone -> server and click enter.
-3. Connect using presto-cli:
+3. Connect using the Presto-cli:
 ```text
 presto
 ```
-* Query existing tables (presto-cli)
+4. You can now query existing tables with the Presto-cli:
 ```text
 SHOW CATALOGS [ LIKE pattern ]
 SHOW SCHEMAS [ FROM catalog ] [ LIKE pattern ]
@@ -139,10 +135,10 @@ SHOW TABLES IN hive.default;
 SELECT * FROM hive.default.iris;
 ```
 
-#### Option 3 [local presto-cli]
+#### Option 3 [local Presto-cli]
 > :information_source: Check [required software section](#required-software) first.
 
-In a terminal run a proxy and `presto-cli` session:
+In a terminal run a proxy and `Presto-cli` session:
 ```text
 make presto-cli
 ```
@@ -153,7 +149,7 @@ show tables;
 select * from <table>;
 ```
 
-To debug or continue developing you can use [presto cli](https://prestosql.io/docs/current/installation/cli.html) locally.
+To debug or continue developing you can use [Presto cli](https://prestosql.io/docs/current/installation/cli.html) locally.
 Some useful commands.
 ```text
 # manual table creation for different file types
@@ -180,7 +176,7 @@ The following intentions are required. In the examples, intentions are created i
 > :warning: Note that these intentions needs to be created if you are using the module in another module.
 
 ## Example usage
-The following code is an example of the Presto module in `cluster` mode. 
+The following code is an example of the Presto module in `cluster` mode.
 For detailed information check the [example/presto_cluster](example/presto_cluster) or the [example/presto_standalone](example/presto_standalone) directory.
 ```hcl
 module "presto" {
@@ -234,23 +230,22 @@ module "presto" {
 | nomad_data_center | Nomad data centers | list(string) | ["dc1"] | yes |
 | nomad_namespace | [Enterprise] Nomad namespace | string | "default" | yes |
 | nomad_job_name | Nomad job name | string | "presto" | yes |
-| mode | Switch for nomad jobs to use cluster or standalone deployment | string | "standalone" | no |
+| mode | Switch for Nomad jobs to use cluster or standalone deployment | string | "standalone" | no |
 | shared_secret_provider | Provider for the shared secret: user or Vault | string | "user" | no |
 | shared_secret_user | Shared secret provided by user(length must be >= 12)  | string | "asdasdsadafdsa" | no |
-| vault_secret | Set of properties to be able fetch shared cluster secret from vault  | object(bool, string, string, string) | use_vault_secret_provider = true <br> vault_kv_policy_name = "kv-secret" <br> vault_kv_path = "secret/data/presto" <br> vault_kv_secret_key_name = "cluster_shared_secret" | no |
+| vault_secret | Set of properties to be able fetch shared cluster secret from Vault  | object(bool, string, string, string) | use_vault_secret_provider = true <br> vault_kv_policy_name = "kv-secret" <br> vault_kv_path = "secret/data/presto" <br> vault_kv_secret_key_name = "cluster_shared_secret" | no |
 | service_name | Presto service name | string | "presto" | yes |
 | resource | Resource allocation for Presto nodes (cpu & memory) | object(number, number) | { <br> cpu = 500 <br> memory = 1024 <br> } | no |
 | resource_proxy | Resource allocation for proxy (cpu & memory) | object(number, number) | { <br> cpu = 200 <br> memory = 128 <br> } | no |
 | port | Presto http port | number | 8080 | yes |
 | docker_image | Presto docker image | string | "prestosql/presto:341" | yes |
-| local_docker_image | Switch for nomad jobs to use artifact for image lookup | bool | false | no |
+| local_docker_image | Switch for Nomad jobs to use artifact for image lookup | bool | false | no |
 | container_environment_variables | Presto environment variables | list(string) | [""] | no |
-| workers | cluster: Number of nomad worker nodes | number | 1 | no |
+| workers | cluster: Number of Nomad worker nodes | number | 1 | no |
 | coordinator | Include a coordinator in addition to the workers. Set this to `false` when extending an existing cluster | bool | true | no |
 | use_canary | Uses canary deployment for Presto | bool | false | no |
-| consul_http_addr | Address to consul, resolvable from the container. e.g. <http://127.0.0.1:8500> | string | - | yes |
-| consul_connect_plugin | Deploy consul connect plugin for presto | bool | true | no |
-| consul_connect_plugin_version | Version of the consul connect plugin for presto (on maven central) src here: <https://github.com/gugalnikov/presto-consul-connect> | string | "2.2.0" | no |
+| consul_connect_plugin | Deploy Consul connect plugin for presto | bool | true | no |
+| consul_connect_plugin_version | Version of the Consul connect plugin for presto (on maven central) src here: <https://github.com/gugalnikov/presto-consul-connect> | string | "2.2.0" | no |
 | consul_connect_plugin_artifact_source | Artifact URI source | string | "https://oss.sonatype.org/service/local/repositories/releases/content/io/github/gugalnikov/presto-consul-connect" | no |
 | debug | Turn on debug logging in presto nodes | bool | false | no |
 | hivemetastore.service_name | Hive metastore service name | string | "hive-metastore" | yes |

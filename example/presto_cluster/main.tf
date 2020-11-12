@@ -81,7 +81,7 @@ module "minio" {
   container_environment_variables = ["JUST_EXAMPLE_VAR1=some-value", "ANOTHER_EXAMPLE2=some-other-value"]
   data_dir                        = "/minio/data"
   use_host_volume                 = true
-  use_canary                      = false
+  use_canary                      = true
 
   # mc
   mc_service_name                    = "mc"
@@ -114,7 +114,7 @@ module "postgres" {
   container_environment_variables = ["PGDATA=/var/lib/postgresql/data"]
   volume_destination              = "/var/lib/postgresql/data"
   use_host_volume                 = true
-  use_canary                      = false
+  use_canary                      = true
 }
 
 module "hive" {
@@ -126,7 +126,7 @@ module "hive" {
   local_docker_image = false
 
   # hive
-  use_canary          = false
+  use_canary          = true
   hive_service_name   = "hive-metastore"
   hive_container_port = 9083
   hive_docker_image   = "fredrikhgrelland/hive:3.1.0"
