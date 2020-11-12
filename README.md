@@ -231,7 +231,6 @@ module "presto" {
 | nomad_namespace | [Enterprise] Nomad namespace | string | "default" | yes |
 | nomad_job_name | Nomad job name | string | "presto" | yes |
 | mode | Switch for Nomad jobs to use cluster or standalone deployment | string | "standalone" | no |
-| shared_secret_provider | Provider for the shared secret: user or Vault | string | "user" | no |
 | shared_secret_user | Shared secret provided by user(length must be >= 12)  | string | "asdasdsadafdsa" | no |
 | vault_secret | Set of properties to be able fetch shared cluster secret from Vault  | object(bool, string, string, string) | use_vault_secret_provider = true <br> vault_kv_policy_name = "kv-secret" <br> vault_kv_path = "secret/data/presto" <br> vault_kv_secret_key_name = "cluster_shared_secret" | no |
 | service_name | Presto service name | string | "presto" | yes |
