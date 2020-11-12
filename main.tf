@@ -2,7 +2,7 @@ locals {
   datacenters = join(",", var.nomad_datacenters)
   presto_env_vars = join("\n",
     concat([
-      "JUST_EXAMPLE_ENV=some-value",
+      "EXAMPLE_ENV=some-value",
     ], var.container_environment_variables)
   )
 

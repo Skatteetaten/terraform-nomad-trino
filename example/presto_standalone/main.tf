@@ -1,49 +1,27 @@
 locals {
-  nomad_namespace   = "default"
   nomad_datacenters = ["dc1"]
-
-  presto = {
-    use_vault_secret_provider = true
-    vault_kv_policy_name      = "kv-secret"
-    vault_kv_path             = "secret/data/dev/presto"
-    vault_kv_secret_key_name  = "cluster_shared_secret"
-    service_name              = "presto"
-  }
-
-  hivemetastore = {
-    service_name = module.hive.service_name
-    port         = module.hive.port
-  }
-
-  minio = {
-    service_name = module.minio.minio_service_name
-    port         = module.minio.minio_port
-    access_key   = module.minio.minio_access_key
-    secret_key   = module.minio.minio_secret_key
-  }
+  nomad_namespace   = "default"
 }
 
 module "presto" {
   depends_on = [
-    module.minio,
-    module.hive
-  ]
+    module.minio, module.hive ]
 
   source = "../.."
 
   # nomad
-  nomad_job_name         = local.presto.service_name
-  nomad_datacenters      = local.nomad_datacenters
-  nomad_namespace        = local.nomad_namespace
+  nomad_job_name      = "presto"
+  nomad_datacenters   = local.nomad_datacenters
+  nomad_namespace     = local.nomad_namespace
 
   # presto
   vault_secret           = {
-                            use_vault_secret_provider = local.presto.use_vault_secret_provider
-                            vault_kv_policy_name      = local.presto.vault_kv_policy_name
-                            vault_kv_path             = local.presto.vault_kv_path
-                            vault_kv_secret_key_name  = local.presto.vault_kv_secret_key_name
-                          }
-  service_name          = local.presto.service_name
+    use_vault_secret_provider = true
+    vault_kv_policy_name      = "kv-secret"
+    vault_kv_path             = "secret/data/dev/presto"
+    vault_kv_secret_key_name  = "cluster_shared_secret"
+  }
+  service_name          = "presto"
   mode                  = "standalone"
   workers               = 1
   consul_http_addr      = "http://10.0.3.10:8500"
@@ -51,8 +29,16 @@ module "presto" {
   use_canary            = true
 
   # other
-  minio                 = local.minio
-  hivemetastore         = local.hivemetastore
+  hivemetastore = {
+    service_name = module.hive.service_name
+    port         = module.hive.port
+  }
+  minio = {
+    service_name = module.minio.minio_service_name
+    port         = module.minio.minio_port
+    access_key   = module.minio.minio_access_key
+    secret_key   = module.minio.minio_secret_key
+  }
 }
 
 module "minio" {

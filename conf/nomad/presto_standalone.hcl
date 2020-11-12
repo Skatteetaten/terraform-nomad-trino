@@ -147,9 +147,9 @@ job "${nomad_job_name}" {
       }
       template {
         data = <<EOH
-          MINIO_ACCESS_KEY = "${minio_access_key}"
-          MINIO_SECRET_KEY = "${minio_secret_key}"
-          EOH
+MINIO_ACCESS_KEY = "${minio_access_key}"
+MINIO_SECRET_KEY = "${minio_secret_key}"
+EOH
         destination = "secrets/.env"
         env         = true
       }
