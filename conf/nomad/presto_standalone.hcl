@@ -22,6 +22,9 @@ job "${nomad_job_name}" {
 
     network {
       mode = "bridge"
+      port "healthcheck" {
+        to = -1
+      }
     }
 
     service {
@@ -38,6 +41,14 @@ job "${nomad_job_name}" {
               destination_name = "${minio_service_name}"
               local_bind_port  = "${minio_port}"
             }
+            expose {
+              path {
+                path            = "/v1/info"
+                protocol        = "http"
+                local_path_port = 8080
+                listener_port   = "healthcheck"
+              }
+            }
           }
         }
         sidecar_task {
@@ -47,24 +58,32 @@ job "${nomad_job_name}" {
           }
         }
       }
-//      TODO: Checks needs to be implemented in another way due to sidecar
-//      check {
-//        task     = "server"
-//        name     = "presto-hive-availability"
-//        type     = "script"
-//        command  = "presto"
-//        args     = ["--execute", "SHOW TABLES IN hive.default"]
-//        interval = "30s"
-//        timeout  = "15s"
-//      }
-//      check {
-//        expose   = true
-//        name     = "presto-info"
-//        type     = "http"
-//        path     = "/v1/info"
-//        interval = "10s"
-//        timeout  = "2s"
-//      }
+      check {
+        task     = "server"
+        name     = "presto-hive-availability"
+        type     = "script"
+        command  = "presto"
+        args     = ["--execute", "SHOW TABLES IN hive.default"]
+        interval = "30s"
+        timeout  = "15s"
+      }
+      check {
+        name     = "presto-info"
+        type     = "http"
+        port     = "healthcheck"
+        path     = "/v1/info"
+        interval = "10s"
+        timeout  = "2s"
+      }
+      check {
+        name         = "presto-minio-availability"
+        type         = "http"
+        path         = "/minio/health/ready"
+        port         = ${minio_port}
+        interval     = "15s"
+        timeout      = "5s"
+        address_mode = "driver"
+      }
     }
 
     task "waitfor-hive-metastore" {
