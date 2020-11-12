@@ -40,24 +40,31 @@ job "${nomad_job_name}" {
             }
           }
         }
+        sidecar_task {
+          resources {
+            cpu    = "${cpu_proxy}"
+            memory = "${memory_proxy}"
+          }
+        }
       }
-      check {
-        task     = "server"
-        name     = "presto-hive-availability"
-        type     = "script"
-        command  = "presto"
-        args     = ["--execute", "SHOW TABLES IN hive.default"]
-        interval = "30s"
-        timeout  = "15s"
-      }
-      check {
-        expose   = true
-        name     = "presto-info"
-        type     = "http"
-        path     = "/v1/info"
-        interval = "10s"
-        timeout  = "2s"
-      }
+//      TODO: Checks needs to be implemented in another way due to sidecar
+//      check {
+//        task     = "server"
+//        name     = "presto-hive-availability"
+//        type     = "script"
+//        command  = "presto"
+//        args     = ["--execute", "SHOW TABLES IN hive.default"]
+//        interval = "30s"
+//        timeout  = "15s"
+//      }
+//      check {
+//        expose   = true
+//        name     = "presto-info"
+//        type     = "http"
+//        path     = "/v1/info"
+//        interval = "10s"
+//        timeout  = "2s"
+//      }
     }
 
     task "waitfor-hive-metastore" {

@@ -45,6 +45,12 @@ job "${nomad_job_name}" {
             }
           }
         }
+        sidecar_task {
+          resources {
+            cpu    = "${cpu_proxy}"
+            memory = "${memory_proxy}"
+          }
+        }
       }
     }
     service {

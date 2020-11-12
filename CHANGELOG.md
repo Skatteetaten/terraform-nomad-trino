@@ -6,11 +6,14 @@
 - Json flatten VIEW example #65
 - Added CPU as user defined variable #67
 - Two target, for standalone and cluster version of presto #61
+- Sidecar proxy to both examples with variables #73
 
 ### Changed
 - Variables regarding credentials/secrets & updated documentation #52
 - Updated box version to 0.7.x #69
 - Additional information about proxies and Presto CLI #60
+- Updated Verifying setup section in readme #46
+- Bumped module versions in both examples #77
 
 ### Fixed
 - `make up` warning #57

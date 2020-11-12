@@ -15,11 +15,7 @@
 
 ---
 
-Module contains a nomad job [./conf/nomad/presto.hcl](./conf/nomad/presto.hcl) with [presto sql server](https://github.com/prestosql/presto).
-
-Additional information:
-- [consul-connect](https://www.consul.io/docs/connect) integration
-- [nomad docker driver](https://www.nomadproject.io/docs/drivers/docker.html)
+Module contains a Nomad job [./conf/nomad/presto.hcl](./conf/nomad/presto.hcl) with [Presto sql server](https://github.com/prestosql/presto).
 
 ## Contents
 0. [Prerequisites](#prerequisites)
@@ -31,10 +27,10 @@ Additional information:
     2. [Verifying setup](#verifying-setup)
     3. [Providers](#providers)
     4. [Intentions](#intentions)
-4. [Inputs](#inputs)
-5. [Outputs](#outputs)
-6. [Secrets & credentials](#secrets--credentials)
-7. [Examples](#examples)
+4. [Example usage](#example-usage)
+5. [Inputs](#inputs)
+6. [Outputs](#outputs)
+7. [Secrets & credentials](#secrets--credentials)
 8. [Contributors](#contributors)
 9. [License](#license)
 10. [References](#references)
@@ -52,11 +48,22 @@ Please follow [this section in original template](https://github.com/fredrikhgre
 
 ## Requirements
 
-### Required software
-See [template README's prerequisites](template_README.md#install-prerequisites).
+### Required modules
+| Module | Version |
+| :----- | :------ |
+| [terraform-nomad-hive](https://github.com/fredrikhgrelland/terraform-nomad-hive) | 0.3.0 or newer |
+| [terraform-nomad-minio](https://github.com/fredrikhgrelland/terraform-nomad-minio) | 0.3.0 or newer |
+| [terraform-nomad-postgres](https://github.com/fredrikhgrelland/terraform-nomad-postgres) | 0.3.0 or newer |
 
+### Required software
 All software is provided and run with docker.
 See the [Makefile](Makefile) for inspiration.
+
+If you are using another system such as MacOS, you may need to install the following tools in some sections:
+- [GNU make](https://man7.org/linux/man-pages/man1/make.1.html)
+- [Docker](https://www.docker.com/)
+- [Consul](https://releases.hashicorp.com/consul/)
+- [Presto CLI](https://prestosql.io/docs/current/installation/cli.html)
 
 ## Usage
 The following command will run the example in [example/presto_cluster](./example/presto_cluster):
@@ -72,7 +79,7 @@ will run the example in [example/presto_standalone](./example/presto_standalone)
 For more information, check out the documentation in the [presto_cluster](./example/presto_cluster) README.
 
 ### Connect to the services (proxies)
-Since the services in this module use the [`sidecar_service`](https://www.nomadproject.io/docs/job-specification/sidecar_service), you need to connect to the services using a [consul connect proxy](https://www.consul.io/commands/connect/proxy).
+Since the services in this module use the [`sidecar_service`](https://www.nomadproject.io/docs/job-specification/sidecar_service), you need to connect to the services using a Consul [connect proxy](https://www.consul.io/commands/connect/proxy).
 The proxy connections are pre-made and defined in the `Makefile`:
 ```sh
 make proxy-hive     # to hivemetastore
@@ -90,19 +97,21 @@ make presto-cli # connect to Presto CLI
 If you are on a Mac the proxies and Presto CLI may not work.
 Instead, you can install the [Consul binary](https://www.consul.io/docs/install) and run the commands in the `Makefile` manually (without `docker run ..`).
 Further, you need to install the [Presto CLI](https://prestosql.io/docs/current/installation/cli.html) on your local machine or inside the box.
+See also [required software](#required-software).
 
 ### Verifying setup
-You can verify successful run with next steps:
+- If you ran the [presto_standalone](example/presto_standalone) example, you can verify successful deployment with either of the following options.
+- If you ran the [presto_cluster](example/presto_cluster) example, you can only verify with [option 1](#option-1-hive-metastore-and-nomad) and [option 3](#option-3-local-presto-cli).
 
-#### Option 1 [hive-metastore and nomad]
-* Go to [http://localhost:4646/ui/exec/hive-metastore](http://localhost:4646/ui/exec/hive-metastore)
-* Chose metastoreserver -> metastoreserver and click enter.
-* Connect using beeline cli
+#### Option 1 [Hive-metastore and Nomad]
+1. Go to [http://localhost:4646/ui/exec/hive-metastore](http://localhost:4646/ui/exec/hive-metastore)
+2. Chose metastoreserver -> metastoreserver and click enter.
+3. Connect using beeline cli:
 ```text
 # from metastore (loopback)
 beeline -u jdbc:hive2://
 ```
-* Query existing tables (beeline-cli)
+4. You can now query existing tables with the (beeline-cli)
 
 ```text
 SHOW DATABASES;
@@ -116,14 +125,16 @@ SELECT * FROM iris;
 SELECT * FROM tweets;
 ```
 
-#### Option 2 [presto and nomad]
-* Go to [http://localhost:4646/ui/exec/presto](http://localhost:4646/ui/exec/presto)
-* Chose standalone -> server and click enter.
-* Connect using presto-cli
+#### Option 2 [Presto and Nomad]
+> :warning: Only works with [presto_standalone](example/presto_standalone) example.
+
+1. Go to [http://localhost:4646/ui/exec/presto](http://localhost:4646/ui/exec/presto)
+2. Chose standalone -> server and click enter.
+3. Connect using the Presto-cli:
 ```text
 presto
 ```
-* Query existing tables (presto-cli)
+4. You can now query existing tables with the Presto-cli:
 ```text
 SHOW CATALOGS [ LIKE pattern ]
 SHOW SCHEMAS [ FROM catalog ] [ LIKE pattern ]
@@ -136,21 +147,24 @@ SHOW TABLES IN hive.default;
 SELECT * FROM hive.default.iris;
 ```
 
-#### Option 3 [local presto-cli]
-`NB!` Check [required software section](#required-software) first.
+#### Option 3 [local Presto-cli]
+> :information_source: Check [required software section](#required-software) first.
 
-* in a terminal run a proxy and `presto-cli` session
+The following command contains two docker containers with the flag `--network=host`, natively run on Linux.
+An important note is that MacOS Docker runs in a virtual machine. In that case, you need to use the local binary `consul` to install proxy and in another terminal local binary with `presto` cli to connect.
+
+In a terminal run a proxy and `Presto-cli` session:
 ```text
 make presto-cli
 ```
 
-* Query tables (3 tables should be available)
+You can now query tables (3 tables should be available):
 ```text
 show tables;
 select * from <table>;
 ```
 
-To debug or continue developing you can use [presto cli](https://prestosql.io/docs/current/installation/cli.html) locally.
+To debug or continue developing you can use [Presto cli](https://prestosql.io/docs/current/installation/cli.html) locally.
 Some useful commands.
 ```text
 # manual table creation for different file types
@@ -161,7 +175,9 @@ presto --server localhost:8080 --catalog hive --schema default --user presto --f
 ```
 
 ### Providers
-This module uses the [Nomad](https://registry.terraform.io/providers/hashicorp/nomad/latest/docs) provider.
+This module uses the following providers:
+- [Nomad](https://registry.terraform.io/providers/hashicorp/nomad/latest/docs)
+- [Vault](https://registry.terraform.io/providers/hashicorp/vault/latest/docs)
 
 ### Intentions
 The following intentions are required. In the examples, intentions are created in the Ansible playboook [01_create_intetion.yml](dev/ansible/01_create_intention.yml):
@@ -176,6 +192,54 @@ The following intentions are required. In the examples, intentions are created i
 
 > :warning: Note that these intentions needs to be created if you are using the module in another module.
 
+## Example usage
+The following code is an example of the Presto module in `cluster` mode.
+For detailed information check the [example/presto_cluster](example/presto_cluster) or the [example/presto_standalone](example/presto_standalone) directory.
+```hcl
+module "presto" {
+  depends_on = [
+    module.minio,
+    module.hive
+  ]
+
+  source = "github.com/fredrikhgrelland/terraform-nomad-presto.git?ref=0.0.1"
+
+  # nomad
+  nomad_job_name    = "presto"
+  nomad_datacenters = ["dc1"]
+  nomad_namespace   = "default"
+
+  # presto
+  vault_secret      = {
+                        use_vault_secret_provider = true
+                        vault_kv_policy_name      = "kv-secret"
+                        vault_kv_path             = "secret/data/presto"
+                        vault_kv_secret_key_name  = "cluster_shared_secret"
+                      }
+  service_name     = "presto"
+  docker_image     = "prestosql/presto:341"
+  mode             = "cluster"
+  workers          = 1
+  consul_http_addr = "http://10.0.3.10:8500"
+  use_canary       = true
+  debug            = true
+
+  #hivemetastore
+  hivemetastore = {
+    service_name = module.hive.service_name
+    port         = module.hive.port
+  }
+
+  # minio
+  minio = {
+    service_name = module.minio.minio_service_name
+    port         = module.minio.minio_port
+    access_key   = module.minio.minio_access_key
+    secret_key   = module.minio.minio_secret_key
+  }
+}
+```
+
 ## Inputs
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
@@ -183,23 +247,21 @@ The following intentions are required. In the examples, intentions are created i
 | nomad_data_center | Nomad data centers | list(string) | ["dc1"] | yes |
 | nomad_namespace | [Enterprise] Nomad namespace | string | "default" | yes |
 | nomad_job_name | Nomad job name | string | "presto" | yes |
-| mode | Switch for nomad jobs to use cluster or standalone deployment | string | "standalone" | no |
-| shared_secret_provider | Provider for the shared secret: user or Vault | string | "user" | no |
+| mode | Switch for Nomad jobs to use cluster or standalone deployment | string | "standalone" | no |
 | shared_secret_user | Shared secret provided by user(length must be >= 12)  | string | "asdasdsadafdsa" | no |
-| vault_secret | Set of properties to be able fetch shared cluster secret from vault  | object(bool, string, string, string) | use_vault_secret_provider = true <br> vault_kv_policy_name = "kv-secret" <br> vault_kv_path = "secret/data/presto" <br> vault_kv_secret_key_name = "cluster_shared_secret" | no |
+| vault_secret | Set of properties to be able fetch shared cluster secret from Vault  | object(bool, string, string, string) | use_vault_secret_provider = true <br> vault_kv_policy_name = "kv-secret" <br> vault_kv_path = "secret/data/dev/presto" <br> vault_kv_secret_key_name = "cluster_shared_secret" | no |
 | service_name | Presto service name | string | "presto" | yes |
-| memory | Memory allocation for presto nodes | number | 1024 | no |
-| cpu | CPU allocation for presto nodes | number | 500 | no |
+| resource | Resource allocation for Presto nodes (cpu & memory) | object(number, number) | { <br> cpu = 500 <br> memory = 1024 <br> } | no |
+| resource_proxy | Resource allocation for proxy (cpu & memory) | object(number, number) | { <br> cpu = 200 <br> memory = 128 <br> } | no |
 | port | Presto http port | number | 8080 | yes |
 | docker_image | Presto docker image | string | "prestosql/presto:341" | yes |
-| local_docker_image | Switch for nomad jobs to use artifact for image lookup | bool | false | no |
+| local_docker_image | Switch for Nomad jobs to use artifact for image lookup | bool | false | no |
 | container_environment_variables | Presto environment variables | list(string) | [""] | no |
-| workers | cluster: Number of nomad worker nodes | number | 1 | no |
+| workers | cluster: Number of Nomad worker nodes | number | 1 | no |
 | coordinator | Include a coordinator in addition to the workers. Set this to `false` when extending an existing cluster | bool | true | no |
 | use_canary | Uses canary deployment for Presto | bool | false | no |
-| consul_http_addr | Address to consul, resolvable from the container. e.g. <http://127.0.0.1:8500> | string | - | yes |
-| consul_connect_plugin | Deploy consul connect plugin for presto | bool | true | no |
-| consul_connect_plugin_version | Version of the consul connect plugin for presto (on maven central) src here: <https://github.com/gugalnikov/presto-consul-connect> | string | "2.2.0" | no |
+| consul_connect_plugin | Deploy Consul connect plugin for presto | bool | true | no |
+| consul_connect_plugin_version | Version of the Consul connect plugin for presto (on maven central) src here: <https://github.com/gugalnikov/presto-consul-connect> | string | "2.2.0" | no |
 | consul_connect_plugin_artifact_source | Artifact URI source | string | "https://oss.sonatype.org/service/local/repositories/releases/content/io/github/gugalnikov/presto-consul-connect" | no |
 | debug | Turn on debug logging in presto nodes | bool | false | no |
 | hivemetastore.service_name | Hive metastore service name | string | "hive-metastore" | yes |
@@ -266,60 +328,6 @@ module "postgres" {
                   }
 }
 ```
-
-## Examples
-```hcl
-module "presto" {
-  depends_on = [
-    module.minio,
-    module.hive
-  ]
-
-  source = "github.com/fredrikhgrelland/terraform-nomad-presto.git?ref=0.0.1"
-
-  nomad_job_name    = "presto"
-  nomad_datacenters = ["dc1"]
-  nomad_namespace   = "default"
-
-  vault_secret = {
-    use_vault_secret_provider = true
-    vault_kv_policy_name      = "kv-secret"
-    vault_kv_path             = "secret/data/presto"
-    vault_kv_secret_key_name  = "cluster_shared_secret"
-  }
-
-  service_name = "presto"
-  port         = 8080
-  docker_image = "prestosql/presto:341"
-  mode             = "cluster"
-  workers          = 1
-  consul_http_addr = "http://10.0.3.10:8500"
-  debug            = true
-  use_canary       = true
-
-  minio            = local.minio
-  hivemetastore    = local.hivemetastore
-
-  memory  = 2048
-  cpu     = 600
-
-  #hivemetastore
-  hivemetastore = {
-    service_name = module.hive.service_name
-    port         = 9083
-  }
-
-  # minio
-  minio = {
-    service_name = module.minio.minio_service_name
-    port         = 9000
-    access_key   = module.minio.minio_access_key
-    secret_key   = module.minio.minio_secret_key
-  }
-}
-```
-
-For detailed information check [example/presto_cluster](./example/presto_cluster) directory.
 
 ## Contributors
 [<img src="https://avatars0.githubusercontent.com/u/40291976?s=64&v=4">](https://github.com/fredrikhgrelland)
