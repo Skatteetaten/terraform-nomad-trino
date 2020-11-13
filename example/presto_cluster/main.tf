@@ -190,7 +190,3 @@ module "hive" {
   # Vault provided credentials
   postgres_vault_secret = local.postgres_vault_secret
 }
-
-output "debug" {
-  value = module.presto.debug
-}
