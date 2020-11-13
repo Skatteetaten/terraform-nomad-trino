@@ -7,6 +7,7 @@
 - Added CPU as user defined variable #67
 - Two target, for standalone and cluster version of presto #61
 - Sidecar proxy to both examples with variables #73
+- Improve credentials management (vault provided credentials) #64
 
 ### Changed
 - Variables regarding credentials/secrets & updated documentation #52

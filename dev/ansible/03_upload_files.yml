@@ -46,8 +46,22 @@
     - example-upload
     - test
 
+- name: Register access key
+  shell: docker exec $(docker ps -a -q --filter ancestor="minio/minio:latest") sh -c "env | grep MINIO_ACCESS_KEY=" | cut -f2 -d"="
+  register: access_key
+  tags:
+    - example-upload
+    - test
+
+- name: Register secret key
+  shell: docker exec $(docker ps -a -q --filter ancestor="minio/minio:latest") sh -c "env | grep MINIO_SECRET_KEY=" | cut -f2 -d"="
+  register: secret_key
+  tags:
+    - example-upload
+    - test
+
 - name: Add minio config
-  shell: mc config host add minio-container http://127.0.0.1:9999 minio minio123
+  shell: mc config host add minio-container http://127.0.0.1:9999 {{ access_key.stdout }} {{ secret_key.stdout }}
   tags:
     - example-upload
     - test
