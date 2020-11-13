@@ -1,58 +1,44 @@
 locals {
-  nomad_namespace   = "default"
   nomad_datacenters = ["dc1"]
+  nomad_namespace   = "default"
+}
 
-  presto = {
+module "presto" {
+  depends_on = [
+  module.minio, module.hive]
+
+  source = "../.."
+
+  # nomad
+  nomad_job_name    = "presto"
+  nomad_datacenters = local.nomad_datacenters
+  nomad_namespace   = local.nomad_namespace
+
+  # presto
+  vault_secret = {
     use_vault_secret_provider = true
     vault_kv_policy_name      = "kv-secret"
     vault_kv_path             = "secret/data/dev/presto"
     vault_kv_secret_key_name  = "cluster_shared_secret"
-    service_name              = "presto"
   }
+  service_name     = "presto"
+  mode             = "standalone"
+  workers          = 1
+  consul_http_addr = "http://10.0.3.10:8500"
+  debug            = true
+  use_canary       = true
 
+  # other
   hivemetastore = {
     service_name = module.hive.service_name
     port         = module.hive.port
   }
-
   minio = {
     service_name = module.minio.minio_service_name
     port         = module.minio.minio_port
     access_key   = module.minio.minio_access_key
     secret_key   = module.minio.minio_secret_key
   }
-}
-
-module "presto" {
-  depends_on = [
-    module.minio,
-    module.hive
-  ]
-
-  source = "../.."
-
-  # nomad
-  nomad_job_name         = local.presto.service_name
-  nomad_datacenters      = local.nomad_datacenters
-  nomad_namespace        = local.nomad_namespace
-
-  # presto
-  vault_secret           = {
-                            use_vault_secret_provider = local.presto.use_vault_secret_provider
-                            vault_kv_policy_name      = local.presto.vault_kv_policy_name
-                            vault_kv_path             = local.presto.vault_kv_path
-                            vault_kv_secret_key_name  = local.presto.vault_kv_secret_key_name
-                          }
-  service_name          = local.presto.service_name
-  mode                  = "standalone"
-  workers               = 1
-  consul_http_addr      = "http://10.0.3.10:8500"
-  debug                 = true
-  use_canary            = true
-
-  # other
-  minio                 = local.minio
-  hivemetastore         = local.hivemetastore
 }
 
 module "minio" {
@@ -64,17 +50,17 @@ module "minio" {
   nomad_host_volume = "persistence-minio"
 
   # minio
-  service_name                    = "minio"
-  host                            = "127.0.0.1"
-  port                            = 9000
-  container_image                 = "minio/minio:latest" # todo: avoid using tag latest in future releases
-  vault_secret                    = {
-                                      use_vault_provider   = false,
-                                      vault_kv_policy_name = "",
-                                      vault_kv_path        = "",
-                                      vault_kv_access_key  = "",
-                                      vault_kv_secret_key  = ""
-                                    }
+  service_name    = "minio"
+  host            = "127.0.0.1"
+  port            = 9000
+  container_image = "minio/minio:latest" # todo: avoid using tag latest in future releases
+  vault_secret = {
+    use_vault_provider   = false,
+    vault_kv_policy_name = "",
+    vault_kv_path        = "",
+    vault_kv_access_key  = "",
+    vault_kv_secret_key  = ""
+  }
   access_key                      = "minio"
   secret_key                      = "minio123"
   buckets                         = ["default", "hive"]
@@ -98,16 +84,16 @@ module "postgres" {
   nomad_host_volume = "persistence-postgres"
 
   # postgres
-  service_name                    = "postgres"
-  container_image                 = "postgres:12-alpine"
-  container_port                  = 5432
-  vault_secret                    = {
-                                      use_vault_provider     = false,
-                                      vault_kv_policy_name   = "",
-                                      vault_kv_path          = "",
-                                      vault_kv_username_name = "",
-                                      vault_kv_password_name = ""
-                                    }
+  service_name    = "postgres"
+  container_image = "postgres:12-alpine"
+  container_port  = 5432
+  vault_secret = {
+    use_vault_provider     = false,
+    vault_kv_policy_name   = "",
+    vault_kv_path          = "",
+    vault_kv_username_name = "",
+    vault_kv_password_name = ""
+  }
   admin_user                      = "hive"
   admin_password                  = "hive"
   database                        = "metastore"
@@ -131,12 +117,12 @@ module "hive" {
   hive_container_port = 9083
   hive_docker_image   = "fredrikhgrelland/hive:3.1.0"
   resource = {
-    cpu     = 500,
-    memory  = 1024
+    cpu    = 500,
+    memory = 1024
   }
-  resource_proxy =  {
-    cpu     = 200,
-    memory  = 128
+  resource_proxy = {
+    cpu    = 200,
+    memory = 128
   }
 
   #support CSV -> https://towardsdatascience.com/load-and-query-csv-file-in-s3-with-presto-b0d50bc773c9
