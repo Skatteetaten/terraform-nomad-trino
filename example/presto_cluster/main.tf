@@ -16,7 +16,7 @@ locals {
     vault_kv_secret_key_name  = "secret_key"
   }
   postgres_vault_secret = {
-    use_vault_provider     = false
+    use_vault_provider     = true
     vault_kv_policy_name   = "kv-secret"
     vault_kv_path          = "secret/data/dev/postgres"
     vault_kv_username_name = "username"
@@ -189,4 +189,8 @@ module "hive" {
 
   # Vault provided credentials
   postgres_vault_secret = local.postgres_vault_secret
+}
+
+output "debug" {
+  value = module.presto.debug
 }
