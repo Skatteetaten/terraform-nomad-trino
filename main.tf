@@ -12,7 +12,7 @@ locals {
   node_types                = var.coordinator ? ["coordinator", "worker"] : ["worker"]
 
   vault_provider = var.vault_secret.use_vault_provider || var.minio_vault_secret.use_vault_provider
-  vault_kv_policy_name = jsonencode(
+  vault_kv_policy_name_set = jsonencode(
     distinct(
       concat(
         [var.vault_secret.vault_kv_policy_name],
@@ -32,8 +32,8 @@ data "template_file" "template_nomad_job_presto" {
     namespace      = var.nomad_namespace
 
     # policies if vault secret kv provider is ON
-    use_vault_provider   = local.vault_provider
-    vault_kv_policy_name = local.vault_kv_policy_name
+    use_vault_provider      = local.vault_provider
+    vault_policy_array      = local.vault_kv_policy_name_set
 
     # presto
     service_name              = var.service_name
@@ -77,11 +77,11 @@ data "template_file" "template_nomad_job_presto" {
     minio_secret_key   = var.minio_service.secret_key
 
     ## if creds are provided by vault
-    minio_use_vault_provider       = var.minio_vault_secret.use_vault_provider
-    minio_vault_kv_policy_name     = var.minio_vault_secret.vault_kv_policy_name
-    minio_vault_kv_path            = var.minio_vault_secret.vault_kv_path
-    minio_vault_kv_access_key_name = var.minio_vault_secret.vault_kv_access_key_name
-    minio_vault_kv_secret_key_name = var.minio_vault_secret.vault_kv_secret_key_name
+    minio_use_vault_provider        = var.minio_vault_secret.use_vault_provider
+    minio_vault_kv_policy_name      = var.minio_vault_secret.vault_kv_policy_name # This var is appended to local.vault_kv_policy_name_set
+    minio_vault_kv_path             = var.minio_vault_secret.vault_kv_path
+    minio_vault_kv_access_key_name  = var.minio_vault_secret.vault_kv_access_key_name
+    minio_vault_kv_secret_key_name  = var.minio_vault_secret.vault_kv_secret_key_name
   }
 }
 

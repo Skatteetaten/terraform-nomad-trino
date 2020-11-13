@@ -4,10 +4,13 @@ locals {
 }
 
 module "presto" {
-  depends_on = [
-  module.minio, module.hive]
-
   source = "../.."
+
+  depends_on = [
+    module.minio,
+    module.hive
+  ]
+
 
   # nomad
   nomad_job_name    = "presto"
