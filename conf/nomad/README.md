@@ -1,6 +1,6 @@
 # Nomad
 
-There are two nomad jobs available.
+There are two Nomad jobs available.
 - cluster [presto.hcl](presto.hcl)
 - standalone [presto_standalone.hcl](presto_standalone.hcl)
 

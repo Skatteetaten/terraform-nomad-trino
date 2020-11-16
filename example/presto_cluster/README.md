@@ -1,13 +1,14 @@
 # Presto cluster example
-The current directory contains terraform related files that use the module in `../../`. The example module spins up Presto in [cluster mode](../conf/nomad/presto.hcl) having one worker.
-It uses vault as the shared secret provider. For more details check [main.tf](./main.tf).
+The current directory contains terraform related files that use the module in `../../`.
+The example module spins up Presto in [cluster mode](../../conf/nomad/presto.hcl) having one worker and one coordinator.
+It uses Vault as the shared secret provider. For more details check [main.tf](./main.tf).
 
 ## Modules in use
 | Modules       | version       |
 | ------------- |:-------------:|
-| [terraform-nomad-postgres](https://github.com/fredrikhgrelland/terraform-nomad-postgres) | 0.2.0 |
-| [terraform-nomad-minio](https://github.com/fredrikhgrelland/terraform-nomad-minio) | 0.2.0 |
-| [terraform-nomad-hive](https://github.com/fredrikhgrelland/terraform-nomad-hive) | 0.2.0 |
+| [terraform-nomad-postgres](https://github.com/fredrikhgrelland/terraform-nomad-postgres) | 0.3.0 |
+| [terraform-nomad-minio](https://github.com/fredrikhgrelland/terraform-nomad-minio) | 0.3.0 |
+| [terraform-nomad-hive](https://github.com/fredrikhgrelland/terraform-nomad-hive) | 0.3.0 |
 
 ## Services
 ![img](../resources/images/terraform-nomad-presto.png)
