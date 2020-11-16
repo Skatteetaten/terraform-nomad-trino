@@ -44,17 +44,17 @@ variable "shared_secret_user" {
 
 variable "vault_secret" {
   type = object({
-    use_vault_provider        = bool,
-    vault_kv_policy_name      = string,
-    vault_kv_path             = string,
-    vault_kv_secret_key_name  = string
+    use_vault_provider       = bool,
+    vault_kv_policy_name     = string,
+    vault_kv_path            = string,
+    vault_kv_secret_key_name = string
   })
   description = "Set of properties to be able fetch shared cluster secret from vault"
   default = {
-    use_vault_provider        = true
-    vault_kv_policy_name      = "kv-secret"
-    vault_kv_path             = "secret/data/path/to/cluster-shared-secret/presto"
-    vault_kv_secret_key_name  = "cluster_shared_secret"
+    use_vault_provider       = true
+    vault_kv_policy_name     = "kv-secret"
+    vault_kv_path            = "secret/data/path/to/cluster-shared-secret/presto"
+    vault_kv_secret_key_name = "cluster_shared_secret"
   }
 }
 

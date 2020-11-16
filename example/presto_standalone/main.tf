@@ -19,10 +19,10 @@ module "presto" {
 
   # presto
   vault_secret = {
-    use_vault_provider        = true
-    vault_kv_policy_name      = "kv-secret"
-    vault_kv_path             = "secret/data/dev/presto"
-    vault_kv_secret_key_name  = "cluster_shared_secret"
+    use_vault_provider       = true
+    vault_kv_policy_name     = "kv-secret"
+    vault_kv_path            = "secret/data/dev/presto"
+    vault_kv_secret_key_name = "cluster_shared_secret"
   }
   service_name     = "presto"
   mode             = "standalone"
@@ -32,12 +32,12 @@ module "presto" {
   use_canary       = true
 
   resource = {
-    cpu = 500
+    cpu    = 500
     memory = 1024
   }
 
   resource_proxy = {
-    cpu = 200
+    cpu    = 200
     memory = 128
   }
 
@@ -53,11 +53,11 @@ module "presto" {
     secret_key   = module.minio.minio_secret_key
   }
   minio_vault_secret = {
-    use_vault_provider      = false
-    vault_kv_policy_name      = ""
-    vault_kv_path             = ""
+    use_vault_provider       = false
+    vault_kv_policy_name     = ""
+    vault_kv_path            = ""
     vault_kv_access_key_name = ""
-    vault_kv_secret_key_name  = ""
+    vault_kv_secret_key_name = ""
   }
 }
 

@@ -17,22 +17,22 @@ module "presto" {
   nomad_namespace   = local.nomad_namespace
 
   resource = {
-    cpu = 500
+    cpu    = 500
     memory = 1024
   }
 
   resource_proxy = {
-    cpu = 200
+    cpu    = 200
     memory = 128
   }
 
 
   # Vault provided credentials
   vault_secret = {
-    use_vault_provider        = true
-    vault_kv_policy_name      = "kv-secret"
-    vault_kv_path             = "secret/data/dev/presto"
-    vault_kv_secret_key_name  = "cluster_shared_secret"
+    use_vault_provider       = true
+    vault_kv_policy_name     = "kv-secret"
+    vault_kv_path            = "secret/data/dev/presto"
+    vault_kv_secret_key_name = "cluster_shared_secret"
   }
 
   service_name     = "presto"
@@ -57,11 +57,11 @@ module "presto" {
 
   # Vault provided credentials
   minio_vault_secret = {
-    use_vault_provider        = true
-    vault_kv_policy_name      = "kv-secret"
-    vault_kv_path             = "secret/data/dev/minio"
-    vault_kv_access_key_name  = "access_key"
-    vault_kv_secret_key_name  = "secret_key"
+    use_vault_provider       = true
+    vault_kv_policy_name     = "kv-secret"
+    vault_kv_path            = "secret/data/dev/minio"
+    vault_kv_access_key_name = "access_key"
+    vault_kv_secret_key_name = "secret_key"
   }
 
 }
@@ -129,8 +129,8 @@ module "postgres" {
   }
 
   # Credentials will be provided via vault > vault_secret.use_vault_provider = true
-  admin_user                      = ""
-  admin_password                  = ""
+  admin_user     = ""
+  admin_password = ""
 
   database                        = "metastore"
   volume_destination              = "/var/lib/postgresql/data"
@@ -175,11 +175,11 @@ module "hive" {
 
   # Vault provided credentials
   minio_vault_secret = {
-    use_vault_provider        = true
-    vault_kv_policy_name      = "kv-secret"
-    vault_kv_path             = "secret/data/dev/minio"
-    vault_kv_access_key_name  = "access_key"
-    vault_kv_secret_key_name  = "secret_key"
+    use_vault_provider       = true
+    vault_kv_policy_name     = "kv-secret"
+    vault_kv_path            = "secret/data/dev/minio"
+    vault_kv_access_key_name = "access_key"
+    vault_kv_secret_key_name = "secret_key"
   }
 
   # Postgres
