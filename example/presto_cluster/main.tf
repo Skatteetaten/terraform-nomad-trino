@@ -51,8 +51,6 @@ module "presto" {
   minio_service = {
     service_name = module.minio.minio_service_name
     port         = module.minio.minio_port
-    access_key   = ""
-    secret_key   = ""
   }
 
   # Vault provided credentials
