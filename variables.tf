@@ -193,7 +193,7 @@ variable "minio_vault_secret" {
   default = {
     use_vault_provider       = false
     vault_kv_policy_name     = "kv-secret"
-    vault_kv_path            = "secret/path/to/minio/creds"
+    vault_kv_path            = "secret/data/dev/presto"
     vault_kv_access_key_name = "access_key"
     vault_kv_secret_key_name = "secret_key"
   }
