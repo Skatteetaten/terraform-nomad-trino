@@ -175,12 +175,12 @@ job "${nomad_job_name}" {
         data = <<EOH
 %{ if minio_use_vault_provider }
 {{ with secret "${minio_vault_kv_path}" }}
-MINIO_ACCESS_KEY = "{{ .Data.data.${minio_vault_kv_access_key_name} }}"
-MINIO_SECRET_KEY = "{{ .Data.data.${minio_vault_kv_secret_key_name} }}"
+MINIO_ACCESS_KEY="{{ .Data.data.${minio_vault_kv_access_key_name} }}"
+MINIO_SECRET_KEY="{{ .Data.data.${minio_vault_kv_secret_key_name} }}"
 {{ end }}
 %{ else }
-MINIO_ACCESS_KEY = "${minio_access_key}"
-MINIO_SECRET_KEY = "${minio_secret_key}"
+MINIO_ACCESS_KEY="${minio_access_key}"
+MINIO_SECRET_KEY="${minio_secret_key}"
 %{ endif }
 EOH
         destination = "secrets/.env"
