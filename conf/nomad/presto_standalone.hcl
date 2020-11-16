@@ -197,8 +197,8 @@ hive.metastore.uri=thrift://{{ env "NOMAD_UPSTREAM_ADDR_${hivemetastore_service_
 hive.metastore-timeout=1m
 %{ if minio_use_vault_provider }
 {{ with secret "${minio_vault_kv_path}" }}
-hive.s3.aws-access-key="{{ .Data.data.${minio_vault_kv_access_key_name} }}"
-hive.s3.aws-secret-key="{{ .Data.data.${minio_vault_kv_secret_key_name} }}"
+hive.s3.aws-access-key={{- .Data.data.${minio_vault_kv_access_key_name} }}
+hive.s3.aws-secret-key={{- .Data.data.${minio_vault_kv_secret_key_name} }}
 {{ end }}
 %{ else }
 hive.s3.aws-access-key=${minio_access_key}

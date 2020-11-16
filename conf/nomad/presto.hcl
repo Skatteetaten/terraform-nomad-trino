@@ -195,8 +195,8 @@ job "${nomad_job_name}" {
         data = <<EOH
 connector.name=hive-hadoop2
 %{ if minio_use_vault_provider }{{ with secret "${minio_vault_kv_path}" }}
-hive.s3.aws-access-key="{{ .Data.data.${minio_vault_kv_access_key_name} }}"
-hive.s3.aws-secret-key="{{ .Data.data.${minio_vault_kv_secret_key_name} }}"
+hive.s3.aws-access-key={{- .Data.data.${minio_vault_kv_access_key_name} }}
+hive.s3.aws-secret-key={{- .Data.data.${minio_vault_kv_secret_key_name} }}
 {{ end }}%{ else }
 hive.s3.aws-access-key=${minio_access_key}
 hive.s3.aws-secret-key=${minio_secret_key}

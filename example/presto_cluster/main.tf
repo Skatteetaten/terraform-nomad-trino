@@ -9,7 +9,7 @@ locals {
     vault_kv_secret_key_name  = "cluster_shared_secret"
   }
   minio_vault_secret = {
-    use_vault_provider        = false
+    use_vault_provider        = true
     vault_kv_policy_name      = "kv-secret"
     vault_kv_path             = "secret/data/dev/minio"
     vault_kv_access_key_name  = "access_key"
