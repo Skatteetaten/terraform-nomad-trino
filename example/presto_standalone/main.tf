@@ -31,6 +31,16 @@ module "presto" {
   debug            = true
   use_canary       = true
 
+  resource = {
+    cpu = 500
+    memory = 1024
+  }
+
+  resource_proxy = {
+    cpu = 200
+    memory = 128
+  }
+
   # other
   hivemetastore_service = {
     service_name = module.hive.service_name
