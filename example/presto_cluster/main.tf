@@ -88,10 +88,6 @@ module "minio" {
     vault_kv_secret_key  = "secret_key"
   }
 
-  # Credentials will be provided via vault > vault_secret.use_vault_provider = true
-  access_key = ""
-  secret_key = ""
-
   data_dir                        = "/minio/data"
   buckets                         = ["default", "hive"]
   container_environment_variables = ["JUST_EXAMPLE_VAR1=some-value", "ANOTHER_EXAMPLE2=some-other-value"]
@@ -125,10 +121,6 @@ module "postgres" {
     vault_kv_username_name = "username"
     vault_kv_password_name = "password"
   }
-
-  # Credentials will be provided via vault > vault_secret.use_vault_provider = true
-  admin_user     = ""
-  admin_password = ""
 
   database                        = "metastore"
   volume_destination              = "/var/lib/postgresql/data"
