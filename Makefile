@@ -80,7 +80,6 @@ remove-tmp:
 	rm -rf ./.vagrant
 	rm -rf ./dev/tmp
 	rm -rf ./.minio.sys
-	rm -rf ./example/**/.terraform
 	rm -rf ./example/**/.terraform*
 
 clean: destroy-box remove-tmp
