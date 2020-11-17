@@ -94,7 +94,7 @@ make presto-cli # connect to Presto CLI
 ```
 
 #### :warning: Note
-If you are on a Mac the proxies and Presto CLI may not work.
+If you are on a Mac the proxies and `make presto-cli` may not work.
 Instead, you can install the [Consul binary](https://www.consul.io/docs/install) and run the commands in the `Makefile` manually (without `docker run ..`).
 Further, you need to install the [Presto CLI](https://prestosql.io/docs/current/installation/cli.html) on your local machine or inside the box.
 See also [required software](#required-software).
@@ -197,46 +197,55 @@ The following code is an example of the Presto module in `cluster` mode.
 For detailed information check the [example/presto_cluster](example/presto_cluster) or the [example/presto_standalone](example/presto_standalone) directory.
 ```hcl
 module "presto" {
+  source = "github.com/fredrikhgrelland/terraform-nomad-presto.git?ref=0.3.0"
+
   depends_on = [
     module.minio,
     module.hive
   ]
-
-  source = "github.com/fredrikhgrelland/terraform-nomad-presto.git?ref=0.0.1"
 
   # nomad
   nomad_job_name    = "presto"
   nomad_datacenters = ["dc1"]
   nomad_namespace   = "default"
 
-  # presto
-  vault_secret      = {
-                        use_vault_secret_provider = true
-                        vault_kv_policy_name      = "kv-secret"
-                        vault_kv_path             = "secret/data/presto"
-                        vault_kv_secret_key_name  = "cluster_shared_secret"
-                      }
+  # Vault provided credentials
+  vault_secret = {
+    use_vault_provider       = true
+    vault_kv_policy_name     = "kv-secret"
+    vault_kv_path            = "secret/data/dev/presto"
+    vault_kv_secret_key_name = "cluster_shared_secret"
+  }
+
   service_name     = "presto"
-  docker_image     = "prestosql/presto:341"
   mode             = "cluster"
   workers          = 1
   consul_http_addr = "http://10.0.3.10:8500"
-  use_canary       = true
   debug            = true
+  use_canary       = true
 
-  #hivemetastore
-  hivemetastore = {
+  # other
+  hivemetastore_service = {
     service_name = module.hive.service_name
     port         = module.hive.port
   }
 
-  # minio
-  minio = {
+  minio_service = {
     service_name = module.minio.minio_service_name
     port         = module.minio.minio_port
-    access_key   = module.minio.minio_access_key
-    secret_key   = module.minio.minio_secret_key
+    access_key   = ""
+    secret_key   = ""
   }
+
+  # Vault provided credentials
+  minio_vault_secret = {
+    use_vault_provider       = true
+    vault_kv_policy_name     = "kv-secret"
+    vault_kv_path            = "secret/data/dev/minio"
+    vault_kv_access_key_name = "access_key"
+    vault_kv_secret_key_name = "secret_key"
+  }
+
 }
 ```
 
@@ -266,10 +275,8 @@ module "presto" {
 | debug | Turn on debug logging in presto nodes | bool | false | no |
 | hivemetastore.service_name | Hive metastore service name | string | "hive-metastore" | yes |
 | hivemetastore.port | Hive metastore port | number | 9083 | yes |
-| minio.service_name | minio service name | string |  | yes |
-| minio.port | minio port | number |  | yes |
-| minio.access_key | minio access key | string |  | yes |
-| minio.secret_key | minio secret key | string |  | yes |
+| minio_service | Minio data-object contains service_name, port, access_key and secret_key | obj(string, number, string, string) | - | no |
+| minio_vault_secret | Minio data-object contains vault related information to fetch credentials | obj(bool, string, string, string, string) | { <br> use_vault_provider = false, <br> vault_kv_policy_name = "kv-secret", <br> vault_kv_path = "secret/data/dev/minio", <br> vault_kv_access_key_name = "access_key", <br> vault_kv_secret_key_name = "secret_key" <br> } | no |
 
 ## Outputs
 | Name | Description | Type |
@@ -280,15 +287,15 @@ module "presto" {
 When using the `mode = "cluster"`, you can set your secrets in two ways, either manually or upload secrets to Vault.
 
 ### Set credentials manually
-To set the credentials manually you first need to tell the module to not fetch credentials from Vault. To do that, set `vault_secret.use_vault_secret_provider` to `false` (see below for example).
+To set the credentials manually you first need to tell the module to not fetch credentials from Vault. To do that, set `vault_secret.use_vault_provider` to `false` (see below for example).
 If this is done the module will use the variable `shared_secret_user` to set the Presto credentials. These will default to `defaultprestosecret` if not set by the user.
 Below is an example on how to disable the use of Vault credentials, and setting your own credentials.
 
 ```hcl
-module "postgres" {
+module "presto" {
 ...
   vault_secret  = {
-                    use_vault_secret_provider = false,
+                    use_vault_provider        = false,
                     vault_kv_policy_name      = "",
                     vault_kv_path             = "",
                     vault_kv_secret_key_name  = "",
@@ -298,27 +305,29 @@ module "postgres" {
 ```
 
 ### Set credentials using Vault secrets
-By default `use_vault_secret_provider` is set to `true`.
-However, when testing using the box (e.g. `make dev`) the Presto secret is randomly generated and put in `secret/presto` inside Vault, from the [01_generate_secrets_vault.yml](dev/ansible/00_generate_secrets_vault.yml) playbook.
-This is an independet process and will run regardless of the `vault_secret.use_vault_secret_provider` is `false/true`.
+By default `use_vault_provider` is set to `true`.
+However, when testing using the box (e.g. `make dev`) the Presto secret is randomly generated and put in `secret/dev/presto` inside Vault, from the [01_generate_secrets_vault.yml](dev/ansible/00_generate_secrets_vault.yml) playbook.
+This is an independent process and will run regardless of the `vault_secret.use_vault_provider` is `false` or `true`.
 
 If you want to use the automatically generated credentials in the box, you can do so by changing the `vault_secret` object as seen below:
 ```hcl
-module "postgres" {
+module "presto" {
 ...
   vault_secret  = {
                     use_vault_secret_provider = true
                     vault_kv_policy_name      = "kv-secret"
-                    vault_kv_path             = "secret/data/presto"
+                    vault_kv_path             = "secret/data/dev/presto"
                     vault_kv_secret_key_name  = "cluster_shared_secret"
                   }
 }
 ```
 
 If you want to change the secrets path and keys/values in Vault with your own configuration you would need to change the variables in the `vault_secret`-object.
-Say that you have put your secrets in `secret/services/postgres/users` and change the key to `my_presto_secret_name`. Then you need to do the following configuration:
+Say that you have put your secrets in `secret/services/presto/users` and change the key to `my_presto_secret_name`.
+You must have Vault policy with name `kv-users-secret` and at least read-access to path `secret/services/presto/users`.
+Then you need to do the following configuration:
 ```hcl
-module "postgres" {
+module "presto" {
 ...
   vault_secret  = {
                     use_vault_secret_provider = true,

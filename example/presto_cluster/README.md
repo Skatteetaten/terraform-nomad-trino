@@ -1,7 +1,14 @@
 # Presto cluster example
-The current directory contains terraform related files that use the module in `../../`.
+This is a cluster mode example of Presto that implements the Vault provider to store credentials for Presto, Minio and Postgres.
 The example use of the module spins up Presto in [cluster mode](../../conf/nomad/presto.hcl) having one worker and one coordinator.
-It uses Vault as the shared secret provider. For more details check [main.tf](./main.tf).
+
+Before deploying the module, Vault K/V store should contain all required credentials and policies.
+In this example, all required actions are automated by Ansible. See the following files for details.
+
+- Required policy [01-create-vault-policy-to-read-secrets.yml](../../dev/vagrant/bootstrap/vault/post/01-create-vault-policy-to-read-secrets.yml)
+- Required credentials [00_generate_secrets_vault.yml](../../dev/ansible/00_generate_secrets_vault.yml)
+
+Vault provides credentials for Minio and Postgres, and render them directly into the Nomad job.
 
 ## Modules in use
 | Modules       | version       |
