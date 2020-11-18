@@ -208,6 +208,12 @@ hive.s3.endpoint=http://{{ env "NOMAD_UPSTREAM_ADDR_${minio_service_name}" }}
 hive.s3.path-style-access=true
 hive.s3.ssl.enabled=false
 hive.s3.socket-timeout=15m
+hive.allow-drop-table=true
+hive.allow-rename-table=true
+hive.allow-add-column=true
+hive.allow-drop-column=true
+hive.allow-rename-column=true
+hive.compression-codec=ZSTD
 EOH
       }
       template {
