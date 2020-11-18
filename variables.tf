@@ -44,17 +44,17 @@ variable "shared_secret_user" {
 
 variable "vault_secret" {
   type = object({
-    use_vault_secret_provider = bool,
-    vault_kv_policy_name      = string,
-    vault_kv_path             = string,
-    vault_kv_secret_key_name  = string
+    use_vault_provider       = bool,
+    vault_kv_policy_name     = string,
+    vault_kv_path            = string,
+    vault_kv_secret_key_name = string
   })
   description = "Set of properties to be able fetch shared cluster secret from vault"
   default = {
-    use_vault_secret_provider = true
-    vault_kv_policy_name      = "kv-secret"
-    vault_kv_path             = "secret/data/dev/presto"
-    vault_kv_secret_key_name  = "cluster_shared_secret"
+    use_vault_provider       = true
+    vault_kv_policy_name     = "kv-secret"
+    vault_kv_path            = "secret/data/path/to/cluster-shared-secret/presto"
+    vault_kv_secret_key_name = "cluster_shared_secret"
   }
 }
 
@@ -154,8 +154,12 @@ variable "resource_proxy" {
     error_message = "Proxy resource must be at least: cpu=200, memory=128."
   }
 }
+######
+# Service dependencies
+######
 
-variable "hivemetastore" {
+## Hive
+variable "hivemetastore_service" {
   type = object({
     service_name = string,
     port         = number,
@@ -167,7 +171,8 @@ variable "hivemetastore" {
   description = "Hivemetastore data-object contains service_name and port"
 }
 
-variable "minio" {
+## Minio
+variable "minio_service" {
   type = object({
     service_name = string,
     port         = number,
@@ -175,4 +180,21 @@ variable "minio" {
     secret_key   = string,
   })
   description = "Minio data-object contains service_name, port, access_key and secret_key"
+}
+variable "minio_vault_secret" {
+  type = object({
+    use_vault_provider       = bool,
+    vault_kv_policy_name     = string,
+    vault_kv_path            = string,
+    vault_kv_access_key_name = string,
+    vault_kv_secret_key_name = string
+  })
+  description = "Set of properties to be able to fetch secret from vault"
+  default = {
+    use_vault_provider       = false
+    vault_kv_policy_name     = "kv-secret"
+    vault_kv_path            = "secret/data/dev/presto"
+    vault_kv_access_key_name = "access_key"
+    vault_kv_secret_key_name = "secret_key"
+  }
 }

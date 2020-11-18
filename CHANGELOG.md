@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.0 UNRELEASED]
+
+### Added
+
+- Improve credentials management (vault provided credentials) #64
+
 ## [0.3.0]
 
 ### Added
