@@ -5,6 +5,9 @@ locals {
       "EXAMPLE_ENV=some-value",
     ], var.container_environment_variables)
   )
+  hive_config_properties = join("\n",
+  concat(var.hive_config_properties)
+  )
 
   template_standalone       = file("${path.module}/conf/nomad/presto_standalone.hcl")
   template_cluster          = file("${path.module}/conf/nomad/presto.hcl")
@@ -47,6 +50,7 @@ data "template_file" "template_nomad_job_presto" {
     workers                   = var.workers
     docker_image              = var.docker_image
     envs                      = local.presto_env_vars
+    hive_config_properties    = local.hive_config_properties
     debug                     = var.debug
     memory                    = var.resource.memory
     cpu                       = var.resource.cpu
