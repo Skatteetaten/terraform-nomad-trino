@@ -29,13 +29,13 @@ module "presto" {
   consul_http_addr = "http://10.0.3.10:8500"
   debug            = true
   use_canary       = true
-  hive_config_properties = [
-    "hive.allow-drop-table=true",
-    "hive.allow-rename-table=true",
-    "hive.allow-add-column=true",
-    "hive.allow-drop-column=true",
-    "hive.allow-rename-column=true",
-    "hive.compression-codec=ZSTD" ]
+//  hive_config_properties = [
+//    "hive.allow-drop-table=true",
+//    "hive.allow-rename-table=true",
+//    "hive.allow-add-column=true",
+//    "hive.allow-drop-column=true",
+//    "hive.allow-rename-column=true",
+//    "hive.compression-codec=ZSTD" ]
 
   resource = {
     cpu    = 500
