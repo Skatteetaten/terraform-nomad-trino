@@ -5,6 +5,7 @@
 ### Added
 
 - Improve credentials management (vault provided credentials) #64
+- Added config (for add/rename/drop tables and columns) in presto-standalone #90
 
 ## [0.3.0]
 
