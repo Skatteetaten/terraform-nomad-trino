@@ -5,7 +5,7 @@
 ### Added
 
 - Improve credentials management (vault provided credentials) #64
-- Added variable `hive_config_properties` regarding custom hive configuration properties #90
+- Added variable `hive_config_properties` for custom hive configuration properties #90
 
 ## [0.3.0]
 
