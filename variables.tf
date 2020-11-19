@@ -157,7 +157,7 @@ variable "resource_proxy" {
 
 variable "hive_config_properties" {
   type        = list(string)
-  description = "Costum hive configuration properties"
+  description = "Custom hive configuration properties"
   default     = [""]
 }
 
