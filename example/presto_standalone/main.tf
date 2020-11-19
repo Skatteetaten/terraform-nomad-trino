@@ -4,10 +4,13 @@ locals {
 }
 
 module "presto" {
-  depends_on = [
-  module.minio, module.hive]
-
   source = "../.."
+
+  depends_on = [
+    module.minio,
+    module.hive
+  ]
+
 
   # nomad
   nomad_job_name    = "presto"
@@ -16,10 +19,10 @@ module "presto" {
 
   # presto
   vault_secret = {
-    use_vault_secret_provider = true
-    vault_kv_policy_name      = "kv-secret"
-    vault_kv_path             = "secret/data/dev/presto"
-    vault_kv_secret_key_name  = "cluster_shared_secret"
+    use_vault_provider       = true
+    vault_kv_policy_name     = "kv-secret"
+    vault_kv_path            = "secret/data/dev/presto"
+    vault_kv_secret_key_name = "cluster_shared_secret"
   }
   service_name     = "presto"
   mode             = "standalone"
@@ -28,16 +31,33 @@ module "presto" {
   debug            = true
   use_canary       = true
 
+  resource = {
+    cpu    = 500
+    memory = 1024
+  }
+
+  resource_proxy = {
+    cpu    = 200
+    memory = 128
+  }
+
   # other
-  hivemetastore = {
+  hivemetastore_service = {
     service_name = module.hive.service_name
     port         = module.hive.port
   }
-  minio = {
+  minio_service = {
     service_name = module.minio.minio_service_name
     port         = module.minio.minio_port
     access_key   = module.minio.minio_access_key
     secret_key   = module.minio.minio_secret_key
+  }
+  minio_vault_secret = {
+    use_vault_provider       = false
+    vault_kv_policy_name     = ""
+    vault_kv_path            = ""
+    vault_kv_access_key_name = ""
+    vault_kv_secret_key_name = ""
   }
 }
 

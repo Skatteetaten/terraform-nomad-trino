@@ -4,6 +4,7 @@
 
 ### Added
 - Healthcheck to Presto cluster example #78
+- Improve credentials management (vault provided credentials) #64
 
 ## [0.3.0]
 

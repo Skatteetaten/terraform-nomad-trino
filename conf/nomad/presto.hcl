@@ -174,13 +174,13 @@ job "${nomad_job_name}" {
 
     task "server" {
       driver = "docker"
-      %{ if use_vault_secret_provider }
+%{ if use_vault_provider }
       vault {
-        policies = "${vault_kv_policy_name}"
+        policies = ${vault_policy_array}
       }
-      %{ endif }
+%{ endif }
 
-  %{ if local_docker_image }
+%{ if local_docker_image }
       artifact {
         source = "s3::http://127.0.0.1:9000/dev/tmp/docker_image.tar"
         options {
@@ -227,20 +227,27 @@ job "${nomad_job_name}" {
 %{ endif }
       template {
         data = <<EOH
-          connector.name=hive-hadoop2
-          hive.s3.aws-access-key=${minio_access_key}
-          hive.s3.aws-secret-key=${minio_secret_key}
-          hive.s3.endpoint=http://{{ env "NOMAD_UPSTREAM_ADDR_${minio_service_name}" }}
-          hive.metastore.uri=thrift://{{ env "NOMAD_UPSTREAM_ADDR_${hivemetastore_service_name}" }}
-          hive.s3select-pushdown.enabled=true
-          hive.non-managed-table-writes-enabled=true
-          hive.s3.max-connections=5000
-          hive.s3.max-error-retries=100
-          hive.s3.socket-timeout=31m
-          hive.s3.ssl.enabled=false
-          hive.metastore-timeout=1m
-          hive.s3.path-style-access=true
-          EOH
+connector.name=hive-hadoop2
+%{ if minio_use_vault_provider }
+{{ with secret "${minio_vault_kv_path}" }}
+hive.s3.aws-access-key={{- .Data.data.${minio_vault_kv_access_key_name} }}
+hive.s3.aws-secret-key={{- .Data.data.${minio_vault_kv_secret_key_name} }}
+{{ end }}
+%{ else }
+hive.s3.aws-access-key=${minio_access_key}
+hive.s3.aws-secret-key=${minio_secret_key}
+%{ endif }
+hive.s3.endpoint=http://{{ env "NOMAD_UPSTREAM_ADDR_${minio_service_name}" }}
+hive.metastore.uri=thrift://{{ env "NOMAD_UPSTREAM_ADDR_${hivemetastore_service_name}" }}
+hive.s3select-pushdown.enabled=true
+hive.non-managed-table-writes-enabled=true
+hive.s3.max-connections=5000
+hive.s3.max-error-retries=100
+hive.s3.socket-timeout=31m
+hive.s3.ssl.enabled=false
+hive.metastore-timeout=1m
+hive.s3.path-style-access=true
+EOH
         destination = "local/presto/hive.properties"
       }
       template {
