@@ -6,7 +6,7 @@ locals {
     ], var.container_environment_variables)
   )
   hive_config_properties = join("\n",
-  concat(var.hive_config_properties)
+    concat(var.hive_config_properties)
   )
 
   template_standalone       = file("${path.module}/conf/nomad/presto_standalone.hcl")

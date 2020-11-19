@@ -35,7 +35,7 @@ module "presto" {
     "hive.allow-add-column=true",
     "hive.allow-drop-column=true",
     "hive.allow-rename-column=true",
-    "hive.compression-codec=ZSTD" ]
+  "hive.compression-codec=ZSTD"]
 
   resource = {
     cpu    = 500
