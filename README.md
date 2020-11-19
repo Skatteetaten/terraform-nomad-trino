@@ -266,6 +266,7 @@ module "presto" {
 | docker_image | Presto docker image | string | "prestosql/presto:341" | yes |
 | local_docker_image | Switch for Nomad jobs to use artifact for image lookup | bool | false | no |
 | container_environment_variables | Presto environment variables | list(string) | [""] | no |
+| hive_config_properties | Custom hive configuration properties | list(string) | [""] | no |
 | workers | cluster: Number of Nomad worker nodes | number | 1 | no |
 | coordinator | Include a coordinator in addition to the workers. Set this to `false` when extending an existing cluster | bool | true | no |
 | use_canary | Uses canary deployment for Presto | bool | false | no |
