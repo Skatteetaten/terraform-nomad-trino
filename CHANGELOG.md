@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.4.0 UNRELEASED]
+
+### Added
+- Healthcheck to Presto cluster example #78
+
 ## [0.3.0]
 
 ### Added

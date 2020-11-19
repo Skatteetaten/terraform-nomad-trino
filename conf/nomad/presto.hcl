@@ -30,6 +30,7 @@ job "${nomad_job_name}" {
         to = -1
       }
     }
+
     service { #TODO: upstreams without registering a service?
       name = "${service_name}-sidecar-proxy"
       connect {
@@ -53,6 +54,7 @@ job "${nomad_job_name}" {
         }
       }
     }
+
     service {
       name = "%{ if node_type == "coordinator" }${service_name}%{ else }${service_name}-worker%{ endif }"
       tags = [
@@ -63,7 +65,30 @@ job "${nomad_job_name}" {
       task = "server"
       connect {
         native = true
+//        sidecar_service {
+//          proxy {
+//            upstreams {
+//              destination_name = "${hivemetastore_service_name}"
+//              local_bind_port  = "${hivemetastore_port}"
+//            }
+//            upstreams {
+//              destination_name = "${minio_service_name}"
+//              local_bind_port  = "${minio_port}"
+//            }
+//          }
+//        }
       }
+    %{ if "${node_type}" == "coordinator" }
+      check {
+        task     = "server"
+        name     = "presto-hive-availability"
+        type     = "script"
+        command  = "presto"
+        args     = ["--execute", "SHOW TABLES IN hive.default"]
+        interval = "30s"
+        timeout  = "15s"
+      }
+    %{ endif }
       check {
         name     = "presto-info"
         type     = "http"
@@ -82,6 +107,15 @@ job "${nomad_job_name}" {
         args     = ["-c", "curl -s -k https://127.0.0.1:$${NOMAD_PORT_connect}/v1/info | grep -Po '(?<=)\"starting\":false(?=,)[^,]*'"]
         interval = "5s"
         timeout  = "30s"
+      }
+      check {
+        name         = "presto-minio-availability"
+        type         = "http"
+        path         = "/minio/health/ready"
+        port         = ${minio_port}
+        interval     = "15s"
+        timeout      = "5s"
+        address_mode = "driver"
       }
     }
 
