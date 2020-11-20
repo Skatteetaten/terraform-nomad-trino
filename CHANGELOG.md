@@ -1,11 +1,15 @@
 # Changelog
 
-## [0.4.0 UNRELEASED]
+## [0.3.1]
 
 ### Added
 
 - Improve credentials management (vault provided credentials) #64
 - Added variable `hive_config_properties` for custom hive configuration properties #90
+
+### Changed
+
+- hive module 0.3.0 -> 0.3.1
 
 ## [0.3.0]
 
