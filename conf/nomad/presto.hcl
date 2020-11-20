@@ -65,20 +65,8 @@ job "${nomad_job_name}" {
       task = "server"
       connect {
         native = true
-//        sidecar_service {
-//          proxy {
-//            upstreams {
-//              destination_name = "${hivemetastore_service_name}"
-//              local_bind_port  = "${hivemetastore_port}"
-//            }
-//            upstreams {
-//              destination_name = "${minio_service_name}"
-//              local_bind_port  = "${minio_port}"
-//            }
-//          }
-//        }
       }
-    %{ if "${node_type}" == "coordinator" }
+    %{ if "${node_type}" == "worker" }
       check {
         task     = "server"
         name     = "presto-hive-availability"
