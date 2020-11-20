@@ -154,6 +154,13 @@ variable "resource_proxy" {
     error_message = "Proxy resource must be at least: cpu=200, memory=128."
   }
 }
+
+variable "hive_config_properties" {
+  type        = list(string)
+  description = "Custom hive configuration properties"
+  default     = [""]
+}
+
 ######
 # Service dependencies
 ######

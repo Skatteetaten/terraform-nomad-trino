@@ -213,6 +213,8 @@ hive.s3.socket-timeout=31m
 hive.s3.ssl.enabled=false
 hive.metastore-timeout=1m
 hive.s3.path-style-access=true
+# Custom hive configuration properties
+${hive_config_properties}
 EOH
         destination = "local/presto/hive.properties"
       }

@@ -208,6 +208,8 @@ hive.s3.endpoint=http://{{ env "NOMAD_UPSTREAM_ADDR_${minio_service_name}" }}
 hive.s3.path-style-access=true
 hive.s3.ssl.enabled=false
 hive.s3.socket-timeout=15m
+# Custom hive configuration properties
+${hive_config_properties}
 EOH
       }
       template {

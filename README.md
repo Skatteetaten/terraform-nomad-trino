@@ -223,6 +223,13 @@ module "presto" {
   consul_http_addr = "http://10.0.3.10:8500"
   debug            = true
   use_canary       = true
+  hive_config_properties = [
+      "hive.allow-drop-table=true",
+      "hive.allow-rename-table=true",
+      "hive.allow-add-column=true",
+      "hive.allow-drop-column=true",
+      "hive.allow-rename-column=true",
+    "hive.compression-codec=ZSTD"]
 
   # other
   hivemetastore_service = {
@@ -266,6 +273,7 @@ module "presto" {
 | docker_image | Presto docker image | string | "prestosql/presto:341" | yes |
 | local_docker_image | Switch for Nomad jobs to use artifact for image lookup | bool | false | no |
 | container_environment_variables | Presto environment variables | list(string) | [""] | no |
+| hive_config_properties | Custom hive configuration properties | list(string) | [""] | no |
 | workers | cluster: Number of Nomad worker nodes | number | 1 | no |
 | coordinator | Include a coordinator in addition to the workers. Set this to `false` when extending an existing cluster | bool | true | no |
 | use_canary | Uses canary deployment for Presto | bool | false | no |
