@@ -66,7 +66,7 @@ job "${nomad_job_name}" {
       connect {
         native = true
       }
-    %{ if "${node_type}" == "worker" }
+    %{ if node_type == "worker" }
       check {
         task     = "server"
         name     = "presto-hive-availability"
