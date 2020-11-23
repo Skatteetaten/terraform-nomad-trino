@@ -52,6 +52,15 @@ job "${nomad_job_name}" {
             memory = "${memory_proxy}"
           }
         }
+        check {
+          task     = "server"
+          name     = "presto-hive-availability"
+          type     = "script"
+          command  = "presto"
+          args     = ["--execute", "SHOW TABLES IN hive.default"]
+          interval = "30s"
+          timeout  = "15s"
+        }
       }
     }
 
@@ -66,17 +75,17 @@ job "${nomad_job_name}" {
       connect {
         native = true
       }
-    %{ if node_type == "worker" }
-      check {
-        task     = "server"
-        name     = "presto-hive-availability"
-        type     = "script"
-        command  = "presto"
-        args     = ["--execute", "SHOW TABLES IN hive.default"]
-        interval = "30s"
-        timeout  = "15s"
-      }
-    %{ endif }
+//    %{ if node_type == "worker" }
+//      check {
+//        task     = "server"
+//        name     = "presto-hive-availability"
+//        type     = "script"
+//        command  = "presto"
+//        args     = ["--execute", "SHOW TABLES IN hive.default"]
+//        interval = "30s"
+//        timeout  = "15s"
+//      }
+//    %{ endif }
       check {
         name     = "presto-info"
         type     = "http"
