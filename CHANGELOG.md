@@ -10,6 +10,7 @@
 ### Changed
 
 - hive module 0.3.0 -> 0.3.1
+- Changed to anothrNick/github-tag-action to get bumped version tags. Old action is deprecated [no issue]
 
 ## [0.3.0]
 
