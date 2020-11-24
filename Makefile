@@ -109,3 +109,35 @@ presto-cli:
 pre-commit: check_for_docker_binary check_for_terraform_binary
 	docker run -e RUN_LOCAL=true -v "${PWD}:/tmp/lint/" github/super-linter
 	terraform fmt -recursive && echo "\e[32mTrying to prettify all .tf files.\e[0m"
+
+
+# MAC
+# docker run --rm -d --network test1 consul:1.8 connect proxy -http-addr=http://host.docker.internal:8500 -token=master -service=presto-local -upstream=presto:8080
+# docker run --rm -d -p 8080:8080 consul:1.8 connect proxy -http-addr=http://host.docker.internal:8500 -token=master -service=presto-local -upstream=presto:8080
+# docker run --rm -it prestosql/presto:341 presto --server=host.docker.internal:8080 --http-proxy=host.docker.internal:8080 --catalog=hive --schema=default --user=presto --debug
+# consul connect proxy -token master -service presto-local -upstream presto:8080
+
+# docker run --rm consul:1.8 connect proxy -http-addr http://host.docker.internal:8500 -token master -service presto-local -upstream presto:8080
+#-service frontend \
+#    -service-addr 127.0.0.1:8080 \
+#    -listen ':8443'
+
+cli1:
+	CID=$$(docker run --rm -d --name=prayproxy --network test1 -p 8080:8080 consul:1.8 connect proxy -http-addr=http://host.docker.internal:8500 -token=master -service=presto-local -upstream=presto:8080)
+	docker run --rm -it prestosql/presto:${PRESTO_VERSION} presto --server=host.docker.internal:8080 --http-proxy=host.docker.internal:8080 --catalog=hive --schema=default --user=presto --debug
+	docker rm -f $$CID
+
+d:
+	docker run --rm \
+		--name=pray \
+		-p 8080:8080 \
+		-p 8888:8888 \
+		consul:1.8 \
+		connect proxy \
+		-http-addr=http://host.docker.internal:8500 \
+		-token=master \
+		-service=presto-local \
+		-service-addr 0.0.0.0:8080 \
+		-listen ':8888' \
+		-upstream=presto:8080 \
+		-log-level=debug
