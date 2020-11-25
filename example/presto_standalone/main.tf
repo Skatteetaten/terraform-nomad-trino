@@ -130,7 +130,7 @@ module "postgres" {
 }
 
 module "hive" {
-  source = "github.com/fredrikhgrelland/terraform-nomad-hive.git?ref=0.3.0"
+  source = "github.com/fredrikhgrelland/terraform-nomad-hive.git?ref=0.3.1"
 
   # nomad
   nomad_datacenters  = local.nomad_datacenters
