@@ -1,8 +1,5 @@
-<!-- markdownlint-disable MD041 -->
-<p align="center">
-    <h2 align="center">Terraform-nomad-presto</h2>
-</p>
-<p align="center">
+<div style="text-align: center">
+    <h2>Terraform-nomad-presto</h2>
     <a href="https://github.com/fredrikhgrelland/vagrant-hashistack-template" alt="Built on">
         <img src="https://img.shields.io/badge/Built%20from%20template-Vagrant--hashistack--template-blue?style=for-the-badge&logo=github"/>
     </a>
@@ -11,7 +8,7 @@
             <img src="https://img.shields.io/badge/Powered%20by%20-Vagrant--hashistack-orange?style=for-the-badge&logo=vagrant"/>
         </a>
     </p>
-</p>
+</div>◊
 
 ---
 

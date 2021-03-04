@@ -4,7 +4,7 @@ export PATH := $(shell pwd)/tmp:$(PATH)
 # Presto version
 PRESTO_VERSION = 341
 
-.ONESHELL .PHONY: up update-box destroy-box remove-tmp clean example presto-cli
+.ONESHELL .PHONY: up update-box destroy-box remove-tmp clean example presto-cli build-plugin
 .DEFAULT_GOAL := up
 
 #### Pre requisites ####
@@ -31,11 +31,14 @@ endif
 
 #### Development ####
 # start commands
-dev-standalone: update-box custom_ca
+dev-standalone: update-box custom_ca build-plugin
 	SSL_CERT_FILE=${SSL_CERT_FILE} CURL_CA_BUNDLE=${CURL_CA_BUNDLE} CUSTOM_CA=${CUSTOM_CA} ANSIBLE_ARGS='--skip-tags "test" --extra-vars "\"mode=standalone\""' vagrant up --provision
 
-dev: update-box custom_ca
+dev: update-box custom_ca build-plugin
 	SSL_CERT_FILE=${SSL_CERT_FILE} CURL_CA_BUNDLE=${CURL_CA_BUNDLE} CUSTOM_CA=${CUSTOM_CA} ANSIBLE_ARGS='--skip-tags "test" --extra-vars "\"mode=cluster\""' vagrant up --provision
+
+build-plugin:
+	(cd java; mvn package)
 
 custom_ca:
 ifdef CUSTOM_CA
@@ -81,6 +84,7 @@ remove-tmp:
 	rm -rf ./dev/tmp
 	rm -rf ./.minio.sys
 	rm -rf ./example/**/.terraform*
+	rm -rf ./example/**/*.tfstate
 
 clean: destroy-box remove-tmp
 

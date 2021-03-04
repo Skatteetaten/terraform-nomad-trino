@@ -1,5 +1,19 @@
 # Changelog
 
+## [UNRELEASED 0.4.0]
+
+### Changed
+
+- Prestosql changed name to Trino. This repo changed with it.
+
+### Added
+
+- Trino consul connect plugin source and build
+
+### Fixed
+
+- `make clean` will clean terraform state
+
 ## [0.3.1]
 
 ### Added
