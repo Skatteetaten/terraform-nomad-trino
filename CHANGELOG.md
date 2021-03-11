@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.3.2 UNRELEASED]
+
+### Changed
+- Changed from an HTTP check to a script check for `presto-minio-availability` #100
+
 ## [0.3.1]
 
 ### Added
