@@ -75,6 +75,7 @@ job "${nomad_job_name}" {
         interval = "10s"
         timeout  = "2s"
       }
+      /*
       check {
         name = "presto-minio-availability"
         type     = "script"
@@ -91,6 +92,7 @@ job "${nomad_job_name}" {
         interval = "15s"
         timeout  = "5s"
       }
+      */
     }
 
     task "waitfor-hive-metastore" {
