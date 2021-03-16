@@ -1,9 +1,12 @@
 # Changelog
 
-## [0.3.2 UNRELEASED]
+## [0.3.2]
 
 ### Changed
 - Changed from an HTTP check to a script check for `presto-minio-availability` #100
+- Bumped version of Hive 0.3.1 -> 0.4.0 [no issue]
+- Bumped version of Vagrantbox 0.7.1 -> 0.9.0 #96 
+- Now uses variable to set consul image [no issue]
 
 ## [0.3.1]
 
