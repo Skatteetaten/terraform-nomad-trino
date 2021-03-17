@@ -75,15 +75,24 @@ job "${nomad_job_name}" {
         interval = "10s"
         timeout  = "2s"
       }
+      /*
       check {
-        name         = "presto-minio-availability"
-        type         = "http"
-        path         = "/minio/health/ready"
-        port         = ${minio_port}
-        interval     = "15s"
-        timeout      = "5s"
-        address_mode = "driver"
+        name = "presto-minio-availability"
+        type     = "script"
+        task     = "server"
+        command  = "/usr/bin/curl"
+        args = [
+          "-s",
+          "-o",
+          "/dev/null",
+          "-w",
+          "HTTP code: %%{http_code}",
+          "localhost:9000/minio/health/ready"
+        ]
+        interval = "15s"
+        timeout  = "5s"
       }
+      */
     }
 
     task "waitfor-hive-metastore" {
@@ -99,7 +108,7 @@ job "${nomad_job_name}" {
         memory = 32
       }
       config {
-        image = "consul:1.8"
+        image = "${consul_image}"
         entrypoint = ["/bin/sh"]
         args = ["-c", "jq </local/service.json -e '.[].Status|select(. == \"passing\")'"]
         volumes = ["tmp/service.json:/local/service.json" ]
@@ -125,7 +134,7 @@ job "${nomad_job_name}" {
         memory = 32
       }
       config {
-        image = "consul:1.8"
+        image = "${consul_image}"
         entrypoint = ["/bin/sh"]
         args = ["-c", "jq </local/service.json -e '.[].Status|select(. == \"passing\")'"]
         volumes = ["tmp/service.json:/local/service.json" ]

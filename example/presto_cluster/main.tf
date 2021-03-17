@@ -132,7 +132,7 @@ module "postgres" {
 }
 
 module "hive" {
-  source = "github.com/fredrikhgrelland/terraform-nomad-hive.git?ref=0.3.1"
+  source = "github.com/fredrikhgrelland/terraform-nomad-hive.git?ref=0.4.0"
 
   depends_on = [
     module.minio,
@@ -167,11 +167,11 @@ module "hive" {
 
   # Vault provided credentials
   minio_vault_secret = {
-    use_vault_provider       = true
-    vault_kv_policy_name     = "kv-secret"
-    vault_kv_path            = "secret/data/dev/minio"
-    vault_kv_access_key_name = "access_key"
-    vault_kv_secret_key_name = "secret_key"
+    use_vault_provider        = true
+    vault_kv_policy_name      = "kv-secret"
+    vault_kv_path             = "secret/data/dev/minio"
+    vault_kv_field_access_key = "access_key"
+    vault_kv_field_secret_key = "secret_key"
   }
 
   # Postgres
@@ -185,10 +185,10 @@ module "hive" {
 
   # Vault provided credentials
   postgres_vault_secret = {
-    use_vault_provider     = true
-    vault_kv_policy_name   = "kv-secret"
-    vault_kv_path          = "secret/data/dev/postgres"
-    vault_kv_username_name = "username"
-    vault_kv_password_name = "password"
+    use_vault_provider      = true
+    vault_kv_policy_name    = "kv-secret"
+    vault_kv_path           = "secret/data/dev/postgres"
+    vault_kv_field_username = "username"
+    vault_kv_field_password = "password"
   }
 }
