@@ -3,8 +3,8 @@ All examples have their own directories, with a `main.tf` that references one or
 
 | Examples       |
 | :------------- |
-| [Presto cluster](presto_cluster) |
-| [Presto standalone](presto_standalone) |
+| [Trino cluster](trino_cluster) |
+| [Trino standalone](trino_standalone) |
 
 ## References
 - [Creating Modules - official terraform documentation](https://www.terraform.io/docs/modules/index.html)

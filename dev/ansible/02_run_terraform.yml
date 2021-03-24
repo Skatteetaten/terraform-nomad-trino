@@ -1,10 +1,10 @@
-- name: Terraform presto {{ mode }}
+- name: Terraform trino {{ mode }}
   terraform:
-    project_path: ../../example/presto_{{ mode }}
+    project_path: ../../example/trino_{{ mode }}
     force_init: true
     state: present
   register: terraform
 
-- name: Terraform presto {{ mode }} stdout
+- name: Terraform trino {{ mode }} stdout
   debug:
     msg: "{{terraform.stdout}}"

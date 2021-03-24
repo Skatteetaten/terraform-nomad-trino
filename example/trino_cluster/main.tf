@@ -3,7 +3,7 @@ locals {
   nomad_namespace   = "default"
 }
 
-module "presto" {
+module "trino" {
   source = "../.."
 
   depends_on = [
@@ -12,7 +12,7 @@ module "presto" {
   ]
 
   # nomad
-  nomad_job_name    = "presto"
+  nomad_job_name    = "trino"
   nomad_datacenters = local.nomad_datacenters
   nomad_namespace   = local.nomad_namespace
 
@@ -31,11 +31,11 @@ module "presto" {
   vault_secret = {
     use_vault_provider       = true
     vault_kv_policy_name     = "kv-secret"
-    vault_kv_path            = "secret/data/dev/presto"
+    vault_kv_path            = "secret/data/dev/trino"
     vault_kv_secret_key_name = "cluster_shared_secret"
   }
 
-  service_name     = "presto"
+  service_name     = "trino"
   mode             = "cluster"
   workers          = 1
   consul_http_addr = "http://10.0.3.10:8500"

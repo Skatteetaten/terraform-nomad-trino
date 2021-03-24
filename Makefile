@@ -1,10 +1,10 @@
 include dev/.env
 export PATH := $(shell pwd)/tmp:$(PATH)
 
-# Presto version
-PRESTO_VERSION = 341
+# Trino version
+TRINO_VERSION = 354
 
-.ONESHELL .PHONY: up update-box destroy-box remove-tmp clean example presto-cli build-plugin
+.ONESHELL .PHONY: up update-box destroy-box remove-tmp clean example trino-cli build-plugin
 .DEFAULT_GOAL := up
 
 #### Pre requisites ####
@@ -101,13 +101,13 @@ proxy-minio:
 # to-postgres
 proxy-postgres:
 	docker run --rm -it --network host consul:1.8 consul connect proxy -token master -service postgres-local -upstream postgres:5432 -log-level debug
-# to-presto
-proxy-presto:
-	docker run --rm -it --network host consul:1.8 consul connect proxy -token master -service presto-local -upstream presto:8080 -log-level debug
+# to-trino
+proxy-trino:
+	docker run --rm -it --network host consul:1.8 consul connect proxy -token master -service trino-local -upstream trino:8080 -log-level debug
 
-presto-cli:
-	CID=$$(docker run --rm -d --network host consul:1.8 connect proxy -token master -service presto-local -upstream presto:8080)
-	docker run --rm -it --network host prestosql/presto:${PRESTO_VERSION} presto --server localhost:8080 --http-proxy localhost:8080 --catalog hive --schema default --user presto --debug
+trino-cli:
+	CID=$$(docker run --rm -d --network host consul:1.8 connect proxy -token master -service trino-local -upstream trino:8080)
+	docker run --rm -it --network host trinosql/trino:${TRINO_VERSION} trino --server localhost:8080 --http-proxy localhost:8080 --catalog hive --schema default --user trino --debug
 	docker rm -f $$CID
 
 pre-commit: check_for_docker_binary check_for_terraform_binary

@@ -60,15 +60,15 @@ job "${nomad_job_name}" {
       }
       check {
         task     = "server"
-        name     = "presto-hive-availability"
+        name     = "trino-hive-availability"
         type     = "script"
-        command  = "presto"
+        command  = "trino"
         args     = ["--execute", "SHOW TABLES IN hive.default"]
         interval = "30s"
         timeout  = "15s"
       }
       check {
-        name     = "presto-info"
+        name     = "trino-info"
         type     = "http"
         port     = "healthcheck"
         path     = "/v1/info"
@@ -76,7 +76,7 @@ job "${nomad_job_name}" {
         timeout  = "2s"
       }
       check {
-        name         = "presto-minio-availability"
+        name         = "trino-minio-availability"
         type         = "http"
         path         = "/minio/health/ready"
         port         = ${minio_port}
@@ -163,12 +163,12 @@ job "${nomad_job_name}" {
         image = "${docker_image}"
 %{ endif }
         volumes = [
-          "local/presto/config.properties:/lib/presto/default/etc/config.properties",
-          "local/presto/catalog/hive.properties:/lib/presto/default/etc/catalog/hive.properties",
+          "local/trino/config.properties:/lib/trino/default/etc/config.properties",
+          "local/trino/catalog/hive.properties:/lib/trino/default/etc/catalog/hive.properties",
           # JVM settings. Memory GC etc.
-          "local/presto/jvm.config:/lib/presto/default/etc/jvm.config",
+          "local/trino/jvm.config:/lib/trino/default/etc/jvm.config",
           # Mount for debug purposes
-          %{ if debug }"local/presto/log.properties:/lib/presto/default/etc/log.properties",%{ endif }
+          %{ if debug }"local/trino/log.properties:/lib/trino/default/etc/log.properties",%{ endif }
         ]
       }
       template {
@@ -190,7 +190,7 @@ EOH
       //     could end up with exception: The AWS Access Key Id you provided does not exist in our records.
       //     Looks like, slow render of env variables (when one template depends on other template). Maybe because, all runs on local machine
       template {
-        destination = "local/presto/catalog/hive.properties"
+        destination = "local/trino/catalog/hive.properties"
         data = <<EOH
 connector.name=hive-hadoop2
 hive.metastore.uri=thrift://{{ env "NOMAD_UPSTREAM_ADDR_${hivemetastore_service_name}" }}
@@ -213,7 +213,7 @@ ${hive_config_properties}
 EOH
       }
       template {
-        destination   = "local/presto/config.properties"
+        destination   = "local/trino/config.properties"
         data = <<EOH
 node-scheduler.include-coordinator=true
 http-server.http.port=8080
@@ -226,7 +226,7 @@ EOH
 -server
 -Xmx{{ env "NOMAD_MEMORY_LIMIT" | parseInt | subtract 256 }}M
 EOF
-        destination   = "local/presto/jvm.config"
+        destination   = "local/trino/jvm.config"
       }
       template {
         data = <<EOF
@@ -234,14 +234,14 @@ EOF
 # WARNING
 # ^^^^^^^
 # This configuration file is for development only and should NOT be used
-# in production. For example configuration, see the Presto documentation.
+# in production. For example configuration, see the Trino documentation.
 #
 
-io.prestosql=DEBUG
+io.trinosql=DEBUG
 io.airlift=DEBUG
 
 EOF
-        destination   = "local/presto/log.properties"
+        destination   = "local/trino/log.properties"
       }
       template {
         destination = "local/data/.additional-envs"
