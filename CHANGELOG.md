@@ -4,13 +4,13 @@
 
 ### Changed
 
-- Prestosql changed name to Trino. This repo changed with it.
-- Updated all references to Presto
+- Prestosql changed name to Trino. This repo changed with it. 
+- Updated all references to Presto #106
 
 ### Added
 
 - Trino consul connect plugin source and build
-- Using Trino docker image with tag 354
+- Using Trino docker image with tag 354 #106
 
 ### Fixed
 
