@@ -4,11 +4,13 @@
 
 ### Changed
 
-- Prestosql changed name to Trino. This repo changed with it.
+- Prestosql changed name to Trino. This repo changed with it. 
+- Updated all references to Presto #106
 
 ### Added
 
 - Trino consul connect plugin source and build
+- Using Trino docker image with tag 354 #106
 
 ### Fixed
 
@@ -31,13 +33,13 @@
 ### Added
 - Json flatten VIEW example #65
 - Added CPU as user defined variable #67
-- Two target, for standalone and cluster version of presto #61
+- Two target, for standalone and cluster version of trino #61
 - Sidecar proxy to both examples with variables #73
 
 ### Changed
 - Variables regarding credentials/secrets & updated documentation #52
 - Updated box version to 0.7.x #69
-- Additional information about proxies and Presto CLI #60
+- Additional information about proxies and Trino CLI #60
 - Updated Verifying setup section in readme #46
 - Bumped module versions in both examples #77
 - Re-added healthchecks #81
@@ -65,9 +67,9 @@
 - Documentation #3 #8
 - Fixate linter version #10
 - Consul Connect enabled multi node cluster #13 #14 #16 #19 #24
-- Code to support successful execution of nomad presto job and tests when consul_acl_default_policy is deny #32
+- Code to support successful execution of nomad trino job and tests when consul_acl_default_policy is deny #32
 - Added switch for canary deployment #25
-- Added random secret (in vault) for presto cluster communication #29
+- Added random secret (in vault) for trino cluster communication #29
 
 ## Changed
 

@@ -1,6 +1,6 @@
 locals {
   datacenters = join(",", var.nomad_datacenters)
-  presto_env_vars = join("\n",
+  trino_env_vars = join("\n",
     concat([
       "EXAMPLE_ENV=some-value",
     ], var.container_environment_variables)
@@ -9,9 +9,9 @@ locals {
     concat(var.hive_config_properties)
   )
 
-  template_standalone       = file("${path.module}/conf/nomad/presto_standalone.hcl")
-  template_cluster          = file("${path.module}/conf/nomad/presto.hcl")
-  consul_connect_plugin_uri = "${var.consul_connect_plugin_artifact_source}/${var.consul_connect_plugin_version}/presto-consul-connect-${var.consul_connect_plugin_version}-jar-with-dependencies.jar"
+  template_standalone       = file("${path.module}/conf/nomad/trino_standalone.hcl")
+  template_cluster          = file("${path.module}/conf/nomad/trino.hcl")
+  consul_connect_plugin_uri = "${var.consul_connect_plugin_artifact_source}/${var.consul_connect_plugin_version}/trino-consul-connect-${var.consul_connect_plugin_version}-jar-with-dependencies.jar"
   node_types                = var.coordinator ? ["coordinator", "worker"] : ["worker"]
 
   vault_provider = var.vault_secret.use_vault_provider || var.minio_vault_secret.use_vault_provider
@@ -25,7 +25,7 @@ locals {
   )
 }
 
-data "template_file" "template_nomad_job_presto" {
+data "template_file" "template_nomad_job_trino" {
   template = var.mode == "standalone" ? local.template_standalone : local.template_cluster
 
   vars = {
@@ -38,7 +38,7 @@ data "template_file" "template_nomad_job_presto" {
     use_vault_provider = local.vault_provider
     vault_policy_array = local.vault_kv_policy_name_set
 
-    # presto
+    # trino
     service_name              = var.service_name
     node_types                = jsonencode(local.node_types)
     local_docker_image        = var.local_docker_image
@@ -49,7 +49,7 @@ data "template_file" "template_nomad_job_presto" {
     vault_kv_secret_key_name  = var.vault_secret.vault_kv_secret_key_name
     workers                   = var.workers
     docker_image              = var.docker_image
-    envs                      = local.presto_env_vars
+    envs                      = local.trino_env_vars
     hive_config_properties    = local.hive_config_properties
     debug                     = var.debug
     memory                    = var.resource.memory
@@ -59,12 +59,12 @@ data "template_file" "template_nomad_job_presto" {
     cpu_proxy                 = var.resource_proxy.cpu
     memory_proxy              = var.resource_proxy.memory
 
-    # Memory allocations for presto is automatically tuned based on memory sizing set at the task driver level in nomad.
-    # Based on web-resources and presto community slack, we choose to allocate 75% (up to 80% should work) to the JVM
-    # Resources: https://prestosql.io/blog/2020/08/27/training-performance.html
-    #            https://prestosql.io/docs/current/admin/properties-memory-management.html
-    presto_xmx_memory       = floor(var.resource.memory * 0.75)
-    presto_query_max_memory = floor((floor(var.resource.memory * 0.75) * 0.1) * var.workers)
+    # Memory allocations for trino is automatically tuned based on memory sizing set at the task driver level in nomad.
+    # Based on web-resources and trino community slack, we choose to allocate 75% (up to 80% should work) to the JVM
+    # Resources: https://trinosql.io/blog/2020/08/27/training-performance.html
+    #            https://trinosql.io/docs/current/admin/properties-memory-management.html
+    trino_xmx_memory       = floor(var.resource.memory * 0.75)
+    trino_query_max_memory = floor((floor(var.resource.memory * 0.75) * 0.1) * var.workers)
 
     #Custom plugin for consul connect integration
     consul_connect_plugin     = var.consul_connect_plugin
@@ -89,7 +89,7 @@ data "template_file" "template_nomad_job_presto" {
   }
 }
 
-resource "nomad_job" "nomad_job_presto" {
-  jobspec = data.template_file.template_nomad_job_presto.rendered
+resource "nomad_job" "nomad_job_trino" {
+  jobspec = data.template_file.template_nomad_job_trino.rendered
   detach  = false
 }

@@ -12,7 +12,7 @@ variable "nomad_namespace" {
 variable "nomad_job_name" {
   type        = string
   description = "Nomad job name"
-  default     = "presto"
+  default     = "trino"
 }
 
 variable "local_docker_image" {
@@ -31,11 +31,11 @@ variable "mode" {
   }
 }
 
-# presto
+# trino
 variable "shared_secret_user" {
   type        = string
   description = "Shared secret provided by user"
-  default     = "defaultprestosecret"
+  default     = "defaulttrinosecret"
   validation {
     condition     = length(var.shared_secret_user) >= 12
     error_message = "The length of the shared secret must be 12 characters or more."
@@ -53,15 +53,15 @@ variable "vault_secret" {
   default = {
     use_vault_provider       = true
     vault_kv_policy_name     = "kv-secret"
-    vault_kv_path            = "secret/data/path/to/cluster-shared-secret/presto"
+    vault_kv_path            = "secret/data/path/to/cluster-shared-secret/trino"
     vault_kv_secret_key_name = "cluster_shared_secret"
   }
 }
 
 variable "service_name" {
   type        = string
-  description = "Presto service name"
-  default     = "presto"
+  description = "Trino service name"
+  default     = "trino"
 }
 
 variable "coordinator" {
@@ -78,7 +78,7 @@ variable "workers" {
 
 variable "debug" {
   type        = bool
-  description = "Turn on debug logging in presto nodes"
+  description = "Turn on debug logging in trino nodes"
   default     = false
 }
 
@@ -89,37 +89,37 @@ variable "consul_http_addr" {
 
 variable "docker_image" {
   type        = string
-  description = "Presto docker image"
-  default     = "prestosql/presto:341"
+  description = "Trino docker image"
+  default     = "trinodb/trino:354"
 }
 
 variable "consul_connect_plugin" {
   type        = bool
-  description = "Deploy consul connect plugin for presto"
+  description = "Deploy consul connect plugin for trino"
   default     = true
 }
 
 variable "consul_connect_plugin_version" {
   type        = string
-  description = "Version of the consul connect plugin for presto (on maven central) src here: https://github.com/gugalnikov/presto-consul-connect"
+  description = "Version of the consul connect plugin for trino (on maven central) src here: https://github.com/gugalnikov/trino-consul-connect"
   default     = "2.2.0"
 }
 
 variable "consul_connect_plugin_artifact_source" {
   type        = string
   description = "Artifact URI source"
-  default     = "https://oss.sonatype.org/service/local/repositories/releases/content/io/github/gugalnikov/presto-consul-connect"
+  default     = "https://oss.sonatype.org/service/local/repositories/releases/content/io/github/gugalnikov/trino-consul-connect"
 }
 
 variable "container_environment_variables" {
   type        = list(string)
-  description = "Presto environment variables"
+  description = "Trino environment variables"
   default     = [""]
 }
 
 variable "use_canary" {
   type        = bool
-  description = "Uses canary deployment for Presto"
+  description = "Uses canary deployment for Trino"
   default     = false
 }
 
@@ -132,10 +132,10 @@ variable "resource" {
     cpu    = 500,
     memory = 1024
   }
-  description = "Presto resources"
+  description = "Trino resources"
   validation {
     condition     = var.resource.cpu >= 500 && var.resource.memory >= 768
-    error_message = "Presto can not run with less than 300Mhz CPU and less than 512MB of memory. 256MB is subtracted for OS. Total must be at least 768MB."
+    error_message = "Trino can not run with less than 300Mhz CPU and less than 512MB of memory. 256MB is subtracted for OS. Total must be at least 768MB."
   }
 }
 
@@ -148,7 +148,7 @@ variable "resource_proxy" {
     cpu    = 200,
     memory = 128
   }
-  description = "Presto proxy resources"
+  description = "Trino proxy resources"
   validation {
     condition     = var.resource_proxy.cpu >= 200 && var.resource_proxy.memory >= 128
     error_message = "Proxy resource must be at least: cpu=200, memory=128."
@@ -200,7 +200,7 @@ variable "minio_vault_secret" {
   default = {
     use_vault_provider       = false
     vault_kv_policy_name     = "kv-secret"
-    vault_kv_path            = "secret/data/dev/presto"
+    vault_kv_path            = "secret/data/dev/trino"
     vault_kv_access_key_name = "access_key"
     vault_kv_secret_key_name = "secret_key"
   }
