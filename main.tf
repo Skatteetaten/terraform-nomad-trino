@@ -80,12 +80,22 @@ data "template_file" "template_nomad_job_trino" {
     minio_access_key   = var.minio_service.access_key
     minio_secret_key   = var.minio_service.secret_key
 
-    ## if creds are provided by vault
+    # if creds are provided by vault
     minio_use_vault_provider       = var.minio_vault_secret.use_vault_provider
     minio_vault_kv_policy_name     = var.minio_vault_secret.vault_kv_policy_name # This var is appended to local.vault_kv_policy_name_set
     minio_vault_kv_path            = var.minio_vault_secret.vault_kv_path
     minio_vault_kv_access_key_name = var.minio_vault_secret.vault_kv_access_key_name
     minio_vault_kv_secret_key_name = var.minio_vault_secret.vault_kv_secret_key_name
+
+    # postgres
+    postgres_service_name  = var.postgres_service.service_name
+    postgres_port          = var.postgres_service.port
+    postgres_username      = var.postgres_service.username
+    postgres_password      = var.postgres_service.password
+    postgres_database_name = var.postgres_service.database_name
+
+    # TODO: Add postgres vault values
+
   }
 }
 

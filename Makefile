@@ -107,7 +107,7 @@ proxy-trino:
 
 trino-cli:
 	CID=$$(docker run --rm -d --network host consul:1.8 connect proxy -token master -service trino-local -upstream trino:8080)
-	docker run --rm -it --network host trinosql/trino:${TRINO_VERSION} trino --server localhost:8080 --http-proxy localhost:8080 --catalog hive --schema default --user trino --debug
+	docker run --rm -it --network host trinodb/trino:${TRINO_VERSION} trino --server localhost:8080 --http-proxy localhost:8080 --catalog hive --schema default --user trino --debug
 	docker rm -f $$CID
 
 pre-commit: check_for_docker_binary check_for_terraform_binary

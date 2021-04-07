@@ -205,3 +205,17 @@ variable "minio_vault_secret" {
     vault_kv_secret_key_name = "secret_key"
   }
 }
+
+# Postgres
+variable "postgres_service" {
+  type = object({
+    service_name  = string,
+    port          = number,
+    username      = string,
+    password      = string,
+    database_name = string,
+  })
+  description = "Postgres data-object contains service_name, port, username, password and database_name"
+}
+
+# TODO: Add vault secret

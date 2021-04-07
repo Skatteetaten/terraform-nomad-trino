@@ -41,6 +41,10 @@ job "${nomad_job_name}" {
               destination_name = "${minio_service_name}"
               local_bind_port  = "${minio_port}"
             }
+            upstreams {
+              destination_name = "${postgres_service_name}"
+              local_bind_port  = "${postgres_port}"
+            }
             expose {
               path {
                 path            = "/v1/info"
@@ -58,15 +62,15 @@ job "${nomad_job_name}" {
           }
         }
       }
-      check {
-        task     = "server"
-        name     = "trino-hive-availability"
-        type     = "script"
-        command  = "trino"
-        args     = ["--execute", "SHOW TABLES IN hive.default"]
-        interval = "30s"
-        timeout  = "15s"
-      }
+//      check {
+//        task     = "server"
+//        name     = "trino-hive-availability"
+//        type     = "script"
+//        command  = "trino"
+//        args     = ["--execute", "SHOW TABLES IN hive.default"]
+//        interval = "30s"
+//        timeout  = "15s"
+//      }
       check {
         name     = "trino-info"
         type     = "http"
@@ -84,6 +88,15 @@ job "${nomad_job_name}" {
         timeout      = "5s"
         address_mode = "driver"
       }
+//      check {
+//        task     = "trino-postgres-availability"
+//        name     = "trino-postgres-availability"
+//        type     = "script"
+//        command  = "trino"
+//        args     = ["--execute", "SHOW TABLES IN hive.default"]
+//        interval = "30s"
+//        timeout  = "15s"
+//      }
     }
 
     task "waitfor-hive-metastore" {
@@ -138,6 +151,8 @@ job "${nomad_job_name}" {
       }
     }
 
+    # TODO: Add wait for Postgres (?)
+
     task "server" {
       driver = "docker"
 
@@ -165,6 +180,8 @@ job "${nomad_job_name}" {
         volumes = [
           "local/trino/config.properties:/lib/trino/default/etc/config.properties",
           "local/trino/catalog/hive.properties:/lib/trino/default/etc/catalog/hive.properties",
+          # Trino extra config volume destination
+          "local/trino/catalog/postgresql.properties:/lib/trino/default/etc/catalog/postgresql.properties",
           # JVM settings. Memory GC etc.
           "local/trino/jvm.config:/lib/trino/default/etc/jvm.config",
           # Mount for debug purposes
@@ -212,6 +229,15 @@ hive.s3.socket-timeout=15m
 ${hive_config_properties}
 EOH
       }
+      template {
+        destination   = "local/trino/catalog/postgresql.properties"
+        data = <<EOH
+connector.name=postgresql
+connection-url=jdbc:postgresql://http://{{ env "NOMAD_UPSTREAM_ADDR_${postgres_service_name}" }}/${postgres_database_name}
+connection-user=${postgres_username}
+connection-password=${postgres_password}
+EOH
+      } # TODO: Dynamic if vault etc
       template {
         destination   = "local/trino/config.properties"
         data = <<EOH

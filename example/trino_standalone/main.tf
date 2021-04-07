@@ -7,6 +7,7 @@ module "trino" {
   source = "../.."
 
   depends_on = [
+    module.postgres,
     module.minio,
     module.hive
   ]
@@ -64,6 +65,13 @@ module "trino" {
     vault_kv_path            = ""
     vault_kv_access_key_name = ""
     vault_kv_secret_key_name = ""
+  }
+  postgres_service = {
+    service_name  = module.postgres.service_name
+    port          = module.postgres.port
+    username      = module.postgres.username
+    password      = module.postgres.password
+    database_name = module.postgres.database_name
   }
 }
 
