@@ -73,6 +73,13 @@ module "trino" {
     password      = module.postgres.password
     database_name = module.postgres.database_name
   }
+  postgres_vault_secret = {
+    use_vault_provider      = false
+    vault_kv_policy_name    = ""
+    vault_kv_path           = ""
+    vault_kv_field_username = ""
+    vault_kv_field_password = ""
+  }
 }
 
 module "minio" {

@@ -62,6 +62,7 @@ job "${nomad_job_name}" {
           }
         }
       }
+      # TODO: Check is erroring - not finding 'hive' shcema (shows warning not error btw)
 //      check {
 //        task     = "server"
 //        name     = "trino-hive-availability"
@@ -88,16 +89,10 @@ job "${nomad_job_name}" {
         timeout      = "5s"
         address_mode = "driver"
       }
-//      check {
-//        task     = "trino-postgres-availability"
-//        name     = "trino-postgres-availability"
-//        type     = "script"
-//        command  = "trino"
-//        args     = ["--execute", "SHOW TABLES IN hive.default"]
-//        interval = "30s"
-//        timeout  = "15s"
-//      }
-    }
+
+      # TODO: Add check trino-postgres-availability (?)
+
+}
 
     task "waitfor-hive-metastore" {
       restart {
@@ -151,7 +146,7 @@ job "${nomad_job_name}" {
       }
     }
 
-    # TODO: Add wait for Postgres (?)
+    # TODO: Add task waitfor-postgres (?)
 
     task "server" {
       driver = "docker"
@@ -234,10 +229,17 @@ EOH
         data = <<EOH
 connector.name=postgresql
 connection-url=jdbc:postgresql://http://{{ env "NOMAD_UPSTREAM_ADDR_${postgres_service_name}" }}/${postgres_database_name}
+%{ if postgres_use_vault_provider }
+{{ with secret "${minio_vault_kv_path}" }}
+connection-user={{- .Data.data.${postgres_vault_kv_field_username} }}
+connection-password={{- .Data.data.${postgres_vault_kv_field_password} }}
+{{ end }}
+%{ else }
 connection-user=${postgres_username}
 connection-password=${postgres_password}
+%{ endif }
 EOH
-      } # TODO: Dynamic if vault etc
+      }
       template {
         destination   = "local/trino/config.properties"
         data = <<EOH

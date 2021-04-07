@@ -217,5 +217,20 @@ variable "postgres_service" {
   })
   description = "Postgres data-object contains service_name, port, username, password and database_name"
 }
-
-# TODO: Add vault secret
+variable "postgres_vault_secret" {
+  type = object({
+    use_vault_provider      = bool,
+    vault_kv_policy_name    = string,
+    vault_kv_path           = string,
+    vault_kv_field_username = string,
+    vault_kv_field_password = string
+  })
+  description = "Set of properties to be able to fetch Postgres secrets from vault"
+  default = {
+    use_vault_provider      = false
+    vault_kv_policy_name    = "kv-secret"
+    vault_kv_path           = "secret/data/dev/trino"
+    vault_kv_field_username = "username"
+    vault_kv_field_password = "password"
+  }
+}

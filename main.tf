@@ -14,12 +14,13 @@ locals {
   consul_connect_plugin_uri = "${var.consul_connect_plugin_artifact_source}/${var.consul_connect_plugin_version}/trino-consul-connect-${var.consul_connect_plugin_version}-jar-with-dependencies.jar"
   node_types                = var.coordinator ? ["coordinator", "worker"] : ["worker"]
 
-  vault_provider = var.vault_secret.use_vault_provider || var.minio_vault_secret.use_vault_provider
+  vault_provider = var.vault_secret.use_vault_provider || var.minio_vault_secret.use_vault_provider || var.postgres_vault_secret.use_vault_provider
   vault_kv_policy_name_set = jsonencode(
     distinct(
       concat(
         [var.vault_secret.vault_kv_policy_name],
-        [var.minio_vault_secret.vault_kv_policy_name]
+        [var.minio_vault_secret.vault_kv_policy_name],
+        [var.postgres_vault_secret.vault_kv_policy_name]
       )
     )
   )
@@ -93,9 +94,12 @@ data "template_file" "template_nomad_job_trino" {
     postgres_username      = var.postgres_service.username
     postgres_password      = var.postgres_service.password
     postgres_database_name = var.postgres_service.database_name
-
-    # TODO: Add postgres vault values
-
+    # if creds ar provided by vault
+    postgres_use_vault_provider      = var.postgres_vault_secret.use_vault_provider
+    postgres_vault_kv_policy_name    = var.postgres_vault_secret.vault_kv_policy_name
+    postgres_vault_kv_path           = var.postgres_vault_secret.vault_kv_path
+    postgres_vault_kv_field_username = var.postgres_vault_secret.vault_kv_field_username
+    postgres_vault_kv_field_password = var.postgres_vault_secret.vault_kv_field_password
   }
 }
 
