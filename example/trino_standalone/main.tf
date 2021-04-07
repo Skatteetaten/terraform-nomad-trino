@@ -76,7 +76,7 @@ module "trino" {
 }
 
 module "minio" {
-  source = "github.com/fredrikhgrelland/terraform-nomad-minio.git?ref=0.3.0"
+  source = "github.com/fredrikhgrelland/terraform-nomad-minio.git?ref=0.4.0"
 
   # nomad
   nomad_datacenters = local.nomad_datacenters
@@ -89,11 +89,11 @@ module "minio" {
   port            = 9000
   container_image = "minio/minio:latest" # todo: avoid using tag latest in future releases
   vault_secret = {
-    use_vault_provider   = false,
-    vault_kv_policy_name = "",
-    vault_kv_path        = "",
-    vault_kv_access_key  = "",
-    vault_kv_secret_key  = ""
+    use_vault_provider        = false,
+    vault_kv_policy_name      = "",
+    vault_kv_path             = "",
+    vault_kv_field_access_key = "",
+    vault_kv_field_secret_key = ""
   }
   access_key                      = "minio"
   secret_key                      = "minio123"
@@ -110,7 +110,7 @@ module "minio" {
 }
 
 module "postgres" {
-  source = "github.com/fredrikhgrelland/terraform-nomad-postgres.git?ref=0.3.0"
+  source = "github.com/fredrikhgrelland/terraform-nomad-postgres.git?ref=0.4.0"
 
   # nomad
   nomad_datacenters = local.nomad_datacenters
@@ -122,11 +122,11 @@ module "postgres" {
   container_image = "postgres:12-alpine"
   container_port  = 5432
   vault_secret = {
-    use_vault_provider     = false,
-    vault_kv_policy_name   = "",
-    vault_kv_path          = "",
-    vault_kv_username_name = "",
-    vault_kv_password_name = ""
+    use_vault_provider      = false,
+    vault_kv_policy_name    = "",
+    vault_kv_path           = "",
+    vault_kv_field_username = "",
+    vault_kv_field_password = ""
   }
   admin_user                      = "hive"
   admin_password                  = "hive"
@@ -138,7 +138,7 @@ module "postgres" {
 }
 
 module "hive" {
-  source = "github.com/fredrikhgrelland/terraform-nomad-hive.git?ref=0.3.1"
+  source = "github.com/fredrikhgrelland/terraform-nomad-hive.git?ref=0.4.0"
 
   # nomad
   nomad_datacenters  = local.nomad_datacenters

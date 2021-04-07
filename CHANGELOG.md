@@ -6,6 +6,9 @@
 
 - Prestosql changed name to Trino. This repo changed with it. 
 - Updated all references to Presto #106
+- Bumped version Postgres -> 0.4.0
+- Bumped version Minio -> 0.4.0
+- Bumped version Hive -> 0.4.0
 
 ### Added
 
