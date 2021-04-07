@@ -11,6 +11,7 @@
 
 - Trino consul connect plugin source and build
 - Using Trino docker image with tag 354 #106
+- Support for Postrgres connector #105
 
 ### Fixed
 
