@@ -176,7 +176,7 @@ job "${nomad_job_name}" {
           "local/trino/config.properties:/lib/trino/default/etc/config.properties",
           "local/trino/catalog/hive.properties:/lib/trino/default/etc/catalog/hive.properties",
           # Trino extra config volume destination
-          "local/trino/catalog/postgresql.properties:/lib/trino/default/etc/catalog/postgresql.properties",
+          "local/trino/catalog/postgresql.properties:/etc/trino/catalog/postgresql.properties",
           # JVM settings. Memory GC etc.
           "local/trino/jvm.config:/lib/trino/default/etc/jvm.config",
           # Mount for debug purposes
@@ -228,7 +228,7 @@ EOH
         destination   = "local/trino/catalog/postgresql.properties"
         data = <<EOH
 connector.name=postgresql
-connection-url=jdbc:postgresql://http://{{ env "NOMAD_UPSTREAM_ADDR_${postgres_service_name}" }}/${postgres_database_name}
+connection-url=jdbc:postgresql://{{ env "NOMAD_UPSTREAM_ADDR_${postgres_service_name}" }}/${postgres_database_name}
 %{ if postgres_use_vault_provider }
 {{ with secret "${minio_vault_kv_path}" }}
 connection-user={{- .Data.data.${postgres_vault_kv_field_username} }}
