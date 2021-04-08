@@ -7,7 +7,6 @@ module "trino" {
   source = "../.."
 
   depends_on = [
-    module.postgres2,
     module.postgres,
     module.minio,
     module.hive
@@ -68,11 +67,11 @@ module "trino" {
     vault_kv_secret_key_name = ""
   }
   postgres_service = {
-    service_name  = module.postgres2.service_name
-    port          = module.postgres2.port
-    username      = module.postgres2.username
-    password      = module.postgres2.password
-    database_name = module.postgres2.database_name
+    service_name  = module.postgres.service_name
+    port          = module.postgres.port
+    username      = module.postgres.username
+    password      = module.postgres.password
+    database_name = module.postgres.database_name
   }
   postgres_vault_secret = {
     use_vault_provider      = false
@@ -115,34 +114,6 @@ module "minio" {
   mc_service_name                    = "mc"
   mc_container_image                 = "minio/mc:latest" # todo: avoid using tag latest in future releases
   mc_container_environment_variables = ["JUST_EXAMPLE_VAR3=some-value", "ANOTHER_EXAMPLE4=some-other-value"]
-}
-
-module "postgres2" {
-  source = "github.com/fredrikhgrelland/terraform-nomad-postgres.git?ref=0.4.0"
-
-  # nomad
-  nomad_datacenters = local.nomad_datacenters
-  nomad_namespace   = local.nomad_namespace
-  nomad_host_volume = "persistence-postgres" # TODO: Volume folder not created
-
-  # postgres
-  service_name    = "postgres2"
-  container_image = "postgres:12-alpine"
-  container_port  = 5432
-  vault_secret = {
-    use_vault_provider      = false,
-    vault_kv_policy_name    = "",
-    vault_kv_path           = "",
-    vault_kv_field_username = "",
-    vault_kv_field_password = ""
-  }
-  admin_user                      = "postgres"
-  admin_password                  = "postgres"
-  database                        = "test"
-  container_environment_variables = ["PGDATA=/var/lib/postgresql/data"]
-  volume_destination              = "/var/lib/postgresql/data"
-  use_host_volume                 = true
-  use_canary                      = true
 }
 
 module "postgres" {

@@ -89,8 +89,16 @@ job "${nomad_job_name}" {
         timeout      = "5s"
         address_mode = "driver"
       }
-
       # TODO: Add check trino-postgres-availability (?)
+      check {
+        task     = "server"
+        name     = "trino-postgres-availability"
+        type     = "script"
+        command  = "trino"
+        args     = ["--execute", "SHOW TABLES FROM postgresql.public"] # TODO: IN might be FROM
+        interval = "30s"
+        timeout  = "15s"
+      }
 }
 
     task "waitfor-hive-metastore" {
