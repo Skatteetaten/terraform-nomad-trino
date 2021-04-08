@@ -62,16 +62,16 @@ job "${nomad_job_name}" {
           }
         }
       }
-      # TODO: Check is erroring - not finding 'hive' shcema (shows warning not error btw)
-//      check {
-//        task     = "server"
-//        name     = "trino-hive-availability"
-//        type     = "script"
-//        command  = "trino"
-//        args     = ["--execute", "SHOW TABLES IN hive.default"]
-//        interval = "30s"
-//        timeout  = "15s"
-//      }
+
+      check {
+        task     = "server"
+        name     = "trino-hive-availability"
+        type     = "script"
+        command  = "trino"
+        args     = ["--execute", "SHOW TABLES IN hive.default"]
+        interval = "30s"
+        timeout  = "15s"
+      }
       check {
         name     = "trino-info"
         type     = "http"
@@ -91,7 +91,6 @@ job "${nomad_job_name}" {
       }
 
       # TODO: Add check trino-postgres-availability (?)
-
 }
 
     task "waitfor-hive-metastore" {
@@ -184,6 +183,8 @@ job "${nomad_job_name}" {
         ]
       }
       template {
+        destination = "secrets/.env"
+        env         = true
         data = <<EOH
 %{ if minio_use_vault_provider }
 {{ with secret "${minio_vault_kv_path}" }}
@@ -195,8 +196,6 @@ MINIO_ACCESS_KEY="${minio_access_key}"
 MINIO_SECRET_KEY="${minio_secret_key}"
 %{ endif }
 EOH
-        destination = "secrets/.env"
-        env         = true
       }
       // NB! If credentials set as env variable, during spin up of this container it could be sort of race condition and query `SELECT * FROM hive.default.iris;`
       //     could end up with exception: The AWS Access Key Id you provided does not exist in our records.
@@ -250,13 +249,14 @@ discovery.uri=http://127.0.0.1:8080
 EOH
       }        # Total memory allocation is subtracted by 256MB to keep something for the OS.
       template {
+        destination   = "local/trino/jvm.config"
         data = <<EOF
 -server
 -Xmx{{ env "NOMAD_MEMORY_LIMIT" | parseInt | subtract 256 }}M
 EOF
-        destination   = "local/trino/jvm.config"
       }
       template {
+        destination   = "local/trino/log.properties"
         data = <<EOF
 #
 # WARNING
@@ -267,9 +267,7 @@ EOF
 
 io.trinosql=DEBUG
 io.airlift=DEBUG
-
 EOF
-        destination   = "local/trino/log.properties"
       }
       template {
         destination = "local/data/.additional-envs"
