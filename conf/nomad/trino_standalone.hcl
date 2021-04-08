@@ -178,7 +178,7 @@ job "${nomad_job_name}" {
           # Trino extra config volume destination
           "local/trino/catalog/postgresql.properties:/etc/trino/catalog/postgresql.properties",
           # JVM settings. Memory GC etc.
-          "local/trino/jvm.config:/etc/trino/default/etc/jvm.config",
+          "local/trino/jvm.config:/etc/trino/jvm.config",
           # Mount for debug purposes
           %{ if debug }"local/trino/log.properties:/etc/trino/log.properties",%{ endif }
         ]
