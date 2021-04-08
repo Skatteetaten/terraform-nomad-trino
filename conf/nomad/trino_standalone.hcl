@@ -173,14 +173,14 @@ job "${nomad_job_name}" {
         image = "${docker_image}"
 %{ endif }
         volumes = [
-          "local/trino/config.properties:/lib/trino/default/etc/config.properties",
-          "local/trino/catalog/hive.properties:/lib/trino/default/etc/catalog/hive.properties",
+          "local/trino/config.properties:/etc/trino/config.properties",
+          "local/trino/catalog/hive.properties:/etc/trino/catalog/hive.properties",
           # Trino extra config volume destination
           "local/trino/catalog/postgresql.properties:/etc/trino/catalog/postgresql.properties",
           # JVM settings. Memory GC etc.
-          "local/trino/jvm.config:/lib/trino/default/etc/jvm.config",
+          "local/trino/jvm.config:/etc/trino/default/etc/jvm.config",
           # Mount for debug purposes
-          %{ if debug }"local/trino/log.properties:/lib/trino/default/etc/log.properties",%{ endif }
+          %{ if debug }"local/trino/log.properties:/etc/trino/log.properties",%{ endif }
         ]
       }
       template {
