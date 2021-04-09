@@ -80,6 +80,7 @@ job "${nomad_job_name}" {
         interval = "10s"
         timeout  = "2s"
       }
+      /*
       check {
         name         = "trino-minio-availability"
         type         = "http"
@@ -89,6 +90,7 @@ job "${nomad_job_name}" {
         timeout      = "5s"
         address_mode = "driver"
       }
+      */
       check {
         task     = "server"
         name     = "trino-postgres-availability"
