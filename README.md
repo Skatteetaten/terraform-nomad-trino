@@ -197,6 +197,7 @@ module "trino" {
   source = "github.com/fredrikhgrelland/terraform-nomad-trino.git?ref=0.3.0"
 
   depends_on = [
+    module.postgres,
     module.minio,
     module.hive
   ]
@@ -250,6 +251,20 @@ module "trino" {
     vault_kv_secret_key_name = "secret_key"
   }
 
+   postgres_service = {
+      service_name  = module.postgres.service_name
+      port          = module.postgres.port
+      username      = module.postgres.username
+      password      = module.postgres.password
+      database_name = module.postgres.database_name
+   }
+   postgres_vault_secret = {
+      use_vault_provider      = false
+      vault_kv_policy_name    = ""
+      vault_kv_path           = ""
+      vault_kv_field_username = ""
+      vault_kv_field_password = ""
+   }
 }
 ```
 
