@@ -43,6 +43,7 @@ data "template_file" "template_nomad_job_trino" {
     service_name              = var.service_name
     node_types                = jsonencode(local.node_types)
     local_docker_image        = var.local_docker_image
+    consul_image              = var.consul_docker_image
     shared_secret_user        = var.shared_secret_user
     use_vault_secret_provider = var.vault_secret.use_vault_provider
     vault_kv_policy_name      = var.vault_secret.vault_kv_policy_name

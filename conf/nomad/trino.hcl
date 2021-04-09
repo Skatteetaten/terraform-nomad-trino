@@ -98,7 +98,7 @@ job "${nomad_job_name}" {
         memory = 32
       }
       config {
-        image = "consul:1.8"
+        image = "${consul_image}"
         entrypoint = ["/bin/sh"]
         args = ["-c", "jq </local/service.json -e '.[].Status|select(. == \"passing\")'"]
         volumes = ["tmp/service.json:/local/service.json" ]
@@ -125,7 +125,7 @@ job "${nomad_job_name}" {
       }
         # TODO: Create issue with hashicorp on this pattern. Is there a better way?
       config {
-        image = "consul:1.8"
+        image = "${consul_image}"
         entrypoint = ["/bin/sh"]
         args = ["-c", "jq </local/service.json -e '.[].Status|select(. == \"passing\")'"]
         volumes = ["tmp/service.json:/local/service.json" ]

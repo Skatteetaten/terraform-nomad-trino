@@ -89,17 +89,16 @@ job "${nomad_job_name}" {
         timeout      = "5s"
         address_mode = "driver"
       }
-      # TODO: Add check trino-postgres-availability (?)
       check {
         task     = "server"
         name     = "trino-postgres-availability"
         type     = "script"
         command  = "trino"
-        args     = ["--execute", "SHOW TABLES FROM postgresql.public"] # TODO: IN might be FROM
+        args     = ["--execute", "SHOW TABLES FROM postgresql.public"]
         interval = "30s"
         timeout  = "15s"
       }
-}
+    }
 
     task "waitfor-hive-metastore" {
       restart {
@@ -114,7 +113,7 @@ job "${nomad_job_name}" {
         memory = 32
       }
       config {
-        image = "consul:1.8"
+        image = "${consul_image}"
         entrypoint = ["/bin/sh"]
         args = ["-c", "jq </local/service.json -e '.[].Status|select(. == \"passing\")'"]
         volumes = ["tmp/service.json:/local/service.json" ]
@@ -140,7 +139,7 @@ job "${nomad_job_name}" {
         memory = 32
       }
       config {
-        image = "consul:1.8"
+        image = "${consul_image}"
         entrypoint = ["/bin/sh"]
         args = ["-c", "jq </local/service.json -e '.[].Status|select(. == \"passing\")'"]
         volumes = ["tmp/service.json:/local/service.json" ]

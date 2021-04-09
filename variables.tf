@@ -21,6 +21,12 @@ variable "local_docker_image" {
   default     = false
 }
 
+variable "consul_docker_image" {
+  type        = string
+  description = "Consul docker image"
+  default     = "consul:1.9"
+}
+
 variable "mode" {
   type        = string
   description = "Switch for nomad jobs to use cluster or standalone deployment"

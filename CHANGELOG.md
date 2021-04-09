@@ -3,22 +3,27 @@
 ## [UNRELEASED 0.4.0]
 
 ### Changed
-
-- Prestosql changed name to Trino. This repo changed with it. 
+- Prestosql changed name to Trino. This repo changed with it. #106
 - Updated all references to Presto #106
-- Bumped version Postgres -> 0.4.0
-- Bumped version Minio -> 0.4.0
-- Bumped version Hive -> 0.4.0
+- Bumped version Postgres -> 0.4.0 (trino_standalone) #111
+- Bumped version Minio -> 0.4.0 (trino_standalone) #111
+- Bumped version Hive -> 0.4.0 (trino_standalone) #111
 
 ### Added
-
 - Trino consul connect plugin source and build
 - Using Trino docker image with tag 354 #106
 - Support for Postrgres connector #105
 
 ### Fixed
-
 - `make clean` will clean terraform state
+
+## [0.3.2]
+
+### Changed
+- Changed from an HTTP check to a script check for `presto-minio-availability` #100
+- Bumped version of Hive 0.3.1 -> 0.4.0 [no issue]
+- Bumped version of Vagrantbox 0.7.1 -> 0.9.0 #96
+- Now uses variable to set consul image [no issue]
 
 ## [0.3.1]
 

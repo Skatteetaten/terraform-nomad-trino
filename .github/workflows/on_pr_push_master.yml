@@ -33,6 +33,14 @@ jobs:
           VALIDATE_TERRAFORM: true
           VALIDATE_XML: true
 
+  docker-auth:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/upload-artifact@v2
+        with:
+          name: docker-auth
+          path: ~/.docker/config.json
+
   enforce-changelog:
     runs-on: ubuntu-latest
     if: github.event.action != 'closed' && github.event_name == 'pull_request'
@@ -46,6 +54,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   test:
+    needs: docker-auth
     runs-on: macos-latest
 
     strategy:
@@ -139,6 +148,11 @@ jobs:
           ENVKEY_nomad_enterprise: ${{ steps.hashicorp_binary.outputs.nomad_enterprise }}
           ENVKEY_vault_enterprise: ${{ steps.hashicorp_binary.outputs.vault_enterprise }}
           FILE_NAME: .env_override
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: docker-auth
+          path: docker/conf/config.json
 
       - name: Run make test
         if: github.repository != 'fredrikhgrelland/vagrant-hashistack-template'
