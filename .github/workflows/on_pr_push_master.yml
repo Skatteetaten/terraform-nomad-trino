@@ -154,9 +154,9 @@ jobs:
           name: docker-auth
           path: docker/conf/config.json
 
-      - name: Run make test
+      - name: Run make test-standalone
         if: github.repository != 'fredrikhgrelland/vagrant-hashistack-template'
-        run: make test
+        run: make test-standalone
 
   release-prerequisites:
     if: |
