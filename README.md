@@ -192,6 +192,9 @@ The following intentions are required. In the examples, intentions are created i
 ## Example usage
 The following code is an example of the Trino module in `cluster` mode.
 For detailed information check the [example/trino_cluster](example/trino_cluster) or the [example/trino_standalone](example/trino_standalone) directory.
+
+The following code is an example usage of the [example/trino_standalone](example/trino_standalone).  
+**Note: The Postgres used in this example is the same for both Hive and Trino.**
 ```hcl
 module "trino" {
   source = "github.com/fredrikhgrelland/terraform-nomad-trino.git?ref=0.3.0"
