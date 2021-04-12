@@ -67,7 +67,7 @@ module "presto" {
 }
 
 module "minio" {
-  source = "github.com/fredrikhgrelland/terraform-nomad-minio.git?ref=0.3.0"
+  source = "github.com/skatteetaten/terraform-nomad-minio.git?ref=0.3.0"
 
   # nomad
   nomad_datacenters = local.nomad_datacenters
@@ -81,7 +81,7 @@ module "minio" {
   container_image = "minio/minio:latest" # todo: avoid using tag latest in future releases
 
   # Vault provided credentials
-  # todo: follow naming convention issue https://github.com/fredrikhgrelland/terraform-nomad-minio/issues/87
+  # todo: follow naming convention issue https://github.com/skatteetaten/terraform-nomad-minio/issues/87
   vault_secret = {
     use_vault_provider   = true
     vault_kv_policy_name = "kv-secret"
@@ -103,7 +103,7 @@ module "minio" {
 }
 
 module "postgres" {
-  source = "github.com/fredrikhgrelland/terraform-nomad-postgres.git?ref=0.3.0"
+  source = "github.com/skatteetaten/terraform-nomad-postgres.git?ref=0.3.0"
 
   # nomad
   nomad_datacenters = local.nomad_datacenters
@@ -132,7 +132,7 @@ module "postgres" {
 }
 
 module "hive" {
-  source = "github.com/fredrikhgrelland/terraform-nomad-hive.git?ref=0.4.0"
+  source = "github.com/skatteetaten/terraform-nomad-hive.git?ref=0.4.0"
 
   depends_on = [
     module.minio,

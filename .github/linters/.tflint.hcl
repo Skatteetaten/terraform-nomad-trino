@@ -22,7 +22,7 @@ rule "terraform_naming_convention" {
 rule "terraform_required_version" {
   enabled = true
 }
-// todo: fix required_providers with DRY concept https://github.com/fredrikhgrelland/vagrant-hashistack-template/issues/14
+// todo: fix required_providers with DRY concept https://github.com/skatteetaten/vagrant-hashistack-template/issues/14
 //rule "terraform_required_providers" {
 //  enabled = true
 //}

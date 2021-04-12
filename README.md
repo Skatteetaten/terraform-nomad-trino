@@ -3,11 +3,11 @@
     <h2 align="center">Terraform-nomad-presto</h2>
 </p>
 <p align="center">
-    <a href="https://github.com/fredrikhgrelland/vagrant-hashistack-template" alt="Built on">
+    <a href="https://github.com/skatteetaten/vagrant-hashistack-template" alt="Built on">
         <img src="https://img.shields.io/badge/Built%20from%20template-Vagrant--hashistack--template-blue?style=for-the-badge&logo=github"/>
     </a>
     <p align="center">
-        <a href="https://github.com/fredrikhgrelland/vagrant-hashistack" alt="Built on">
+        <a href="https://github.com/skatteetaten/vagrant-hashistack" alt="Built on">
             <img src="https://img.shields.io/badge/Powered%20by%20-Vagrant--hashistack-orange?style=for-the-badge&logo=vagrant"/>
         </a>
     </p>
@@ -36,7 +36,7 @@ Module contains a Nomad job [./conf/nomad/presto.hcl](./conf/nomad/presto.hcl) w
 10. [References](#references)
 
 ## Prerequisites
-Please follow [this section in original template](https://github.com/fredrikhgrelland/vagrant-hashistack-template#install-prerequisites)
+Please follow [this section in original template](https://github.com/skatteetaten/vagrant-hashistack-template#install-prerequisites)
 
 ## Compatibility
 |Software|OSS Version|Enterprise Version|
@@ -51,9 +51,9 @@ Please follow [this section in original template](https://github.com/fredrikhgre
 ### Required modules
 | Module | Version |
 | :----- | :------ |
-| [terraform-nomad-hive](https://github.com/fredrikhgrelland/terraform-nomad-hive) | 0.3.0 or newer |
-| [terraform-nomad-minio](https://github.com/fredrikhgrelland/terraform-nomad-minio) | 0.3.0 or newer |
-| [terraform-nomad-postgres](https://github.com/fredrikhgrelland/terraform-nomad-postgres) | 0.3.0 or newer |
+| [terraform-nomad-hive](https://github.com/skatteetaten/terraform-nomad-hive) | 0.3.0 or newer |
+| [terraform-nomad-minio](https://github.com/skatteetaten/terraform-nomad-minio) | 0.3.0 or newer |
+| [terraform-nomad-postgres](https://github.com/skatteetaten/terraform-nomad-postgres) | 0.3.0 or newer |
 
 ### Required software
 All software is provided and run with docker.
@@ -197,7 +197,7 @@ The following code is an example of the Presto module in `cluster` mode.
 For detailed information check the [example/presto_cluster](example/presto_cluster) or the [example/presto_standalone](example/presto_standalone) directory.
 ```hcl
 module "presto" {
-  source = "github.com/fredrikhgrelland/terraform-nomad-presto.git?ref=0.3.0"
+  source = "github.com/skatteetaten/terraform-nomad-presto.git?ref=0.3.0"
 
   depends_on = [
     module.minio,
