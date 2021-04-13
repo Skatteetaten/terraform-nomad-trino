@@ -7,12 +7,12 @@ This is a very simple example to try out the plugin's functionality on a dockeri
 The example requires:
 
 - a running Consul agent with connect enabled
-- a running Nomad 
+- a running Nomad
 - proper environment variables for Nomad & Consul setup (eg. CONSUL_HTTP_ADDR)
 
 ## considerations
 
-- this is a single node example 
+- this is a single node example
 - it doesn't enforce Consul ACLs
 - requires Trino 334+
 - the example uses a certificate handler as a side task which procures the necessary certificates and JKS
