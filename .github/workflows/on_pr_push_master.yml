@@ -21,7 +21,7 @@ jobs:
           VALIDATE_DOCKER_HADOLINT: true
           VALIDATE_GO: true
           VALIDATE_HTML: true
-          VALIDATE_JAVA: true
+          VALIDATE_JAVA: false
           VALIDATE_JSON: true
           VALIDATE_MD: true
           VALIDATE_OPENAPI: true
