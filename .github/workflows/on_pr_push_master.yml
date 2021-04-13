@@ -154,9 +154,9 @@ jobs:
           name: docker-auth
           path: docker/conf/config.json
 
-      - name: Run make test-standalone
+      - name: Run make dev-standalone # TODO: Should run 'test-standalone'
         if: github.repository != 'fredrikhgrelland/vagrant-hashistack-template'
-        run: make test-standalone
+        run: make dev-standalone
 
   release-prerequisites:
     if: |
