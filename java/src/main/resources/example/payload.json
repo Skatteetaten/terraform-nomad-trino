@@ -1,0 +1,14 @@
+{
+  "ID": "trino",
+  "Name": "trino",
+  "Tags": ["primary", "v1"],
+  "Address": "127.0.0.1",
+  "Port": 8088,
+  "Meta": {
+    "trino_version": "334"
+  },
+  "EnableTagOverride": false,
+  "Connect": {
+    "Native": true
+  }
+}

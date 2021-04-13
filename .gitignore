@@ -8,4 +8,3 @@ tmp
 docker/conf/certificates/*.crt
 *.log
 super-linter.log
-java
