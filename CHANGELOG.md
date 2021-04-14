@@ -10,6 +10,7 @@
 - Bumped version Hive -> 0.4.0 (trino_standalone) #111
 - Bumped version Vagrantbox -> 0.10.0 #102
 - Variables uses same naming convention as in other modules #87
+- Verbose output ansible and terraform
 
 ### Added
 - Trino consul connect plugin source and build #?

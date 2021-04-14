@@ -1,4 +1,6 @@
 - name: Terraform trino {{ mode }}
+  environment:
+    TF_LOG: TRACE
   terraform:
     project_path: ../../example/trino_{{ mode }}
     force_init: true
