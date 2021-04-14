@@ -29,10 +29,10 @@ module "trino" {
 
   # Vault provided credentials
   vault_secret = {
-    use_vault_provider       = true
-    vault_kv_policy_name     = "kv-secret"
-    vault_kv_path            = "secret/data/dev/trino"
-    vault_kv_secret_key_name = "cluster_shared_secret"
+    use_vault_provider         = true
+    vault_kv_policy_name       = "kv-secret"
+    vault_kv_path              = "secret/data/dev/trino"
+    vault_kv_field_secret_name = "cluster_shared_secret"
   }
 
   service_name     = "trino"
@@ -57,14 +57,30 @@ module "trino" {
 
   # Vault provided credentials
   minio_vault_secret = {
-    use_vault_provider       = true
-    vault_kv_policy_name     = "kv-secret"
-    vault_kv_path            = "secret/data/dev/minio"
-    vault_kv_access_key_name = "access_key"
-    vault_kv_secret_key_name = "secret_key"
+    use_vault_provider         = true
+    vault_kv_policy_name       = "kv-secret"
+    vault_kv_path              = "secret/data/dev/minio"
+    vault_kv_field_access_name = "access_key"
+    vault_kv_field_secret_name = "secret_key"
   }
 
+  postgres_service = {
+    service_name  = module.postgres.service_name
+    port          = module.postgres.port
+    username      = module.postgres.username
+    password      = module.postgres.password
+    database_name = module.postgres.database_name
+  }
+  postgres_vault_secret = {
+    use_vault_provider      = false
+    vault_kv_policy_name    = ""
+    vault_kv_path           = ""
+    vault_kv_field_username = ""
+    vault_kv_field_password = ""
+  }
 }
+
+# TODO: Update dependent modules version
 
 module "minio" {
   source = "github.com/fredrikhgrelland/terraform-nomad-minio.git?ref=0.3.0"

@@ -50,17 +50,17 @@ variable "shared_secret_user" {
 
 variable "vault_secret" {
   type = object({
-    use_vault_provider       = bool,
-    vault_kv_policy_name     = string,
-    vault_kv_path            = string,
-    vault_kv_secret_key_name = string
+    use_vault_provider         = bool,
+    vault_kv_policy_name       = string,
+    vault_kv_path              = string,
+    vault_kv_field_secret_name = string
   })
   description = "Set of properties to be able fetch shared cluster secret from vault"
   default = {
-    use_vault_provider       = true
-    vault_kv_policy_name     = "kv-secret"
-    vault_kv_path            = "secret/data/path/to/cluster-shared-secret/trino"
-    vault_kv_secret_key_name = "cluster_shared_secret"
+    use_vault_provider         = true
+    vault_kv_policy_name       = "kv-secret"
+    vault_kv_path              = "secret/data/path/to/cluster-shared-secret/trino"
+    vault_kv_field_secret_name = "cluster_shared_secret"
   }
 }
 
@@ -196,19 +196,19 @@ variable "minio_service" {
 }
 variable "minio_vault_secret" {
   type = object({
-    use_vault_provider       = bool,
-    vault_kv_policy_name     = string,
-    vault_kv_path            = string,
-    vault_kv_access_key_name = string,
-    vault_kv_secret_key_name = string
+    use_vault_provider         = bool,
+    vault_kv_policy_name       = string,
+    vault_kv_path              = string,
+    vault_kv_field_access_name = string,
+    vault_kv_field_secret_name = string
   })
   description = "Set of properties to be able to fetch secret from vault"
   default = {
-    use_vault_provider       = false
-    vault_kv_policy_name     = "kv-secret"
-    vault_kv_path            = "secret/data/dev/trino"
-    vault_kv_access_key_name = "access_key"
-    vault_kv_secret_key_name = "secret_key"
+    use_vault_provider         = false
+    vault_kv_policy_name       = "kv-secret"
+    vault_kv_path              = "secret/data/dev/trino"
+    vault_kv_field_access_name = "access_key"
+    vault_kv_field_secret_name = "secret_key"
   }
 }
 

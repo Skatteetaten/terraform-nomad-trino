@@ -40,26 +40,26 @@ data "template_file" "template_nomad_job_trino" {
     vault_policy_array = local.vault_kv_policy_name_set
 
     # trino
-    service_name              = var.service_name
-    node_types                = jsonencode(local.node_types)
-    local_docker_image        = var.local_docker_image
-    consul_image              = var.consul_docker_image
-    shared_secret_user        = var.shared_secret_user
-    use_vault_secret_provider = var.vault_secret.use_vault_provider
-    vault_kv_policy_name      = var.vault_secret.vault_kv_policy_name
-    vault_kv_path             = var.vault_secret.vault_kv_path
-    vault_kv_secret_key_name  = var.vault_secret.vault_kv_secret_key_name
-    workers                   = var.workers
-    docker_image              = var.docker_image
-    envs                      = local.trino_env_vars
-    hive_config_properties    = local.hive_config_properties
-    debug                     = var.debug
-    memory                    = var.resource.memory
-    cpu                       = var.resource.cpu
-    consul_http_addr          = var.consul_http_addr
-    use_canary                = var.use_canary
-    cpu_proxy                 = var.resource_proxy.cpu
-    memory_proxy              = var.resource_proxy.memory
+    service_name               = var.service_name
+    node_types                 = jsonencode(local.node_types)
+    local_docker_image         = var.local_docker_image
+    consul_image               = var.consul_docker_image
+    shared_secret_user         = var.shared_secret_user
+    use_vault_secret_provider  = var.vault_secret.use_vault_provider
+    vault_kv_policy_name       = var.vault_secret.vault_kv_policy_name
+    vault_kv_path              = var.vault_secret.vault_kv_path
+    vault_kv_field_secret_name = var.vault_secret.vault_kv_field_secret_name
+    workers                    = var.workers
+    docker_image               = var.docker_image
+    envs                       = local.trino_env_vars
+    hive_config_properties     = local.hive_config_properties
+    debug                      = var.debug
+    memory                     = var.resource.memory
+    cpu                        = var.resource.cpu
+    consul_http_addr           = var.consul_http_addr
+    use_canary                 = var.use_canary
+    cpu_proxy                  = var.resource_proxy.cpu
+    memory_proxy               = var.resource_proxy.memory
 
     # Memory allocations for trino is automatically tuned based on memory sizing set at the task driver level in nomad.
     # Based on web-resources and trino community slack, we choose to allocate 75% (up to 80% should work) to the JVM
@@ -83,11 +83,11 @@ data "template_file" "template_nomad_job_trino" {
     minio_secret_key   = var.minio_service.secret_key
 
     # if creds are provided by vault
-    minio_use_vault_provider       = var.minio_vault_secret.use_vault_provider
-    minio_vault_kv_policy_name     = var.minio_vault_secret.vault_kv_policy_name # This var is appended to local.vault_kv_policy_name_set
-    minio_vault_kv_path            = var.minio_vault_secret.vault_kv_path
-    minio_vault_kv_access_key_name = var.minio_vault_secret.vault_kv_access_key_name
-    minio_vault_kv_secret_key_name = var.minio_vault_secret.vault_kv_secret_key_name
+    minio_use_vault_provider         = var.minio_vault_secret.use_vault_provider
+    minio_vault_kv_policy_name       = var.minio_vault_secret.vault_kv_policy_name # This var is appended to local.vault_kv_policy_name_set
+    minio_vault_kv_path              = var.minio_vault_secret.vault_kv_path
+    minio_vault_kv_field_access_name = var.minio_vault_secret.vault_kv_field_access_name
+    minio_vault_kv_field_secret_name = var.minio_vault_secret.vault_kv_field_secret_name
 
     # postgres
     postgres_service_name  = var.postgres_service.service_name

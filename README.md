@@ -215,10 +215,10 @@ module "trino" {
 
   # Vault provided credentials
   vault_secret = {
-    use_vault_provider       = true
-    vault_kv_policy_name     = "kv-secret"
-    vault_kv_path            = "secret/data/dev/trino"
-    vault_kv_secret_key_name = "cluster_shared_secret"
+    use_vault_provider         = true
+    vault_kv_policy_name       = "kv-secret"
+    vault_kv_path              = "secret/data/dev/trino"
+    vault_kv_field_secret_name = "cluster_shared_secret"
   }
 
   service_name     = "trino"
@@ -253,8 +253,8 @@ module "trino" {
     use_vault_provider       = true
     vault_kv_policy_name     = "kv-secret"
     vault_kv_path            = "secret/data/dev/minio"
-    vault_kv_access_key_name = "access_key"
-    vault_kv_secret_key_name = "secret_key"
+    vault_kv_field_access_name = "access_key"
+    vault_kv_field_secret_name = "secret_key"
   }
 
    postgres_service = {
@@ -283,7 +283,7 @@ module "trino" {
 | nomad_job_name | Nomad job name | string | "trino" | yes |
 | mode | Switch for Nomad jobs to use cluster or standalone deployment | string | "standalone" | no |
 | shared_secret_user | Shared secret provided by user(length must be >= 12)  | string | "asdasdsadafdsa" | no |
-| vault_secret | Set of properties to be able fetch shared cluster secret from Vault  | object(bool, string, string, string) | use_vault_secret_provider = true <br> vault_kv_policy_name = "kv-secret" <br> vault_kv_path = "secret/data/dev/trino" <br> vault_kv_secret_key_name = "cluster_shared_secret" | no |
+| vault_secret | Set of properties to be able fetch shared cluster secret from Vault  | object(bool, string, string, string) | use_vault_secret_provider = true <br> vault_kv_policy_name = "kv-secret" <br> vault_kv_path = "secret/data/dev/trino" <br> vault_kv_field_secret_name = "cluster_shared_secret" | no |
 | service_name | Trino service name | string | "trino" | yes |
 | resource | Resource allocation for Trino nodes (cpu & memory) | object(number, number) | { <br> cpu = 500 <br> memory = 1024 <br> } | no |
 | resource_proxy | Resource allocation for proxy (cpu & memory) | object(number, number) | { <br> cpu = 200 <br> memory = 128 <br> } | no |
@@ -302,7 +302,9 @@ module "trino" {
 | hivemetastore.service_name | Hive metastore service name | string | "hive-metastore" | yes |
 | hivemetastore.port | Hive metastore port | number | 9083 | yes |
 | minio_service | Minio data-object contains service_name, port, access_key and secret_key | obj(string, number, string, string) | - | no |
-| minio_vault_secret | Minio data-object contains vault related information to fetch credentials | obj(bool, string, string, string, string) | { <br> use_vault_provider = false, <br> vault_kv_policy_name = "kv-secret", <br> vault_kv_path = "secret/data/dev/minio", <br> vault_kv_access_key_name = "access_key", <br> vault_kv_secret_key_name = "secret_key" <br> } | no |
+| minio_vault_secret | Minio data-object contains vault related information to fetch credentials | obj(bool, string, string, string, string) | { <br> use_vault_provider = false, <br> vault_kv_policy_name = "kv-secret", <br> vault_kv_path = "secret/data/dev/trino", <br> vault_kv_field_access_name = "access_key", <br> vault_kv_field_secret_name = "secret_key" <br> } | no |
+| postgres_service | Postgres data-object contains service_name, port, username, password and database_name | obj(string, number, string, string, string) | - | no |
+| postgres_vault_secret | Set of properties to be able to fetch Postgres secrets from vault | obj(bool, string, string, string, string) | { <br> use_vault_provider = false, <br> vault_kv_policy_name = "kv-secret", <br> vault_kv_path = "secret/data/dev/trino", <br> vault_kv_field_username = "username", <br> vault_kv_field_password = "username" <br> } | no |
 
 ## Outputs
 | Name | Description | Type |
@@ -321,10 +323,10 @@ Below is an example on how to disable the use of Vault credentials, and setting 
 module "trino" {
 ...
   vault_secret  = {
-                    use_vault_provider        = false,
-                    vault_kv_policy_name      = "",
-                    vault_kv_path             = "",
-                    vault_kv_secret_key_name  = "",
+                    use_vault_provider         = false,
+                    vault_kv_policy_name       = "",
+                    vault_kv_path              = "",
+                    vault_kv_field_secret_name = "",
                   }
   shared_secret_user = "my-secret-key" # default 'defaulttrinosecret'
 }
@@ -340,10 +342,10 @@ If you want to use the automatically generated credentials in the box, you can d
 module "trino" {
 ...
   vault_secret  = {
-                    use_vault_secret_provider = true
-                    vault_kv_policy_name      = "kv-secret"
-                    vault_kv_path             = "secret/data/dev/trino"
-                    vault_kv_secret_key_name  = "cluster_shared_secret"
+                    use_vault_secret_provider   = true
+                    vault_kv_policy_name        = "kv-secret"
+                    vault_kv_path               = "secret/data/dev/trino"
+                    vault_kv_field_secret_name  = "cluster_shared_secret"
                   }
 }
 ```
@@ -357,9 +359,9 @@ module "trino" {
 ...
   vault_secret  = {
                     use_vault_secret_provider = true,
-                    vault_kv_policy_name     = "kv-users-secret"
-                    vault_kv_path            = "secret/data/services/trino/users",
-                    vault_kv_secret_key_name = "my_trino_secret_name"
+                    vault_kv_policy_name       = "kv-users-secret"
+                    vault_kv_path              = "secret/data/services/trino/users",
+                    vault_kv_field_secret_name = "my_trino_secret_name"
                   }
 }
 ```

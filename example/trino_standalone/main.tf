@@ -19,10 +19,10 @@ module "trino" {
 
   # trino
   vault_secret = {
-    use_vault_provider       = true
-    vault_kv_policy_name     = "kv-secret"
-    vault_kv_path            = "secret/data/dev/trino"
-    vault_kv_secret_key_name = "cluster_shared_secret"
+    use_vault_provider         = true
+    vault_kv_policy_name       = "kv-secret"
+    vault_kv_path              = "secret/data/dev/trino"
+    vault_kv_field_secret_name = "cluster_shared_secret"
   }
   service_name     = "trino"
   mode             = "standalone"
@@ -60,11 +60,11 @@ module "trino" {
     secret_key   = module.minio.minio_secret_key
   }
   minio_vault_secret = {
-    use_vault_provider       = false
-    vault_kv_policy_name     = ""
-    vault_kv_path            = ""
-    vault_kv_access_key_name = ""
-    vault_kv_secret_key_name = ""
+    use_vault_provider         = false
+    vault_kv_policy_name       = ""
+    vault_kv_path              = ""
+    vault_kv_field_access_name = ""
+    vault_kv_field_secret_name = ""
   }
   postgres_service = {
     service_name  = module.postgres.service_name

@@ -196,8 +196,8 @@ job "${nomad_job_name}" {
 connector.name=hive-hadoop2
 %{ if minio_use_vault_provider }
 {{ with secret "${minio_vault_kv_path}" }}
-hive.s3.aws-access-key={{- .Data.data.${minio_vault_kv_access_key_name} }}
-hive.s3.aws-secret-key={{- .Data.data.${minio_vault_kv_secret_key_name} }}
+hive.s3.aws-access-key={{- .Data.data.${minio_vault_kv_field_access_name} }}
+hive.s3.aws-secret-key={{- .Data.data.${minio_vault_kv_field_secret_name} }}
 {{ end }}
 %{ else }
 hive.s3.aws-access-key=${minio_access_key}
@@ -337,7 +337,7 @@ http-server.https.truststore.path=/local/roots.pem
 internal-communication.https.required=true
 %{ if use_vault_secret_provider }
 {{ with secret "${vault_kv_path}" }}
-internal-communication.shared-secret="{{ .Data.data.${vault_kv_secret_key_name}}}"
+internal-communication.shared-secret="{{ .Data.data.${vault_kv_field_secret_name}}}"
 {{end}}
 %{ else }
 internal-communication.shared-secret= "${shared_secret_user}"

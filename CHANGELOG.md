@@ -8,14 +8,16 @@
 - Bumped version Postgres -> 0.4.0 (trino_standalone) #111
 - Bumped version Minio -> 0.4.0 (trino_standalone) #111
 - Bumped version Hive -> 0.4.0 (trino_standalone) #111
+- Bumped version Vagrantbox -> 0.10.0 #102
+- Variables uses same naming convention as in other modules #87
 
 ### Added
-- Trino consul connect plugin source and build
+- Trino consul connect plugin source and build #?
 - Using Trino docker image with tag 354 #106
 - Support for Postrgres connector #105
 
 ### Fixed
-- `make clean` will clean terraform state
+- `make clean` will clean terraform state #?
 
 ## [0.3.2]
 
