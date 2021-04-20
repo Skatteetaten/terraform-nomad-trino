@@ -62,7 +62,7 @@ jobs:
         consul_acl: [ "consul_acl_enabled", "consul_acl_disabled" ]
         consul_acl_default_policy: [ "consul_acl_deny" ]
         nomad_acl: [ "nomad_acl_enabled", "nomad_acl_disabled" ]
-        hashicorp_binary: [ "hashicorp_oss", "hashicorp_enterprise" ]
+        hashicorp_binary: [ "hashicorp_enterprise" ]
 
     steps:
       - uses: actions/checkout@v2
@@ -113,7 +113,7 @@ jobs:
               echo "::set-output name=vault_enterprise::false"
           else
               echo "::set-output name=consul_enterprise::true"
-              echo "::set-output name=nomad_enterprise::true"
+              echo "::set-output name=nomad_enterprise::false"
               echo "::set-output name=vault_enterprise::true"
           fi
         env:
