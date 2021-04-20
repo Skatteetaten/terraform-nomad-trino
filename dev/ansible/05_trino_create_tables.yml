@@ -107,15 +107,15 @@
     - example-upload
     - test
 
-- name: Verify CSV table - available 150 records
-  shell: docker run --network host {{ container_image }} trino --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user trino --execute "SELECT COUNT(*) FROM iris;"
-  register: query_csv_result
-  retries: 10
-  delay: 2
-  until: query_csv_result.stdout == "\"150\""
-  tags:
-    - example-upload
-    - test
+#- name: Verify CSV table - available 150 records
+#  shell: docker run --network host {{ container_image }} trino --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user trino --execute "SELECT COUNT(*) FROM iris;"
+#  register: query_csv_result
+#  retries: 10
+#  delay: 2
+#  until: query_csv_result.stdout == "\"150\""
+#  tags:
+#    - example-upload
+#    - test
 
 #- name: Verify JSON table - available 2 records
 #  shell: docker run --network host {{ container_image }} trino --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user trino --execute "SELECT COUNT(*) FROM somejson;"
@@ -127,15 +127,15 @@
 #    - example-upload
 #    - test
 
-- name: Verify AVRO table - available 2 records
-  shell: docker run --network host {{ container_image }} trino --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user trino --execute "SELECT COUNT(*) FROM tweets;"
-  register: query_avro_result
-  retries: 10
-  delay: 2
-  until: query_avro_result.stdout == "\"2\""
-  tags:
-    - example-upload
-    - test
+#- name: Verify AVRO table - available 2 records
+#  shell: docker run --network host {{ container_image }} trino --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user trino --execute "SELECT COUNT(*) FROM tweets;"
+#  register: query_avro_result
+#  retries: 10
+#  delay: 2
+#  until: query_avro_result.stdout == "\"2\""
+#  tags:
+#    - example-upload
+#    - test
 
 # Flatten json VIEW example
 #- name: Flatten JSON table with VIEW
