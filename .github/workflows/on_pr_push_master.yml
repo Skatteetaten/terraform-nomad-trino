@@ -61,7 +61,7 @@ jobs:
       matrix:
         consul_acl: [ "consul_acl_enabled", "consul_acl_disabled" ]
         consul_acl_default_policy: [ "consul_acl_deny" ]
-        nomad_acl: [ "nomad_acl_enabled", "nomad_acl_disabled" ]
+        nomad_acl: [ "nomad_acl_disabled" ]
         hashicorp_binary: [ "hashicorp_enterprise" ]
 
     steps:
