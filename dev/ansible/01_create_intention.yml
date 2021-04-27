@@ -97,10 +97,11 @@
   environment:
     CONSUL_HTTP_TOKEN: "{{ consul_token }}"
 
-- name: Consul create intention trino-sidecar-proxy => hive-metastore (allow) and trino-sidecar-proxy => minio (allow)
+- name: Consul create intention trino-sidecar-proxy => hive-metastore (allow), trino-sidecar-proxy => minio (allow), and trino-sidecar-proxy => postgres (allow),
   shell: |
     consul intention create trino-sidecar-proxy hive-metastore
     consul intention create trino-sidecar-proxy minio
+    consul intention create trino-sidecar-proxy postgres
   when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny' and trino_sidecar_proxy_intention.stdout_lines == []
   environment:
     CONSUL_HTTP_TOKEN: "{{ consul_token }}"
