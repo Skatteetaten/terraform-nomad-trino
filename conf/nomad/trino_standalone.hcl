@@ -62,7 +62,7 @@ job "${nomad_job_name}" {
           }
         }
       }
-
+      /*
       check {
         task     = "server"
         name     = "trino-hive-availability"
@@ -80,6 +80,7 @@ job "${nomad_job_name}" {
         interval = "10s"
         timeout  = "2s"
       }
+      */
       /*
       check {
         name         = "trino-minio-availability"
@@ -91,6 +92,7 @@ job "${nomad_job_name}" {
         address_mode = "driver"
       }
       */
+      /*
       check {
         task     = "server"
         name     = "trino-postgres-availability"
@@ -100,6 +102,7 @@ job "${nomad_job_name}" {
         interval = "30s"
         timeout  = "15s"
       }
+      */
     }
 
     task "waitfor-hive-metastore" {
