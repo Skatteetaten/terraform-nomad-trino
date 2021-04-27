@@ -17,7 +17,7 @@
   register: result_trino
   retries: 15
   delay: 15
-  until: result_trino.json | length == 3
+  until: result_trino.json | length == 2
   tags: test
 
 - name: Trino healthchecks pass with token
@@ -33,7 +33,7 @@
   register: result_trino
   retries: 15
   delay: 15
-  until: result_trino.json | length == 3
+  until: result_trino.json | length == 2
   tags: test
 
 - name: Start local proxy on port 8888 to trino service

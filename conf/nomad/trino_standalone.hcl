@@ -91,6 +91,7 @@ job "${nomad_job_name}" {
         address_mode = "driver"
       }
       */
+      /*
       check {
         task     = "server"
         name     = "trino-postgres-availability"
@@ -100,6 +101,7 @@ job "${nomad_job_name}" {
         interval = "30s"
         timeout  = "15s"
       }
+      */
     }
 
     task "waitfor-hive-metastore" {
