@@ -62,7 +62,7 @@ job "${nomad_job_name}" {
           }
         }
       }
-      /*
+
       check {
         task     = "server"
         name     = "trino-hive-availability"
@@ -80,7 +80,6 @@ job "${nomad_job_name}" {
         interval = "10s"
         timeout  = "2s"
       }
-      */
       /*
       check {
         name         = "trino-minio-availability"
