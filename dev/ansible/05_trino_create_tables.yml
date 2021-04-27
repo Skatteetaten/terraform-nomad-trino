@@ -137,7 +137,6 @@
     - example-upload
     - test
 
-Flatten json VIEW example
 - name: Flatten JSON table with VIEW
   shell: docker run --network host -v "/vagrant/example/resources/query/flattenedjson_json.sql:/flattenedjson_json.sql" {{ container_image }} trino --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user trino --file /flattenedjson_json.sql
   register: docker_output_cmd_json_2
