@@ -77,83 +77,83 @@
     - test
 
 - name: Create CSV table
- shell: docker run --network host -v "/vagrant/example/resources/query/csv_create_table.sql:/csv_create_table.sql" {{ container_image }} trino --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user trino --file /csv_create_table.sql
- register: docker_output_cmd_csv
- retries: 10
- delay: 5
- until: docker_output_cmd_csv.stderr.find("CREATE TABLE") != -1
- tags:
-   - example-upload
-   - test
+  shell: docker run --network host -v "/vagrant/example/resources/query/csv_create_table.sql:/csv_create_table.sql" {{ container_image }} trino --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user trino --file /csv_create_table.sql
+  register: docker_output_cmd_csv
+  retries: 10
+  delay: 5
+  until: docker_output_cmd_csv.stderr.find("CREATE TABLE") != -1
+  tags:
+    - example-upload
+    - test
   # TODO: This error must be tracked down: Error running command: java.io.IOException: unexpected end of stream on Connection{127.0.0.1:8888, proxy=HTTP @ 127.0.0.1:8888 hostAddress=/127.0.0.1:8888 cipherSuite=none protocol=http/1.1}
 
 - name: Create JSON table
- shell: docker run --network host -v "/vagrant/example/resources/query/json_create_table.sql:/json_create_table.sql" {{ container_image }} trino --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user trino --file /json_create_table.sql
- register: docker_output_cmd_json
- retries: 10
- delay: 5
- until: docker_output_cmd_json.stderr.find("CREATE TABLE") != -1
- tags:
-   - example-upload
-   - test
+  shell: docker run --network host -v "/vagrant/example/resources/query/json_create_table.sql:/json_create_table.sql" {{ container_image }} trino --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user trino --file /json_create_table.sql
+  register: docker_output_cmd_json
+  retries: 10
+  delay: 5
+  until: docker_output_cmd_json.stderr.find("CREATE TABLE") != -1
+  tags:
+    - example-upload
+    - test
 
 - name: Create AVRO table
- shell: docker run --network host -v "/vagrant/example/resources/query/avro_tweets_create_table.sql:/avro_tweets_create_table.sql" {{ container_image }} trino --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user trino --file /avro_tweets_create_table.sql
- register: docker_output_cmd_avro
- retries: 10
- delay: 5
- until: docker_output_cmd_avro.stderr.find("CREATE TABLE") != -1
- tags:
-   - example-upload
-   - test
+  shell: docker run --network host -v "/vagrant/example/resources/query/avro_tweets_create_table.sql:/avro_tweets_create_table.sql" {{ container_image }} trino --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user trino --file /avro_tweets_create_table.sql
+  register: docker_output_cmd_avro
+  retries: 10
+  delay: 5
+  until: docker_output_cmd_avro.stderr.find("CREATE TABLE") != -1
+  tags:
+    - example-upload
+    - test
 
 - name: Verify CSV table - available 150 records
- shell: docker run --network host {{ container_image }} trino --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user trino --execute "SELECT COUNT(*) FROM iris;"
- register: query_csv_result
- retries: 10
- delay: 5
- until: query_csv_result.stdout == "\"150\""
- tags:
-   - example-upload
-   - test
+  shell: docker run --network host {{ container_image }} trino --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user trino --execute "SELECT COUNT(*) FROM iris;"
+  register: query_csv_result
+  retries: 10
+  delay: 5
+  until: query_csv_result.stdout == "\"150\""
+  tags:
+    - example-upload
+    - test
 
 - name: Verify JSON table - available 2 records
- shell: docker run --network host {{ container_image }} trino --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user trino --execute "SELECT COUNT(*) FROM somejson;"
- register: query_json_result
- retries: 10
- delay: 5
- until: query_json_result.stdout == "\"2\""
- tags:
-   - example-upload
-   - test
+  shell: docker run --network host {{ container_image }} trino --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user trino --execute "SELECT COUNT(*) FROM somejson;"
+  register: query_json_result
+  retries: 10
+  delay: 5
+  until: query_json_result.stdout == "\"2\""
+  tags:
+    - example-upload
+    - test
 
 - name: Verify AVRO table - available 2 records
- shell: docker run --network host {{ container_image }} trino --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user trino --execute "SELECT COUNT(*) FROM tweets;"
- register: query_avro_result
- retries: 10
- delay: 5
- until: query_avro_result.stdout == "\"2\""
- tags:
-   - example-upload
-   - test
+  shell: docker run --network host {{ container_image }} trino --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user trino --execute "SELECT COUNT(*) FROM tweets;"
+  register: query_avro_result
+  retries: 10
+  delay: 5
+  until: query_avro_result.stdout == "\"2\""
+  tags:
+    - example-upload
+    - test
 
 Flatten json VIEW example
 - name: Flatten JSON table with VIEW
- shell: docker run --network host -v "/vagrant/example/resources/query/flattenedjson_json.sql:/flattenedjson_json.sql" {{ container_image }} trino --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user trino --file /flattenedjson_json.sql
- register: docker_output_cmd_json_2
- retries: 10
- delay: 5
- until: docker_output_cmd_json_2.stderr.find("CREATE VIEW") != -1
- tags:
-   - example-upload
-   - test
+  shell: docker run --network host -v "/vagrant/example/resources/query/flattenedjson_json.sql:/flattenedjson_json.sql" {{ container_image }} trino --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user trino --file /flattenedjson_json.sql
+  register: docker_output_cmd_json_2
+  retries: 10
+  delay: 5
+  until: docker_output_cmd_json_2.stderr.find("CREATE VIEW") != -1
+  tags:
+    - example-upload
+    - test
 
 - name: Verify JSON view - available 2 records
- shell: docker run --network host {{ container_image }} trino --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user trino --execute "SELECT COUNT(*) FROM flattenedjson;"
- register: query_json_result_2
- retries: 10
- delay: 5
- until: query_json_result_2.stdout == "\"2\""
- tags:
-   - example-upload
-   - test
+  shell: docker run --network host {{ container_image }} trino --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user trino --execute "SELECT COUNT(*) FROM flattenedjson;"
+  register: query_json_result_2
+  retries: 10
+  delay: 5
+  until: query_json_result_2.stdout == "\"2\""
+  tags:
+    - example-upload
+    - test
