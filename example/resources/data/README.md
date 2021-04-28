@@ -95,7 +95,7 @@ WITH (
 ```
 
 ## PROTOBUF
-Reference to [using-protobuf-parquet](https://costimuraru.wordpress.com/2018/04/26/using-protobuf-parquet-with-aws-athena-presto-or-hive/)
+Reference to [using-protobuf-parquet](https://costimuraru.wordpress.com/2018/04/26/using-protobuf-parquet-with-aws-athena-trino-or-hive/)
 
 todo
 ```sql

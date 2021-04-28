@@ -25,8 +25,8 @@ job "${nomad_job_name}" {
       mode = "bridge"
       port "connect" {
         # This exposes the _same_ port number inside and outside of the bridge network.
-        # Important so that presto can discover each other over the network.
-        # Presto announces itself with `node.internal-address` and `port`
+        # Important so that trino can discover each other over the network.
+        # Trino announces itself with `node.internal-address` and `port`
         to = -1
       }
     }
@@ -65,7 +65,7 @@ job "${nomad_job_name}" {
         native = true
       }
       check {
-        name     = "presto-info"
+        name     = "trino-info"
         type     = "http"
         protocol = "https"
         tls_skip_verify = true
@@ -75,7 +75,7 @@ job "${nomad_job_name}" {
       }
       check {
         task     = "server"
-        name     = "presto-started"
+        name     = "trino-started"
         type     = "script"
         command  = "/bin/sh"
         failures_before_critical = 2
@@ -163,24 +163,24 @@ job "${nomad_job_name}" {
 %{ endif }
         volumes = [
           # JVM settings. Memory GC etc.
-          "local/presto/jvm.config:/lib/presto/default/etc/jvm.config",
+          "local/trino/jvm.config:/lib/trino/default/etc/jvm.config",
           # General configuration file
-          "local/presto/config.properties:/lib/presto/default/etc/config.properties",
+          "local/trino/config.properties:/lib/trino/default/etc/config.properties",
           # Custom certificate authenticator configuration
           %{ if consul_connect_plugin }
-          "local/presto/plugin/presto-consul-connect.jar:/usr/lib/presto/plugin/consulconnect/presto-consul-connect.jar",
-          "local/presto/certificate-authenticator.properties:/lib/presto/default/etc/certificate-authenticator.properties",
+          "local/trino/plugin/trino-consul-connect.jar:/usr/lib/trino/plugin/consulconnect/trino-consul-connect.jar",
+          "local/trino/certificate-authenticator.properties:/lib/trino/default/etc/certificate-authenticator.properties",
           %{ endif }
           # Mount for debug purposes
-          %{ if debug }"local/presto/log.properties:/lib/presto/default/etc/log.properties",%{ endif }
+          %{ if debug }"local/trino/log.properties:/lib/trino/default/etc/log.properties",%{ endif }
           # Hive connector configuration
-          "local/presto/hive.properties:/lib/presto/default/etc/catalog/hive.properties",
+          "local/trino/hive.properties:/lib/trino/default/etc/catalog/hive.properties",
           # Mounting /local/hosts to /etc/hosts overrides default docker mount.
           "local/hosts:/etc/hosts",
           # Mounting modified entrypoint.
           # The will start a background process to update /etc/hosts from /local/hosts on a 2 second interval
           # This is needed in order for the workers and coordinators to communicate by name
-          "local/scripts/run-presto:/usr/lib/presto/bin/run-presto",
+          "local/scripts/run-trino:/usr/lib/trino/bin/run-trino",
         ]
       }
 %{ if consul_connect_plugin }
@@ -188,7 +188,7 @@ job "${nomad_job_name}" {
         # Download custom certificate authenticator plugin
         source = "${consul_connect_plugin_uri}"
         mode = "file"
-        destination = "local/presto/plugin/presto-consul-connect.jar"
+        destination = "local/trino/plugin/trino-consul-connect.jar"
       }
 %{ endif }
       template {
@@ -196,8 +196,8 @@ job "${nomad_job_name}" {
 connector.name=hive-hadoop2
 %{ if minio_use_vault_provider }
 {{ with secret "${minio_vault_kv_path}" }}
-hive.s3.aws-access-key={{- .Data.data.${minio_vault_kv_access_key_name} }}
-hive.s3.aws-secret-key={{- .Data.data.${minio_vault_kv_secret_key_name} }}
+hive.s3.aws-access-key={{- .Data.data.${minio_vault_kv_field_access_name} }}
+hive.s3.aws-secret-key={{- .Data.data.${minio_vault_kv_field_secret_name} }}
 {{ end }}
 %{ else }
 hive.s3.aws-access-key=${minio_access_key}
@@ -216,11 +216,11 @@ hive.s3.path-style-access=true
 # Custom hive configuration properties
 ${hive_config_properties}
 EOH
-        destination = "local/presto/hive.properties"
+        destination = "local/trino/hive.properties"
       }
       template {
         # TODO: Create issue with hashicorp. Is there a way to mount directly to /etc/hosts ( for continual updates )
-        # This will add all hosts with service names presto-worker and presto to the hosts file
+        # This will add all hosts with service names trino-worker and trino to the hosts file
         data = <<EOF
 127.0.0.1 %{ if node_type == "coordinator" }${service_name}%{ else }{{env "NOMAD_PORT_connect"}}.${service_name}-worker%{ endif } localhost
 {{ range services }}
@@ -240,14 +240,14 @@ EOF
           {{- .PrivateKeyPEM }}
           {{- .CertPEM }}{{ end }}
           EOF
-        destination = "local/presto.pem"
-        change_mode = "noop" # Presto will automatically reload certs every 1 minute.
+        destination = "local/trino.pem"
+        change_mode = "noop" # Trino will automatically reload certs every 1 minute.
       }
 
       template {
         data = "{{- range caRoots }}{{ .RootCertPEM }}{{ end }}"
         destination = "local/roots.pem"
-        change_mode = "noop" # Presto will automatically reload certs every 1 minute.
+        change_mode = "noop" # Trino will automatically reload certs every 1 minute.
       }
 
       template {
@@ -256,16 +256,16 @@ EOF
 
 set -xeuo pipefail
 
-if [[ ! -d /usr/lib/presto/etc ]]; then
-    if [[ -d /etc/presto ]]; then
-        ln -s /etc/presto /usr/lib/presto/etc
+if [[ ! -d /usr/lib/trino/etc ]]; then
+    if [[ -d /etc/trino ]]; then
+        ln -s /etc/trino /usr/lib/trino/etc
     else
-        ln -s /usr/lib/presto/default/etc /usr/lib/presto/etc
+        ln -s /usr/lib/trino/default/etc /usr/lib/trino/etc
     fi
 fi
 
 set +e
-grep -s -q 'node.id' /usr/lib/presto/etc/node.properties
+grep -s -q 'node.id' /usr/lib/trino/etc/node.properties
 NODE_ID_EXISTS=$$?
 set -e
 
@@ -277,9 +277,9 @@ fi
 #Our change in order to pass hosts dynamically from nomad template
 nohup sh -c "while true; do cat /local/hosts > /etc/hosts; sleep 2; done" >/dev/null 2>&1 & disown
 
-exec /usr/lib/presto/bin/launcher run $${NODE_ID}
+exec /usr/lib/trino/bin/launcher run $${NODE_ID}
 EOF
-        destination = "local/scripts/run-presto"
+        destination = "local/scripts/run-trino"
         change_mode = "noop"
         perms = 555
       }
@@ -295,7 +295,7 @@ EOF
         data = <<EOF
 certificate-authenticator.name=consulconnect
 EOF
-        destination   = "local/presto/certificate-authenticator.properties"
+        destination   = "local/trino/certificate-authenticator.properties"
       }
       template {
 data = <<EOF
@@ -330,31 +330,31 @@ http-server.authentication.allow-insecure-over-http=true
 http-server.process-forwarded=true
 http-server.https.enabled=true
 http-server.https.port={{ env "NOMAD_PORT_connect" }}
-http-server.https.keystore.path=/local/presto.pem
+http-server.https.keystore.path=/local/trino.pem
 http-server.https.truststore.path=/local/roots.pem
 
 # This is the same jks, but it will not do the consul connect authorization in intra cluster communication
 internal-communication.https.required=true
 %{ if use_vault_secret_provider }
 {{ with secret "${vault_kv_path}" }}
-internal-communication.shared-secret="{{ .Data.data.${vault_kv_secret_key_name}}}"
+internal-communication.shared-secret="{{ .Data.data.${vault_kv_field_secret_name}}}"
 {{end}}
 %{ else }
 internal-communication.shared-secret= "${shared_secret_user}"
 %{ endif }
-internal-communication.https.keystore.path=/local/presto.pem
+internal-communication.https.keystore.path=/local/trino.pem
 internal-communication.https.truststore.path=/local/roots.pem
 
 query.client.timeout=5m
 query.min-expire-age=30m
-query.max-memory=${presto_query_max_memory}MB
+query.max-memory=${trino_query_max_memory}MB
 EOF
-        destination   = "local/presto/config.properties"
+        destination   = "local/trino/config.properties"
       }
       template {
         data = <<EOF
 -server
--Xmx${presto_xmx_memory}M
+-Xmx${trino_xmx_memory}M
 -XX:-UseBiasedLocking
 -XX:+UseG1GC
 -XX:G1HeapRegionSize=32M
@@ -366,7 +366,7 @@ EOF
 -Djdk.attach.allowAttachSelf=true
 -Djdk.nio.maxCachedBufferSize=2000000
 EOF
-        destination   = "local/presto/jvm.config"
+        destination   = "local/trino/jvm.config"
       }
       template {
         data = <<EOF
@@ -374,21 +374,21 @@ EOF
 # WARNING
 # ^^^^^^^
 # This configuration file is for development only and should NOT be used
-# in production. For example configuration, see the Presto documentation.
+# in production. For example configuration, see the Trino documentation.
 #
 
-io.prestosql=DEBUG
+io.trinosql=DEBUG
 io.airlift.discovery.client.Announcer=DEBUG
 com.sun.jersey.guice.spi.container.GuiceComponentProviderFactory=DEBUG
-io.prestosql.server.PluginManager=DEBUG
-io.prestosql.presto.server.security=DEBUG
-io.prestosql.server.security=DEBUG
-io.github.gugalnikov.prestosql.plugin.consulconnect.ConsulConnectPlugin=DEBUG
+io.trinosql.server.PluginManager=DEBUG
+io.trinosql.trino.server.security=DEBUG
+io.trinosql.server.security=DEBUG
+io.github.gugalnikov.trinosql.plugin.consulconnect.ConsulConnectPlugin=DEBUG
 io.github.gugalnikov=DEBUG
 io.airlift=DEBUG
 
 EOF
-        destination   = "local/presto/log.properties"
+        destination   = "local/trino/log.properties"
       }
       template {
         destination = "local/data/.additional-envs"

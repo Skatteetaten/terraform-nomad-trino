@@ -1,6 +1,6 @@
-# Presto cluster example
-This is a cluster mode example of Presto that implements the Vault provider to store credentials for Presto, Minio and Postgres.
-The example use of the module spins up Presto in [cluster mode](../../conf/nomad/presto.hcl) having one worker and one coordinator.
+# Trino cluster example
+This is a cluster mode example of Trino that implements the Vault provider to store credentials for Trino, Minio and Postgres.
+The example use of the module spins up Trino in [cluster mode](../../conf/nomad/trino.hcl) having one worker and one coordinator.
 
 Before deploying the module, Vault K/V store should contain all required credentials and policies.
 In this example, all required actions are automated by Ansible. See the following files for details.
@@ -18,7 +18,7 @@ Vault provides credentials for Minio and Postgres, and render them directly into
 | [terraform-nomad-hive](https://github.com/fredrikhgrelland/terraform-nomad-hive) | 0.3.0 |
 
 ## Services
-![img](../resources/images/terraform-nomad-presto.png)
+![img](../resources/images/terraform-nomad-trino.png)
 
 ## Example of uploaded files
 This example uses the following file types found in the [example/resources/data](../resources/data) folder:
@@ -33,7 +33,7 @@ Directory [`/resources`](../resources) contains data example with will be loaded
 ├── resources
 │   ├── data/           # files that are uploaded to minio
 │   ├── images/         # images for documentation
-│   ├── query/          # presto query example for uploaded data
+│   ├── query/          # trino query example for uploaded data
 │   └── schema/         # schema(s) for data serializers/deserializers
 ├── ...
 ```

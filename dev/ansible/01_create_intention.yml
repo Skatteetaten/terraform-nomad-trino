@@ -40,18 +40,18 @@
 # ====All the below listed intentions are required for running tests ===#
 
 #*************************************************************************************************#
-# presto-local => presto (allow)
+# trino-local => trino (allow)
 #*************************************************************************************************#
-- name: Check if intention presto-local => presto (allow) exists
-  shell: consul intention match -source presto-local
-  register: presto_local_intention
+- name: Check if intention trino-local => trino (allow) exists
+  shell: consul intention match -source trino-local
+  register: trino_local_intention
   when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny'
   environment:
     CONSUL_HTTP_TOKEN: "{{ consul_token }}"
 
-- name: Consul create intention presto-local => presto (allow)
-  shell: consul intention create presto-local presto
-  when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny' and presto_local_intention.stdout_lines == []
+- name: Consul create intention trino-local => trino (allow)
+  shell: consul intention create trino-local trino
+  when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny' and trino_local_intention.stdout_lines == []
   environment:
     CONSUL_HTTP_TOKEN: "{{ consul_token }}"
 
@@ -72,35 +72,36 @@
     CONSUL_HTTP_TOKEN: "{{ consul_token }}"
 
 #*************************************************************************************************#
-# presto => hive-metastore(allow)
+# trino => hive-metastore(allow)
 #*************************************************************************************************#
-- name: Check if intention presto => hive-metastore (allow) exists
-  shell: consul intention match -source presto
-  register: presto_intention
+- name: Check if intention trino => hive-metastore (allow) exists
+  shell: consul intention match -source trino
+  register: trino_intention
   when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny'
   environment:
     CONSUL_HTTP_TOKEN: "{{ consul_token }}"
 
-- name: Consul create intention presto => hive-metastore (allow)
-  shell: consul intention create presto hive-metastore
-  when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny' and presto_intention.stdout_lines == []
+- name: Consul create intention trino => hive-metastore (allow)
+  shell: consul intention create trino hive-metastore
+  when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny' and trino_intention.stdout_lines == []
   environment:
     CONSUL_HTTP_TOKEN: "{{ consul_token }}"
 
 #*************************************************************************************************#
-# presto-sidecar-proxy => hive-metastore(allow),presto-sidecar-proxy => minio(allow)
+# trino-sidecar-proxy => hive-metastore(allow),trino-sidecar-proxy => minio(allow)
 #*************************************************************************************************#
-- name: Check if intentions from presto-sidecar-proxy exist
-  shell: consul intention match -source presto-sidecar-proxy
-  register: presto_sidecar_proxy_intention
+- name: Check if intentions from trino-sidecar-proxy exist
+  shell: consul intention match -source trino-sidecar-proxy
+  register: trino_sidecar_proxy_intention
   when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny'
   environment:
     CONSUL_HTTP_TOKEN: "{{ consul_token }}"
 
-- name: Consul create intention presto-sidecar-proxy => hive-metastore (allow) and presto-sidecar-proxy => minio (allow)
+- name: Consul create intention trino-sidecar-proxy => hive-metastore (allow), trino-sidecar-proxy => minio (allow), and trino-sidecar-proxy => postgres (allow),
   shell: |
-    consul intention create presto-sidecar-proxy hive-metastore
-    consul intention create presto-sidecar-proxy minio
-  when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny' and presto_sidecar_proxy_intention.stdout_lines == []
+    consul intention create trino-sidecar-proxy hive-metastore
+    consul intention create trino-sidecar-proxy minio
+    consul intention create trino-sidecar-proxy postgres
+  when: lookup('env', 'consul_acl') | bool and lookup('env', 'consul_acl_default_policy') == 'deny' and trino_sidecar_proxy_intention.stdout_lines == []
   environment:
     CONSUL_HTTP_TOKEN: "{{ consul_token }}"
