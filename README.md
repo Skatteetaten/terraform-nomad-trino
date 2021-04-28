@@ -201,7 +201,7 @@ The following code is an example usage of the [example/trino_standalone](example
 ```hcl
 module "trino" {
   source = "github.com/fredrikhgrelland/terraform-nomad-trino.git?ref=0.3.0"
-   
+
   depends_on = [
     module.postgres,
     module.minio,
