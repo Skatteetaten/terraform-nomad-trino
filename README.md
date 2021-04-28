@@ -36,7 +36,7 @@ Module contains a Nomad job [./conf/nomad/trino.hcl](./conf/nomad/trino.hcl) wit
 10. [References](#references)
 
 ## Prerequisites
-Please follow [this section in original template](https://github.com/fredrikhgrelland/vagrant-hashistack-template#install-prerequisites)
+Please follow [this section in original template](https://github.com/skatteetaten/vagrant-hashistack-template#install-prerequisites)
 
 ## Compatibility
 |Software|OSS Version|Enterprise Version|
@@ -51,9 +51,9 @@ Please follow [this section in original template](https://github.com/fredrikhgre
 ### Required modules
 | Module | Version |
 | :----- | :------ |
-| [terraform-nomad-hive](https://github.com/fredrikhgrelland/terraform-nomad-hive) | 0.3.0 or newer |
-| [terraform-nomad-minio](https://github.com/fredrikhgrelland/terraform-nomad-minio) | 0.3.0 or newer |
-| [terraform-nomad-postgres](https://github.com/fredrikhgrelland/terraform-nomad-postgres) | 0.3.0 or newer |
+| [terraform-nomad-hive](https://github.com/skatteetaten/terraform-nomad-hive) | 0.3.0 or newer |
+| [terraform-nomad-minio](https://github.com/skatteetaten/terraform-nomad-minio) | 0.3.0 or newer |
+| [terraform-nomad-postgres](https://github.com/skatteetaten/terraform-nomad-postgres) | 0.3.0 or newer |
 
 ### Required software
 All software is provided and run with docker.

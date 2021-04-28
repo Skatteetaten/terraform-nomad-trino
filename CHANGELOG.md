@@ -1,6 +1,6 @@
 # Changelog
 
-## [UNRELEASED 0.4.0]
+## [0.4.0 UNRELEASED]
 
 ### Changed
 - Prestosql changed name to Trino. This repo changed with it. #106
@@ -11,6 +11,7 @@
 - Bumped version Vagrantbox -> 0.10.0 #102
 - Variables uses same naming convention as in other modules #87
 - Verbose output ansible and terraform
+- Url update due ownership transfer #101
 
 ### Added
 - Trino consul connect plugin source and build #?

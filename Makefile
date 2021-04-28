@@ -9,7 +9,7 @@ TRINO_VERSION = 354
 
 #### Pre requisites ####
 install:
-	 mkdir -p tmp;(cd tmp; git clone --depth=1 https://github.com/fredrikhgrelland/vagrant-hashistack.git; cd vagrant-hashistack; make install); rm -rf tmp/vagrant-hashistack
+	 mkdir -p tmp;(cd tmp; git clone --depth=1 https://github.com/skatteetaten/vagrant-hashistack.git; cd vagrant-hashistack; make install); rm -rf tmp/vagrant-hashistack
 
 linter:
 	docker run -e RUN_LOCAL=true -v "${PWD}:/tmp/lint/" github/super-linter
@@ -90,7 +90,7 @@ clean: destroy-box remove-tmp
 
 # helper commands
 update-box:
-	@SSL_CERT_FILE=${SSL_CERT_FILE} CURL_CA_BUNDLE=${CURL_CA_BUNDLE} vagrant box update || (echo '\n\nIf you get an SSL error you might be behind a transparent proxy. \nMore info https://github.com/fredrikhgrelland/vagrant-hashistack/blob/master/README.md#proxy\n\n' && exit 2)
+	@SSL_CERT_FILE=${SSL_CERT_FILE} CURL_CA_BUNDLE=${CURL_CA_BUNDLE} vagrant box update || (echo '\n\nIf you get an SSL error you might be behind a transparent proxy. \nMore info https://github.com/skatteetaten/vagrant-hashistack/blob/master/README.md#proxy\n\n' && exit 2)
 
 # to-hivemetastore
 proxy-hive:

@@ -6,9 +6,9 @@ It uses Vault as the shared secret provider. For more details check [main.tf](./
 ## Modules in use
 | Modules       | version       |
 | ------------- |:-------------:|
-| [terraform-nomad-postgres](https://github.com/fredrikhgrelland/terraform-nomad-postgres) | 0.2.0 |
-| [terraform-nomad-minio](https://github.com/fredrikhgrelland/terraform-nomad-minio) | 0.2.0 |
-| [terraform-nomad-hive](https://github.com/fredrikhgrelland/terraform-nomad-hive) | 0.2.0 |
+| [terraform-nomad-postgres](https://github.com/skatteetaten/terraform-nomad-postgres) | 0.3.0 |
+| [terraform-nomad-minio](https://github.com/skatteetaten/terraform-nomad-minio) | 0.3.0 |
+| [terraform-nomad-hive](https://github.com/skatteetaten/terraform-nomad-hive) | 0.4.0 |
 
 ## Services
 ![img](../resources/images/terraform-nomad-trino.png)
