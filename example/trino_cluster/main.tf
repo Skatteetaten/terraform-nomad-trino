@@ -3,7 +3,7 @@ locals {
   nomad_namespace   = "default"
 }
 
-module "presto" {
+module "trino" {
   source = "../.."
 
   depends_on = [
@@ -12,7 +12,7 @@ module "presto" {
   ]
 
   # nomad
-  nomad_job_name    = "presto"
+  nomad_job_name    = "trino"
   nomad_datacenters = local.nomad_datacenters
   nomad_namespace   = local.nomad_namespace
 
@@ -29,13 +29,13 @@ module "presto" {
 
   # Vault provided credentials
   vault_secret = {
-    use_vault_provider       = true
-    vault_kv_policy_name     = "kv-secret"
-    vault_kv_path            = "secret/data/dev/presto"
-    vault_kv_secret_key_name = "cluster_shared_secret"
+    use_vault_provider         = true
+    vault_kv_policy_name       = "kv-secret"
+    vault_kv_path              = "secret/data/dev/trino"
+    vault_kv_field_secret_name = "cluster_shared_secret"
   }
 
-  service_name     = "presto"
+  service_name     = "trino"
   mode             = "cluster"
   workers          = 1
   consul_http_addr = "http://10.0.3.10:8500"
@@ -57,14 +57,30 @@ module "presto" {
 
   # Vault provided credentials
   minio_vault_secret = {
-    use_vault_provider       = true
-    vault_kv_policy_name     = "kv-secret"
-    vault_kv_path            = "secret/data/dev/minio"
-    vault_kv_access_key_name = "access_key"
-    vault_kv_secret_key_name = "secret_key"
+    use_vault_provider         = true
+    vault_kv_policy_name       = "kv-secret"
+    vault_kv_path              = "secret/data/dev/minio"
+    vault_kv_field_access_name = "access_key"
+    vault_kv_field_secret_name = "secret_key"
   }
 
+  postgres_service = {
+    service_name  = module.postgres.service_name
+    port          = module.postgres.port
+    username      = module.postgres.username
+    password      = module.postgres.password
+    database_name = module.postgres.database_name
+  }
+  postgres_vault_secret = {
+    use_vault_provider      = false
+    vault_kv_policy_name    = ""
+    vault_kv_path           = ""
+    vault_kv_field_username = ""
+    vault_kv_field_password = ""
+  }
 }
+
+# TODO: Update dependent modules version
 
 module "minio" {
   source = "github.com/skatteetaten/terraform-nomad-minio.git?ref=0.3.0"

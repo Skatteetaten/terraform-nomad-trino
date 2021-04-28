@@ -3,27 +3,28 @@ locals {
   nomad_namespace   = "default"
 }
 
-module "presto" {
+module "trino" {
   source = "../.."
 
   depends_on = [
+    module.postgres,
     module.minio,
     module.hive
   ]
 
   # nomad
-  nomad_job_name    = "presto"
+  nomad_job_name    = "trino"
   nomad_datacenters = local.nomad_datacenters
   nomad_namespace   = local.nomad_namespace
 
-  # presto
+  # trino
   vault_secret = {
-    use_vault_provider       = true
-    vault_kv_policy_name     = "kv-secret"
-    vault_kv_path            = "secret/data/dev/presto"
-    vault_kv_secret_key_name = "cluster_shared_secret"
+    use_vault_provider         = true
+    vault_kv_policy_name       = "kv-secret"
+    vault_kv_path              = "secret/data/dev/trino"
+    vault_kv_field_secret_name = "cluster_shared_secret"
   }
-  service_name     = "presto"
+  service_name     = "trino"
   mode             = "standalone"
   workers          = 1
   consul_http_addr = "http://10.0.3.10:8500"
@@ -59,16 +60,30 @@ module "presto" {
     secret_key   = module.minio.minio_secret_key
   }
   minio_vault_secret = {
-    use_vault_provider       = false
-    vault_kv_policy_name     = ""
-    vault_kv_path            = ""
-    vault_kv_access_key_name = ""
-    vault_kv_secret_key_name = ""
+    use_vault_provider         = false
+    vault_kv_policy_name       = ""
+    vault_kv_path              = ""
+    vault_kv_field_access_name = ""
+    vault_kv_field_secret_name = ""
+  }
+  postgres_service = {
+    service_name  = module.postgres.service_name
+    port          = module.postgres.port
+    username      = module.postgres.username
+    password      = module.postgres.password
+    database_name = module.postgres.database_name
+  }
+  postgres_vault_secret = {
+    use_vault_provider      = false
+    vault_kv_policy_name    = ""
+    vault_kv_path           = ""
+    vault_kv_field_username = ""
+    vault_kv_field_password = ""
   }
 }
 
 module "minio" {
-  source = "github.com/skatteetaten/terraform-nomad-minio.git?ref=0.3.0"
+  source = "github.com/skatteetaten/terraform-nomad-minio.git?ref=0.4.0"
 
   # nomad
   nomad_datacenters = local.nomad_datacenters
@@ -81,11 +96,11 @@ module "minio" {
   port            = 9000
   container_image = "minio/minio:latest" # todo: avoid using tag latest in future releases
   vault_secret = {
-    use_vault_provider   = false,
-    vault_kv_policy_name = "",
-    vault_kv_path        = "",
-    vault_kv_access_key  = "",
-    vault_kv_secret_key  = ""
+    use_vault_provider        = false,
+    vault_kv_policy_name      = "",
+    vault_kv_path             = "",
+    vault_kv_field_access_key = "",
+    vault_kv_field_secret_key = ""
   }
   access_key                      = "minio"
   secret_key                      = "minio123"
@@ -102,7 +117,7 @@ module "minio" {
 }
 
 module "postgres" {
-  source = "github.com/skatteetaten/terraform-nomad-postgres.git?ref=0.3.0"
+  source = "github.com/skatteetaten/terraform-nomad-postgres.git?ref=0.4.0"
 
   # nomad
   nomad_datacenters = local.nomad_datacenters
@@ -114,11 +129,11 @@ module "postgres" {
   container_image = "postgres:12-alpine"
   container_port  = 5432
   vault_secret = {
-    use_vault_provider     = false,
-    vault_kv_policy_name   = "",
-    vault_kv_path          = "",
-    vault_kv_username_name = "",
-    vault_kv_password_name = ""
+    use_vault_provider      = false,
+    vault_kv_policy_name    = "",
+    vault_kv_path           = "",
+    vault_kv_field_username = "",
+    vault_kv_field_password = ""
   }
   admin_user                      = "hive"
   admin_password                  = "hive"
@@ -151,7 +166,7 @@ module "hive" {
     memory = 128
   }
 
-  #support CSV -> https://towardsdatascience.com/load-and-query-csv-file-in-s3-with-presto-b0d50bc773c9
+  #support CSV -> https://towardsdatascience.com/load-and-query-csv-file-in-s3-with-trino-b0d50bc773c9
   #metastore.storage.schema.reader.impl=org.apache.hadoop.hive.metastore.SerDeStorageSchemaReader
   hive_container_environment_variables = [
     "HIVE_SITE_CONF_metastore_storage_schema_reader_impl=org.apache.hadoop.hive.metastore.SerDeStorageSchemaReader"
