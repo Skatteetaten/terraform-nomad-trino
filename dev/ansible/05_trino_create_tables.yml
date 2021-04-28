@@ -109,7 +109,7 @@
 
 - name: Verify CSV table - available 150 records
   shell: docker run --network host {{ container_image }} trino --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user trino --execute "SELECT COUNT(*) FROM iris;"
-  when: not lookup('env', 'nomad_acl') | bool
+  when: not lookup('env', 'nomad_acl') | bool and not lookup('env', 'consul_acl') | bool
   register: query_csv_result
   retries: 10
   delay: 5
@@ -120,7 +120,7 @@
 
 - name: Verify JSON table - available 2 records
   shell: docker run --network host {{ container_image }} trino --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user trino --execute "SELECT COUNT(*) FROM somejson;"
-  when: not lookup('env', 'nomad_acl') | bool
+  when: not lookup('env', 'nomad_acl') | bool and not lookup('env', 'consul_acl') | bool
   register: query_json_result
   retries: 10
   delay: 5
@@ -131,7 +131,7 @@
 
 - name: Verify AVRO table - available 2 records
   shell: docker run --network host {{ container_image }} trino --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user trino --execute "SELECT COUNT(*) FROM tweets;"
-  when: not lookup('env', 'nomad_acl') | bool
+  when: not lookup('env', 'nomad_acl') | bool and not lookup('env', 'consul_acl') | bool
   register: query_avro_result
   retries: 10
   delay: 5
@@ -142,7 +142,7 @@
 
 - name: Flatten JSON table with VIEW
   shell: docker run --network host -v "/vagrant/example/resources/query/flattenedjson_json.sql:/flattenedjson_json.sql" {{ container_image }} trino --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user trino --file /flattenedjson_json.sql
-  when: not lookup('env', 'nomad_acl') | bool
+  when: not lookup('env', 'nomad_acl') | bool and not lookup('env', 'consul_acl') | bool
   register: docker_output_cmd_json_2
   retries: 10
   delay: 5
@@ -153,7 +153,7 @@
 
 - name: Verify JSON view - available 2 records
   shell: docker run --network host {{ container_image }} trino --http-proxy 127.0.0.1:8888 --server 127.0.0.1:8888 --catalog hive --schema default --user trino --execute "SELECT COUNT(*) FROM flattenedjson;"
-  when: not lookup('env', 'nomad_acl') | bool
+  when: not lookup('env', 'nomad_acl') | bool and not lookup('env', 'consul_acl') | bool
   register: query_json_result_2
   retries: 10
   delay: 5
