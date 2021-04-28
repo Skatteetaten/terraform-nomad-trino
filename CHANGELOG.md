@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.4.0 UNRELEASED]
+## [0.4.0]
 
 ### Changed
 - Prestosql changed name to Trino. This repo changed with it. #106
