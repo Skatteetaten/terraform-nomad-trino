@@ -218,8 +218,18 @@ ${hive_config_properties}
 EOH
         destination = "local/trino/hive.properties"
       }
+%{ if use_memory_connector }
       template {
-        # TODO: Create issue with hashicorp. Is there a way to mount directly to /etc/hosts ( for continual updates )
+        destination = "local/trino/catalog/memory.properties"
+        data = <<EOH
+connector.name=memory
+memory.max-data-per-node=${max_data_per_node}
+EOH
+      }
+%{ else }
+%{ endif }
+      template {
+# TODO: Create issue with hashicorp. Is there a way to mount directly to /etc/hosts ( for continual updates )
         # This will add all hosts with service names trino-worker and trino to the hosts file
         data = <<EOF
 127.0.0.1 %{ if node_type == "coordinator" }${service_name}%{ else }{{env "NOMAD_PORT_connect"}}.${service_name}-worker%{ endif } localhost
