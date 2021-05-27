@@ -305,6 +305,8 @@ module "trino" {
 | minio_vault_secret | Minio data-object contains vault related information to fetch credentials | obj(bool, string, string, string, string) | { <br> use_vault_provider = false, <br> vault_kv_policy_name = "kv-secret", <br> vault_kv_path = "secret/data/dev/trino", <br> vault_kv_field_access_name = "access_key", <br> vault_kv_field_secret_name = "secret_key" <br> } | no |
 | postgres_service | Postgres data-object contains service_name, port, username, password and database_name | obj(string, number, string, string, string) | - | no |
 | postgres_vault_secret | Set of properties to be able to fetch Postgres secrets from vault | obj(bool, string, string, string, string) | { <br> use_vault_provider = false, <br> vault_kv_policy_name = "kv-secret", <br> vault_kv_path = "secret/data/dev/trino", <br> vault_kv_field_username = "username", <br> vault_kv_field_password = "username" <br> } | no |
+| trino_standalone_jvm_properties  | Extra lines of configuration that will be added to Trino's 'jvm.config' file | list(string) | [""] | no |
+| trino_standalone_config_properties  | Extra lines of configuration that will be added to Trino's 'config.properties' file | list(string) | [""] | no |
 
 ## Outputs
 | Name | Description | Type |

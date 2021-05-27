@@ -8,6 +8,12 @@ locals {
   hive_config_properties = join("\n",
     concat(var.hive_config_properties)
   )
+  trino_standalone_jvm_properties = join("\n",
+    concat(var.trino_standalone_jvm_properties)
+  )
+  trino_standalone_config_properties = join("\n",
+    concat(var.trino_standalone_config_properties)
+  )
 
   template_standalone       = file("${path.module}/conf/nomad/trino_standalone.hcl")
   template_cluster          = file("${path.module}/conf/nomad/trino.hcl")

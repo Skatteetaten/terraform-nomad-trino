@@ -167,6 +167,36 @@ variable "hive_config_properties" {
   default     = [""]
 }
 
+variable "trino_standalone_jvm_properties" {
+  type        = list(string)
+  description = "Custom JVM config parameters that will be added to Trino's 'jvm.config'"
+  default     = [""]
+}
+
+variable "trino_standalone_config_properties" {
+  type        = list(string)
+  description = "Custom config properties that will be added to Trino's 'config.properties'"
+  default     = [""]
+}
+
+//variable "trino_cluster_coordinator_jvm_properties" {
+//  type        = list(string)
+//  description = "Custom config properties that will be added to Trino's 'config.properties'"
+//  default = [""]
+//}
+//
+//variable "trino_cluster_worker_jvm_properties" {
+//  type        = list(string)
+//  description = "Custom config properties that will be added to Trino's 'config.properties'"
+//  default = [""]
+//}
+//
+//variable "trino_cluster_coordinator_config_properties" {
+//  type        = list(string)
+//  description = "Custom config properties that will be added to Trino's 'config.properties'"
+//  default = [""]
+//}
+
 ######
 # Service dependencies
 ######

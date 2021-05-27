@@ -257,6 +257,7 @@ node-scheduler.include-coordinator=true
 http-server.http.port=8080
 discovery-server.enabled=true
 discovery.uri=http://127.0.0.1:8080
+${trino_standalone_config_properties}
 EOH
       }        # Total memory allocation is subtracted by 256MB to keep something for the OS.
       template {
@@ -264,6 +265,7 @@ EOH
         data = <<EOF
 -server
 -Xmx{{ env "NOMAD_MEMORY_LIMIT" | parseInt | subtract 256 }}M
+${trino_standalone_jvm_properties}
 EOF
       }
       template {
