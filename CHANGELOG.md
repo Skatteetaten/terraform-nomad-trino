@@ -17,6 +17,7 @@
 - Trino consul connect plugin source and build #?
 - Using Trino docker image with tag 354 #106
 - Support for Postrgres connector #105
+- Support for custom JVM and config properties in Trino [#120](https://github.com/Skatteetaten/terraform-nomad-trino/issues/120)
 
 ### Fixed
 - `make clean` will clean terraform state #?
