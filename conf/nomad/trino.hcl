@@ -226,7 +226,6 @@ connector.name=memory
 memory.max-data-per-node=${max_data_per_node}
 EOH
       }
-%{ else }
 %{ endif }
       template {
 # TODO: Create issue with hashicorp. Is there a way to mount directly to /etc/hosts ( for continual updates )

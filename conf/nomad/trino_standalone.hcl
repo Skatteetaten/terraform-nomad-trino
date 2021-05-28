@@ -296,7 +296,6 @@ connector.name=memory
 memory.max-data-per-node=${max_data_per_node}
 EOH
       }
-%{ else }
 %{ endif }
       resources {
         memory = ${memory}
