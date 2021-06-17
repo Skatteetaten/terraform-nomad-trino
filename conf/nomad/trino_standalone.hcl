@@ -240,7 +240,7 @@ EOH
 connector.name=postgresql
 connection-url=jdbc:postgresql://{{ env "NOMAD_UPSTREAM_ADDR_${postgres_service_name}" }}/${postgres_database_name}
 %{ if postgres_use_vault_provider }
-{{ with secret "${minio_vault_kv_path}" }}
+{{ with secret "${postgres_vault_kv_path}" }}
 connection-user={{- .Data.data.${postgres_vault_kv_field_username} }}
 connection-password={{- .Data.data.${postgres_vault_kv_field_password} }}
 {{ end }}
