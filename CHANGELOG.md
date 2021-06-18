@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.4.1] 
+## [0.4.1]
 
 ### Changed
 - Fixed a typo in trino_standalone.hcl #127
