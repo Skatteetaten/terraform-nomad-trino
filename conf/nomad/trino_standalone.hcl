@@ -184,9 +184,9 @@ job "${nomad_job_name}" {
 %{ endif }
         volumes = [
           "local/trino/config.properties:/etc/trino/config.properties",
-          "local/trino/catalog/hive.properties:/etc/trino/catalog/hive.properties",
+          "secrets/trino/catalog/hive.properties:/etc/trino/catalog/hive.properties",
           # Trino extra config volume destination
-          "local/trino/catalog/postgresql.properties:/etc/trino/catalog/postgresql.properties",
+          "secrets/trino/catalog/postgresql.properties:/etc/trino/catalog/postgresql.properties",
           # JVM settings. Memory GC etc.
           "local/trino/jvm.config:/etc/trino/jvm.config",
           # Mount for debug purposes
@@ -212,7 +212,7 @@ EOH
       //     could end up with exception: The AWS Access Key Id you provided does not exist in our records.
       //     Looks like, slow render of env variables (when one template depends on other template). Maybe because, all runs on local machine
       template {
-        destination = "local/trino/catalog/hive.properties"
+        destination = "secrets/trino/catalog/hive.properties"
         data = <<EOH
 connector.name=hive-hadoop2
 hive.metastore.uri=thrift://{{ env "NOMAD_UPSTREAM_ADDR_${hivemetastore_service_name}" }}
@@ -235,7 +235,7 @@ ${hive_config_properties}
 EOH
       }
       template {
-        destination   = "local/trino/catalog/postgresql.properties"
+        destination   = "secrets/trino/catalog/postgresql.properties"
         data = <<EOH
 connector.name=postgresql
 connection-url=jdbc:postgresql://{{ env "NOMAD_UPSTREAM_ADDR_${postgres_service_name}" }}/${postgres_database_name}
