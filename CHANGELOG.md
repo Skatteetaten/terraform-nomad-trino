@@ -1,8 +1,9 @@
 # Changelog
 
-## [0.4.1]
+## [UNRELEASED 0.4.1]
 
 ### Changed
+- Fixed a typo in trino_standalone.hcl #127
 - Moved secrets to secrets folder in nomad filesystem #133
 
 ## [0.4.0]
@@ -17,7 +18,6 @@
 - Variables uses same naming convention as in other modules #87
 - Verbose output ansible and terraform
 - Url update due ownership transfer #101
-- Fixed a typo in trino_standalone.hcl #127
 
 ### Added
 - Trino consul connect plugin source and build #?
