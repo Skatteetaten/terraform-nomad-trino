@@ -2,7 +2,7 @@
 
 ## [0.4.1]
 
-## Changed
+### Changed
 - Moved secrets to secrets folder in nomad filesystem #133
 
 ## [0.4.0]
