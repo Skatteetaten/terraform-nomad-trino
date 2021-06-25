@@ -181,7 +181,6 @@ job "${nomad_job_name}" {
 %{ else }
       config {
         image = "${docker_image}"
-        image_pull_timeout = "10m"
 %{ endif }
         volumes = [
           "local/trino/config.properties:/etc/trino/config.properties",
