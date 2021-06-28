@@ -1,9 +1,10 @@
 # Changelog
 
-## [0.4.1]
+## [UNRELEASED 0.4.1]
 
 ### Changed
 - Fixed a typo in trino_standalone.hcl #127
+- Moved secrets to secrets folder in nomad filesystem #133
 
 ## [0.4.0]
 
