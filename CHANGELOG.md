@@ -5,6 +5,12 @@
 ### Added
 - Added memory connector to Trino standalone and cluster [#121](https://github.com/Skatteetaten/terraform-nomad-trino/issues/121)
 
+## [0.4.1]
+
+### Changed
+- Fixed a typo in trino_standalone.hcl #127
+- Moved secrets to secrets folder in nomad filesystem #133
+
 ## [0.4.0]
 
 ### Changed

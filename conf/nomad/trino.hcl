@@ -165,7 +165,7 @@ job "${nomad_job_name}" {
           # JVM settings. Memory GC etc.
           "local/trino/jvm.config:/lib/trino/default/etc/jvm.config",
           # General configuration file
-          "local/trino/config.properties:/lib/trino/default/etc/config.properties",
+          "secrets/trino/config.properties:/lib/trino/default/etc/config.properties",
           # Custom certificate authenticator configuration
           %{ if consul_connect_plugin }
           "local/trino/plugin/trino-consul-connect.jar:/usr/lib/trino/plugin/consulconnect/trino-consul-connect.jar",
@@ -174,7 +174,7 @@ job "${nomad_job_name}" {
           # Mount for debug purposes
           %{ if debug }"local/trino/log.properties:/lib/trino/default/etc/log.properties",%{ endif }
           # Hive connector configuration
-          "local/trino/hive.properties:/lib/trino/default/etc/catalog/hive.properties",
+          "secrets/trino/hive.properties:/lib/trino/default/etc/catalog/hive.properties",
           # Mounting /local/hosts to /etc/hosts overrides default docker mount.
           "local/hosts:/etc/hosts",
           # Mounting modified entrypoint.
@@ -216,7 +216,7 @@ hive.s3.path-style-access=true
 # Custom hive configuration properties
 ${hive_config_properties}
 EOH
-        destination = "local/trino/hive.properties"
+        destination = "secrets/trino/hive.properties"
       }
 %{ if use_memory_connector }
       template {
@@ -358,7 +358,7 @@ query.client.timeout=5m
 query.min-expire-age=30m
 query.max-memory=${trino_query_max_memory}MB
 EOF
-        destination   = "local/trino/config.properties"
+        destination   = "secrets/trino/config.properties"
       }
       template {
         data = <<EOF
