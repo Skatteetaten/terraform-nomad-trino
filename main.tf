@@ -61,7 +61,7 @@ data "template_file" "template_nomad_job_trino" {
     cpu_proxy                  = var.resource_proxy.cpu
     memory_proxy               = var.resource_proxy.memory
     use_memory_connector       = var.trino_memory_connector.use_memory_connector
-    max_data_per_node          = var.trino_memory_connector.max_data_per_node
+    connector_memory_max_data_per_node          = var.trino_memory_connector.max_data_per_node
 
     # Memory allocations for trino is automatically tuned based on memory sizing set at the task driver level in nomad.
     # Based on web-resources and trino community slack, we choose to allocate 75% (up to 80% should work) to the JVM
