@@ -170,7 +170,7 @@ variable "hive_config_properties" {
 variable "trino_memory_connector" {
   type = object({
     use_memory_connector = bool
-    max_data_per_node = string
+    connector_memory_max_data_per_node = string
   })
   default = {
     use_memory_connector = true,
