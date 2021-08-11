@@ -179,6 +179,25 @@ This module uses the following providers:
 - [Nomad](https://registry.terraform.io/providers/hashicorp/nomad/latest/docs)
 - [Vault](https://registry.terraform.io/providers/hashicorp/vault/latest/docs)
 
+### Connectors
+
+Trino uses [Connectors](https://trino.io/docs/current/connector.html) to access data from external sources.
+
+
+| Conenctors | Why| Usage and documentation |
+| :---------------- | :--- |:--- |
+| Trino memory connector| Support for fast in memory calculations | [Memory Connector](https://trino.io/docs/current/connector/memory.html)|
+| Hive connector|  allows querying data stored in an Apache Hive data warehouse |[Hive connector](https://trino.io/docs/current/connector/hive.html)|
+
+The memory connector could be used by i.e. adding: 
+``` 
+trino_memory_connector = {
+    use_memory_connector = true
+    max_data_per_node = "1280MB"
+  }
+```
+to your main.tf file under module "trino".
+
 ### Intentions
 The following intentions are required. In the examples, intentions are created in the Ansible playboook [01_create_intetion.yml](dev/ansible/01_create_intention.yml):
 
