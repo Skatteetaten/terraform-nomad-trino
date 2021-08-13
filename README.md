@@ -186,7 +186,7 @@ Trino uses [Connectors](https://trino.io/docs/current/connector.html) to access 
 
 | Connectors | Why| Usage and documentation |
 | :---------------- | :--- |:--- |
-| Trino memory connector| Support for fast in memory calculations | [Memory Connector](https://trino.io/docs/current/connector/memory.html)|
+| Trino memory connector| Support for fast in-memory calculations | [Memory Connector](https://trino.io/docs/current/connector/memory.html)|
 | Hive connector|  allows querying data stored in an Apache Hive data warehouse |[Hive connector](https://trino.io/docs/current/connector/hive.html)|
 
 The memory connector could be used by i.e. adding: 
