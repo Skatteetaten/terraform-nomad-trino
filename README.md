@@ -184,7 +184,7 @@ This module uses the following providers:
 Trino uses [Connectors](https://trino.io/docs/current/connector.html) to access data from external sources.
 
 
-| Conenctors | Why| Usage and documentation |
+| Connectors | Why| Usage and documentation |
 | :---------------- | :--- |:--- |
 | Trino memory connector| Support for fast in memory calculations | [Memory Connector](https://trino.io/docs/current/connector/memory.html)|
 | Hive connector|  allows querying data stored in an Apache Hive data warehouse |[Hive connector](https://trino.io/docs/current/connector/hive.html)|
