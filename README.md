@@ -189,8 +189,8 @@ Trino uses [Connectors](https://trino.io/docs/current/connector.html) to access 
 | Trino memory connector| Support for fast in-memory calculations | [Memory Connector](https://trino.io/docs/current/connector/memory.html)|
 | Hive connector|  allows querying data stored in an Apache Hive data warehouse |[Hive connector](https://trino.io/docs/current/connector/hive.html)|
 
-The memory connector could be used by i.e. adding: 
-``` 
+The memory connector could be used by i.e. adding:
+```text
 trino_memory_connector = {
     use_memory_connector = true
     max_data_per_node = "1280MB"
