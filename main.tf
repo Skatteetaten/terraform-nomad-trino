@@ -8,6 +8,12 @@ locals {
   hive_config_properties = join("\n",
     concat(var.hive_config_properties)
   )
+  trino_standalone_jvm_properties = join("\n",
+    concat(var.trino_standalone_jvm_properties)
+  )
+  trino_standalone_config_properties = join("\n",
+    concat(var.trino_standalone_config_properties)
+  )
 
   template_standalone       = file("${path.module}/conf/nomad/trino_standalone.hcl")
   template_cluster          = file("${path.module}/conf/nomad/trino.hcl")
@@ -40,26 +46,28 @@ data "template_file" "template_nomad_job_trino" {
     vault_policy_array = local.vault_kv_policy_name_set
 
     # trino
-    service_name               = var.service_name
-    node_types                 = jsonencode(local.node_types)
-    local_docker_image         = var.local_docker_image
-    consul_image               = var.consul_docker_image
-    shared_secret_user         = var.shared_secret_user
-    use_vault_secret_provider  = var.vault_secret.use_vault_provider
-    vault_kv_policy_name       = var.vault_secret.vault_kv_policy_name
-    vault_kv_path              = var.vault_secret.vault_kv_path
-    vault_kv_field_secret_name = var.vault_secret.vault_kv_field_secret_name
-    workers                    = var.workers
-    docker_image               = var.docker_image
-    envs                       = local.trino_env_vars
-    hive_config_properties     = local.hive_config_properties
-    debug                      = var.debug
-    memory                     = var.resource.memory
-    cpu                        = var.resource.cpu
-    consul_http_addr           = var.consul_http_addr
-    use_canary                 = var.use_canary
-    cpu_proxy                  = var.resource_proxy.cpu
-    memory_proxy               = var.resource_proxy.memory
+    service_name                       = var.service_name
+    node_types                         = jsonencode(local.node_types)
+    local_docker_image                 = var.local_docker_image
+    consul_image                       = var.consul_docker_image
+    shared_secret_user                 = var.shared_secret_user
+    use_vault_secret_provider          = var.vault_secret.use_vault_provider
+    vault_kv_policy_name               = var.vault_secret.vault_kv_policy_name
+    vault_kv_path                      = var.vault_secret.vault_kv_path
+    vault_kv_field_secret_name         = var.vault_secret.vault_kv_field_secret_name
+    workers                            = var.workers
+    docker_image                       = var.docker_image
+    envs                               = local.trino_env_vars
+    hive_config_properties             = local.hive_config_properties
+    debug                              = var.debug
+    memory                             = var.resource.memory
+    cpu                                = var.resource.cpu
+    consul_http_addr                   = var.consul_http_addr
+    use_canary                         = var.use_canary
+    cpu_proxy                          = var.resource_proxy.cpu
+    memory_proxy                       = var.resource_proxy.memory
+    trino_standalone_jvm_properties    = local.trino_standalone_jvm_properties
+    trino_standalone_config_properties = local.trino_standalone_config_properties
 
     # Memory allocations for trino is automatically tuned based on memory sizing set at the task driver level in nomad.
     # Based on web-resources and trino community slack, we choose to allocate 75% (up to 80% should work) to the JVM

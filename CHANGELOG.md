@@ -6,6 +6,9 @@
 - Fixed a typo in trino_standalone.hcl #127
 - Moved secrets to secrets folder in nomad filesystem #133
 
+### Added
+- Possibility to add JVM and trino config parameters [#120](https://github.com/Skatteetaten/terraform-nomad-trino/issues/120)
+
 ## [0.4.0]
 
 ### Changed
