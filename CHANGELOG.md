@@ -1,5 +1,10 @@
 # Changelog
 
+## [UNRELEASED]
+
+### Added
+- Possibility to add JVM and trino config parameters [#120](https://github.com/Skatteetaten/terraform-nomad-trino/issues/120)
+
 ## [0.4.0]
 
 ### Changed
