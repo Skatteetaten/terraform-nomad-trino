@@ -173,7 +173,8 @@ job "${nomad_job_name}" {
           %{ endif }
           # Mount for debug purposes
           %{ if debug }"local/trino/log.properties:/lib/trino/default/etc/log.properties",%{ endif }
-          # Hive connector configuration
+          %{ if use_memory_connector }"local/trino/catalog/memory.properties:/etc/trino/catalog/memory.properties",%{ endif }
+# Hive connector configuration
           "secrets/trino/hive.properties:/lib/trino/default/etc/catalog/hive.properties",
           # Mounting /local/hosts to /etc/hosts overrides default docker mount.
           "local/hosts:/etc/hosts",
