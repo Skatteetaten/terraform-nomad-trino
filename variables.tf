@@ -167,6 +167,17 @@ variable "hive_config_properties" {
   default     = [""]
 }
 
+variable "trino_memory_connector" {
+  type = object({
+    use_memory_connector = bool
+    connector_memory_max_data_per_node = string
+  })
+  default = {
+    use_memory_connector = false,
+    connector_memory_max_data_per_node = "128MB"
+  }
+  description = "Turn on or off memory connector in Trino, and its memory limit for pages stored in the connector per each node"
+}
 ######
 # Service dependencies
 ######

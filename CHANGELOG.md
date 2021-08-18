@@ -1,5 +1,10 @@
 # Changelog
 
+## [UNRELEASED]
+
+### Added
+- Added memory connector to Trino standalone and cluster [#121](https://github.com/Skatteetaten/terraform-nomad-trino/issues/121)
+
 ## [0.4.1]
 
 ### Changed
