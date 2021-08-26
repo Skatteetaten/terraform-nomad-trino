@@ -94,7 +94,7 @@ module "minio" {
   service_name    = "minio"
   host            = "127.0.0.1"
   port            = 9000
-  container_image = "minio/minio:latest" # todo: avoid using tag latest in future releases
+  container_image = "minio/minio:RELEASE.2020-11-25T22-36-25Z-ubi"
   vault_secret = {
     use_vault_provider        = false,
     vault_kv_policy_name      = "",

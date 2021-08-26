@@ -84,7 +84,7 @@ remove-tmp:
 	rm -rf ./dev/tmp
 	rm -rf ./.minio.sys
 	rm -rf ./example/**/.terraform*
-	rm -rf ./example/**/*.tfstate
+	rm -rf ./example/**/*.tfstate	
 
 clean: destroy-box remove-tmp
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.4.2]
+
+### Fixed
+- Revert to earlier release of minio
+
 ## [0.4.1]
 
 ### Changed
