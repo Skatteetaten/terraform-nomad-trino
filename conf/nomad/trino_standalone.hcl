@@ -192,7 +192,6 @@ job "${nomad_job_name}" {
           # Mount for debug purposes
           %{ if debug }"local/trino/log.properties:/etc/trino/log.properties",%{ endif }
           %{ if use_memory_connector }"local/trino/catalog/memory.properties:/etc/trino/catalog/memory.properties",%{ endif }
-}
         ]
       }
       template {
