@@ -179,6 +179,25 @@ This module uses the following providers:
 - [Nomad](https://registry.terraform.io/providers/hashicorp/nomad/latest/docs)
 - [Vault](https://registry.terraform.io/providers/hashicorp/vault/latest/docs)
 
+### Connectors
+
+Trino uses [Connectors](https://trino.io/docs/current/connector.html) to access data from external sources.
+
+
+| Connectors | Why| Usage and documentation |
+| :---------------- | :--- |:--- |
+| Trino memory connector| Support for fast in-memory calculations | [Memory Connector](https://trino.io/docs/current/connector/memory.html)|
+| Hive connector|  allows querying data stored in an Apache Hive data warehouse |[Hive connector](https://trino.io/docs/current/connector/hive.html)|
+
+The memory connector could be used by i.e. adding:
+```text
+trino_memory_connector = {
+    use_memory_connector = true
+    max_data_per_node = "1280MB"
+  }
+```
+to your main.tf file under module "trino".
+
 ### Intentions
 The following intentions are required. In the examples, intentions are created in the Ansible playboook [01_create_intetion.yml](dev/ansible/01_create_intention.yml):
 
@@ -305,6 +324,7 @@ module "trino" {
 | minio_vault_secret | Minio data-object contains vault related information to fetch credentials | obj(bool, string, string, string, string) | { <br> use_vault_provider = false, <br> vault_kv_policy_name = "kv-secret", <br> vault_kv_path = "secret/data/dev/trino", <br> vault_kv_field_access_name = "access_key", <br> vault_kv_field_secret_name = "secret_key" <br> } | no |
 | postgres_service | Postgres data-object contains service_name, port, username, password and database_name | obj(string, number, string, string, string) | - | no |
 | postgres_vault_secret | Set of properties to be able to fetch Postgres secrets from vault | obj(bool, string, string, string, string) | { <br> use_vault_provider = false, <br> vault_kv_policy_name = "kv-secret", <br> vault_kv_path = "secret/data/dev/trino", <br> vault_kv_field_username = "username", <br> vault_kv_field_password = "username" <br> } | no |
+| trino_memory_connector | Set of properties for a Trino memory connector | obj(bool, string) | { <br> use_memory_connector = true, <br> max_data_per_node = "128MB" <br> } | no |
 
 ## Outputs
 | Name | Description | Type |

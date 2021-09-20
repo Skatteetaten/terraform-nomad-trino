@@ -173,7 +173,8 @@ job "${nomad_job_name}" {
           %{ endif }
           # Mount for debug purposes
           %{ if debug }"local/trino/log.properties:/lib/trino/default/etc/log.properties",%{ endif }
-          # Hive connector configuration
+          %{ if use_memory_connector }"local/trino/catalog/memory.properties:/etc/trino/catalog/memory.properties",%{ endif }
+# Hive connector configuration
           "secrets/trino/hive.properties:/lib/trino/default/etc/catalog/hive.properties",
           # Mounting /local/hosts to /etc/hosts overrides default docker mount.
           "local/hosts:/etc/hosts",
@@ -218,8 +219,17 @@ ${hive_config_properties}
 EOH
         destination = "secrets/trino/hive.properties"
       }
+%{ if use_memory_connector }
       template {
-        # TODO: Create issue with hashicorp. Is there a way to mount directly to /etc/hosts ( for continual updates )
+        destination = "local/trino/catalog/memory.properties"
+        data = <<EOH
+connector.name=memory
+memory.max-data-per-node=${connector_memory_max_data_per_node}
+EOH
+      }
+%{ endif }
+      template {
+# TODO: Create issue with hashicorp. Is there a way to mount directly to /etc/hosts ( for continual updates )
         # This will add all hosts with service names trino-worker and trino to the hosts file
         data = <<EOF
 127.0.0.1 %{ if node_type == "coordinator" }${service_name}%{ else }{{env "NOMAD_PORT_connect"}}.${service_name}-worker%{ endif } localhost
